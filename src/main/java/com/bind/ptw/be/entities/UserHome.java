@@ -1,0 +1,149 @@
+package com.bind.ptw.be.entities;
+
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import com.bind.ptw.be.dto.UserBean;
+import com.bind.ptw.be.dto.UserGroupBean;
+
+public class UserHome {
+	
+	private Session session;
+	
+	public UserHome(Session session){
+		this.session = session;
+	}
+	
+	public void save(Users user){
+		session.save(user);
+	}
+	
+	public void remove(Users persistentInstance) {
+		try {
+			session.delete(persistentInstance);
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+
+	public Users merge(Users detachedInstance) {
+		try {
+			Users result = (Users)session.merge(detachedInstance);
+			return result;
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+
+	public Users findById(int id) {
+		try {
+			Users instance = (Users)session.get(Users.class, id);
+			return instance;
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+
+	public List<Users> findUsersByFilters( UserBean userRequest ) {
+		
+		Query query = null;
+		
+		try{
+			String queryToExecute = QueryConstants.RETRIEVE_USERS;
+			
+			if( userRequest != null ) {
+				
+				if(userRequest.getUserLoginId() != null){
+					queryToExecute += "AND loginId =:userLoginId ";
+				}
+				if(userRequest.getPassword() != null){
+					queryToExecute += "AND password =:userPassword ";
+				}
+				if(userRequest.getTeamName() != null){
+					queryToExecute += "AND teamName =:teamName ";
+				}
+				if(userRequest.getEmail() != null){
+					queryToExecute += "AND emailId =:emailId ";
+				}
+				if(userRequest.getPhone() != null){
+					queryToExecute += "AND phone =:phone ";
+				}
+			}
+
+            
+			query = session.createQuery(queryToExecute);
+			
+			if(userRequest != null){
+				
+				if(userRequest.getUserLoginId() != null){
+					query.setParameter("userLoginId", userRequest.getUserLoginId());
+				}
+				
+				if(userRequest.getPassword() != null){
+					query.setParameter("userPassword", userRequest.getPassword());
+				}
+				
+				if(userRequest.getTeamName() != null){
+					query.setParameter("teamName", userRequest.getTeamName());
+				}
+				
+				if(userRequest.getEmail() != null){
+					query.setParameter("emailId", userRequest.getEmail());
+				}
+				
+				if(userRequest.getPhone() != null){
+					query.setParameter("phone", userRequest.getPhone());
+				}
+			}
+			
+			
+		
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
+	
+	public List<Users> findUsersByGroup( UserGroupBean userGroupRequest ) {
+		
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecuteBuilder = new StringBuilder();
+			queryToExecuteBuilder.append(QueryConstants.RETRIEVE_USERS);
+			queryToExecuteBuilder.append("AND u.adminFlag=0 ");
+			if(userGroupRequest != null){
+				queryToExecuteBuilder.append("AND u.userId IN ( ");
+				queryToExecuteBuilder.append("select ugm.userId from UserGroupMapping ugm where ugm.userGroupId =:groupId");
+				queryToExecuteBuilder.append(")");
+			}
+            
+			query = session.createQuery(queryToExecuteBuilder.toString());
+			if(userGroupRequest != null){	
+				query.setParameter("groupId", userGroupRequest.getGroupId());
+			}
+		
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
+	
+	public List<City> getCities(){
+		Query query = session.createQuery(QueryConstants.RETRIEVE_CITIES);
+		return query.list();
+	}
+	
+	public City findByCityId(int cityId) {
+		try {
+			City instance = (City)session.get(City.class, cityId);
+			return instance;
+		} catch (RuntimeException re) {
+			throw re;
+		}
+	}
+}
