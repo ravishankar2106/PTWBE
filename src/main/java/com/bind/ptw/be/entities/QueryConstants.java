@@ -26,4 +26,6 @@ public class QueryConstants {
 	public static final String RETRIEVE_TEAM_TYPE = "from TeamType tt where 1=1 ";
 	public static final String RETRIEVE_USER_CONFIRMATIONS = "from UserConfirmation uc where 1=1 ";
 	public static final String RETRIEVE_CITIES = "from City c where 1=1 ";
+	public static final String RETRIEVE_COUNTRIES = "from Country cy where 1=1 ";
+	public static final String RETRIEVE_TEAMS = "from Team team where 1=1 ";
 }

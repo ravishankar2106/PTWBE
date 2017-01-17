@@ -93,7 +93,6 @@ public class PTWConstants {
 	public final static String ERROR_DESC_EMAIL_DEL_FAILURE = "Password is reset but failed to send email. Contact Administrator";
 	
 	public final static String ERROR_CODE_TOURNAMENT_NAME_EMPTY = "171";
-	public final static String ERROR_DESC_TOURNAMENT_NAME_EMPTY = "Tournament Name cannot be empty";
 	
 	public final static String ERROR_CODE_TOURNAMENT_START_DATE_INVALID = "172";
 	public final static String ERROR_DESC_TOURNAMENT_START_DATE_INVALID = "Tournament Start Date is Invalid";
@@ -113,5 +112,26 @@ public class PTWConstants {
 	public final static String ERROR_CODE_TOURNAMENT_ID_NOT_FOUND = "177";
 	public final static String ERROR_DESC_TOURNAMENT_ID_NOT_FOUND = "Tournament Not Found";
 	
+	public final static String ERROR_CODE_COUNTRY_ID_NOT_FOUND = "178";
+	public final static String ERROR_DESC_COUNTRY_ID_NOT_FOUND = "Country Not Found";
+	
+	public final static String ERROR_CODE_COUNTRY_NAME_EMPTY = "179";
+	public final static String ERROR_CODE_COUNTRY_SHORT_NAME_EMPTY = "180";
+	
+	public final static String ERROR_CODE_COUNTRY_ID_EMPTY = "181";
+	
+	public final static String ERROR_CODE_COUNTRY_DUPLICATE = "182";
+	public final static String ERROR_DESC_COUNTRY_DUPLICATE = "Country Already Exists";
+	
+	public final static String ERROR_CODE_TEAM_ID_NOT_FOUND = "183";
+	public final static String ERROR_DESC_TEAM_ID_NOT_FOUND = "Team Not Found";
+	
+	public final static String ERROR_CODE_TEAM_NAME_EMPTY = "184";
+	public final static String ERROR_CODE_TEAM_SHORT_NAME_EMPTY = "185";
+	public final static String ERROR_CODE_TEAM_ID_EMPTY = "186";
+	
+	public final static String ERROR_CODE_TEAM_TYPE_ID_EMPTY = "187";
+	public final static String ERROR_CODE_SPORT_TYPE_ID_EMPTY = "188";
+
 	public final static int MAX_CONFIRMATION_RETRY_COUNT = 5;
 }

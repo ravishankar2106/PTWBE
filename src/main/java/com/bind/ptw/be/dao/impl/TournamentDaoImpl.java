@@ -9,10 +9,16 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.bind.ptw.be.dao.TournamentDao;
+import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.dto.SportTypeBean;
+import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.entities.Country;
+import com.bind.ptw.be.entities.CountryHome;
 import com.bind.ptw.be.entities.SportType;
+import com.bind.ptw.be.entities.Team;
+import com.bind.ptw.be.entities.TeamHome;
 import com.bind.ptw.be.entities.TeamType;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
@@ -146,6 +152,199 @@ public class TournamentDaoImpl implements TournamentDao{
 			}
 		}
 		return teamTypeBeanList;
+		
+	}
+
+	@Override
+	public CountryBean createCountry(CountryBean countryBean) throws PTWException{
+		try{
+			CountryHome countryHome = new CountryHome(getSession());
+			List<Country> dbCountries = countryHome.findCountryByFilter(countryBean);
+			if(dbCountries != null && !dbCountries.isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_DUPLICATE, PTWConstants.ERROR_DESC_COUNTRY_DUPLICATE);
+			}
+			Country country = new Country();
+			country.setCountryName(countryBean.getCountryName());
+			country.setCountryShortName(countryBean.getCountryShortName());
+			countryHome.persist(country);
+			countryBean.setCountryId(country.getCountryId());
+			return countryBean;
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public List<CountryBean> getCountryList(CountryBean countryBean) throws PTWException{
+		CountryHome countryHome = new CountryHome(getSession());
+		try{
+			List<CountryBean> retCountryBeanList = null;
+			
+			List<Country> dbCountries = countryHome.findCountryByFilter(countryBean);
+			if(dbCountries != null && !dbCountries.isEmpty()){
+				retCountryBeanList = new ArrayList<CountryBean>();
+				for (Country country : dbCountries) {
+					CountryBean retCountryBean = new CountryBean();
+					retCountryBean.setCountryId(country.getCountryId());
+					retCountryBean.setCountryName(country.getCountryName());
+					retCountryBean.setCountryShortName(country.getCountryShortName());
+					retCountryBeanList.add(retCountryBean);
+				}
+			}
+			return retCountryBeanList;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+
+	@Override
+	public void updateCountry(CountryBean countryBean) throws PTWException {
+		try{
+			CountryHome countryHome = new CountryHome(getSession());
+			Country foundCountry = countryHome.findById(countryBean.getCountryId());
+			if(foundCountry == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_NOT_FOUND, PTWConstants.ERROR_DESC_COUNTRY_ID_NOT_FOUND);
+			}
+			List<Country> dbCountries = countryHome.findCountryByFilter(countryBean);
+			if(dbCountries != null && !dbCountries.isEmpty()){
+				Country existingCountry = dbCountries.get(0);
+				if(!existingCountry.getCountryId().equals(foundCountry.getCountryId())){
+					throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_DUPLICATE, PTWConstants.ERROR_DESC_COUNTRY_DUPLICATE);
+				}
+			}
+			foundCountry.setCountryName(countryBean.getCountryName());
+			foundCountry.setCountryShortName(countryBean.getCountryShortName());
+			countryHome.merge(foundCountry);
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void deleteCountry(CountryBean countryBean) throws PTWException {
+		CountryHome countryHome = new CountryHome(getSession());
+		Country foundCountry = countryHome.findById(countryBean.getCountryId());
+		if(foundCountry == null){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_NOT_FOUND, PTWConstants.ERROR_DESC_COUNTRY_ID_NOT_FOUND);
+		}
+		countryHome.remove(foundCountry);
+		
+	}
+
+	@Override
+	public TeamBean createTeam(TeamBean teamBean) throws PTWException{
+		try{
+			TeamHome teamHome = new TeamHome(getSession());
+			
+			Team team = new Team();
+			team.setTeamName(teamBean.getTeamName());
+			team.setTeamShortName(teamBean.getTeamShortName());
+			
+			Country country = new Country();
+			country.setCountryId(teamBean.getCountryId());
+			team.setCountry(country);
+			
+			TeamType teamType = new TeamType();
+			teamType.setTeamTypeId(teamBean.getTeamTypeId());
+			team.setTeamType(teamType);
+			
+			SportType sportType = new SportType();
+			sportType.setSportTypeId(teamBean.getSportTypeId());
+			team.setSportType(sportType);
+			
+			teamHome.persist(team);
+			
+			teamBean.setTeamId(team.getTeamId());
+			return teamBean;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public List<TeamBean> getTeamList(TeamBean teamBean) throws PTWException{
+		TeamHome teamHome = new TeamHome(getSession());
+		try{
+			List<TeamBean> retTeamBeanList = null;
+			List<Team> dbTeams = teamHome.findTeamsByFilter(teamBean);
+			if(dbTeams != null && !dbTeams.isEmpty()){
+				retTeamBeanList = new ArrayList<TeamBean>();
+				for (Team team : dbTeams) {
+					TeamBean retTeamBean = new TeamBean();
+					retTeamBean.setTeamId(team.getTeamId());
+					retTeamBean.setTeamName(team.getTeamName());
+					retTeamBean.setTeamShortName(team.getTeamShortName());
+					retTeamBean.setCountryId(team.getCountry().getCountryId());
+					retTeamBean.setCountryName(team.getCountry().getCountryName());
+					retTeamBean.setSportTypeId(team.getSportType().getSportTypeId());
+					retTeamBean.setSportTypeName(team.getSportType().getSportTypeName());
+					retTeamBean.setTeamTypeId(team.getTeamType().getTeamTypeId());
+					retTeamBean.setTeamTypeName(team.getTeamType().getTeamTypeName());
+					retTeamBeanList.add(retTeamBean);
+				}
+			}
+			return retTeamBeanList;
+		}catch(Exception exception){
+				throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+
+	@Override
+	public void updateTeam(TeamBean teamBean) throws PTWException {
+		try{
+			TeamHome teamHome = new TeamHome(getSession());
+			Team foundTeam = teamHome.findById(teamBean.getTeamId());
+			if(foundTeam == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_NOT_FOUND, PTWConstants.ERROR_DESC_TEAM_ID_NOT_FOUND);
+			}
+			foundTeam.setTeamName(teamBean.getTeamName());
+			foundTeam.setTeamShortName(teamBean.getTeamShortName());
+			
+			if(!StringUtil.isEmptyNull(teamBean.getCountryId())){
+				Country country = new Country();
+				country.setCountryId(teamBean.getCountryId());
+				foundTeam.setCountry(country);
+			}
+			
+			if(!StringUtil.isEmptyNull(teamBean.getSportTypeId())){
+				SportType sportType = new SportType();
+				sportType.setSportTypeId(teamBean.getSportTypeId());
+				foundTeam.setSportType(sportType);
+			}
+			
+			if(!StringUtil.isEmptyNull(teamBean.getTeamTypeId())){
+				TeamType teamType = new TeamType();
+				teamType.setTeamTypeId(teamBean.getTeamTypeId());
+				foundTeam.setTeamType(teamType);
+			}
+			
+			teamHome.merge(foundTeam);
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void deleteTeam(TeamBean teamBean) throws PTWException {
+		TeamHome teamHome = new TeamHome(getSession());
+		Team foundTeam = teamHome.findById(teamBean.getTeamId());
+		if(foundTeam == null){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_NOT_FOUND, PTWConstants.ERROR_DESC_TEAM_ID_NOT_FOUND);
+		}
+		teamHome.remove(foundTeam);
 		
 	}
 

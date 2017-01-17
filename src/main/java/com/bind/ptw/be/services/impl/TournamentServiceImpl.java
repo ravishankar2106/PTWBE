@@ -9,8 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dto.BaseBean;
+import com.bind.ptw.be.dto.CountryBean;
+import com.bind.ptw.be.dto.CountryBeanList;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeBeanList;
+import com.bind.ptw.be.dto.TeamBean;
+import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
@@ -111,5 +115,116 @@ public class TournamentServiceImpl implements TournamentService{
 		return sportTypeBeanResponse;
 	}
 
-	
+	@Override
+	public CountryBean createCountry(CountryBean countryBean) {
+		CountryBean returnBean;
+		try{
+			TournamentBeanValidator.vaidateRequest(countryBean);
+			TournamentBeanValidator.validateCreateCountryBean(countryBean);
+			returnBean = tournamentDao.createCountry(countryBean); 
+		}catch(PTWException exception){
+			returnBean = new CountryBean();
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public CountryBeanList getCountryList(CountryBean countryBean) {
+		CountryBeanList returnBeanList = new CountryBeanList();
+		try{
+			List<CountryBean> countriesList = tournamentDao.getCountryList(countryBean);
+			returnBeanList.setCountries(countriesList);
+		}catch(PTWException exception){
+			returnBeanList.setResultCode(exception.getCode());
+			returnBeanList.setResultDescription(exception.getDescription());
+		}
+		return returnBeanList;
+	}
+
+	@Override
+	public BaseBean updateCountry(CountryBean countryBean) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(countryBean);
+			TournamentBeanValidator.validateUpdateCountryBean(countryBean);
+			tournamentDao.updateCountry(countryBean); 
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public BaseBean deleteCountry(CountryBean countryBean) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(countryBean);
+			TournamentBeanValidator.validateCountryId(countryBean.getCountryId());
+			tournamentDao.deleteCountry(countryBean); 
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public TeamBean createTeam(TeamBean teamBean) {
+		TeamBean returnBean;
+		try{
+			TournamentBeanValidator.vaidateRequest(teamBean);
+			TournamentBeanValidator.validateCreateTeamBean(teamBean, tournamentDao);
+			returnBean = tournamentDao.createTeam(teamBean); 
+		}catch(PTWException exception){
+			returnBean = new TeamBean();
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public TeamBeanList getTeamList(TeamBean teamBean) {
+		TeamBeanList returnBeanList = new TeamBeanList();
+		try{
+			List<TeamBean> teamList = tournamentDao.getTeamList(teamBean);
+			returnBeanList.setTeams(teamList);
+		}catch(PTWException exception){
+			returnBeanList.setResultCode(exception.getCode());
+			returnBeanList.setResultDescription(exception.getDescription());
+		}
+		return returnBeanList;
+	}
+
+	@Override
+	public BaseBean updateTeam(TeamBean teamBean) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(teamBean);
+			TournamentBeanValidator.validateUpdateTeamBean(teamBean, tournamentDao);
+			tournamentDao.updateTeam(teamBean); 
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public BaseBean deleteTeam(TeamBean teamBean) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(teamBean);
+			TournamentBeanValidator.validateTeamId(teamBean.getTeamId());
+			tournamentDao.deleteTeam(teamBean); 
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
 }

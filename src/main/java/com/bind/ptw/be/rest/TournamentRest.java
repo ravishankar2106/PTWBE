@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bind.ptw.be.dto.BaseBean;
+import com.bind.ptw.be.dto.CountryBean;
+import com.bind.ptw.be.dto.CountryBeanList;
 import com.bind.ptw.be.dto.SportTypeBeanList;
+import com.bind.ptw.be.dto.TeamBean;
+import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
@@ -58,4 +62,43 @@ public class TournamentRest {
 		return tournamentService.getTeamType();
 	}
 
+	@PostMapping("/createCountry")
+	public CountryBean createCountry(@RequestBody CountryBean countryBean){
+		return tournamentService.createCountry(countryBean);
+	}
+	
+	@PostMapping("/getCountry")
+	public CountryBeanList getCountry(@RequestBody CountryBean countryBean){
+		return tournamentService.getCountryList(countryBean);
+	}
+	
+	@PostMapping("/updateCountry")
+	public BaseBean updateCountry(@RequestBody CountryBean countryBean){
+		return tournamentService.updateCountry(countryBean);
+	}
+	
+	@PostMapping("/deleteCountry")
+	public BaseBean deleteCountry(@RequestBody CountryBean countryBean){
+		return tournamentService.deleteCountry(countryBean);
+	}
+	
+	@PostMapping("/createTeam")
+	public TeamBean createTeam(@RequestBody TeamBean teamBean){
+		return tournamentService.createTeam(teamBean);
+	}
+	
+	@PostMapping("/getTeam")
+	public TeamBeanList getCountry(@RequestBody TeamBean teamBean){
+		return tournamentService.getTeamList(teamBean);
+	}
+	
+	@PostMapping("/updateTeam")
+	public BaseBean updateTeam(@RequestBody TeamBean teamBean){
+		return tournamentService.updateTeam(teamBean);
+	}
+	
+	@PostMapping("/deleteTeam")
+	public BaseBean deleteTeam(@RequestBody TeamBean teamBean){
+		return tournamentService.deleteTeam(teamBean);
+	}
 }

@@ -4,8 +4,11 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -14,6 +17,9 @@ public class Team {
 	private Integer teamId;
 	private String teamName;
 	private String teamShortName;
+	private Country country;
+	private TeamType teamType;
+	private SportType sportType;
 	
 	
 	@Id
@@ -40,6 +46,33 @@ public class Team {
 	}
 	public void setTeamShortName(String teamShortName) {
 		this.teamShortName = teamShortName;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "COUNTRY_ID", nullable = true)
+	public Country getCountry() {
+		return country;
+	}
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TEAM_TYPE_ID", nullable = true)
+	public TeamType getTeamType() {
+		return teamType;
+	}
+	public void setTeamType(TeamType teamType) {
+		this.teamType = teamType;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SPORT_TYPE_ID", nullable = true)
+	public SportType getSportType() {
+		return sportType;
+	}
+	public void setSportType(SportType sportType) {
+		this.sportType = sportType;
 	}
 	
 	

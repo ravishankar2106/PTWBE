@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dto.BaseBean;
+import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.dto.SportTypeBean;
+import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
@@ -36,13 +38,13 @@ public class TournamentBeanValidator {
 	
 	public static void validateTournamentId(Integer tournamentId) throws PTWException{
 		if(StringUtil.isEmptyNull(tournamentId)){
-			throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_ID_EMPTY, PTWConstants.ERROR_CODE_USER_ID_EMPTY + "Tournament Id");
+			throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Tournament Id");
 		}
 	}
 
 	public static void validateCreateTournament(TournamentBean inputTournamentBean, TournamentDao tournamentDao) throws PTWException {
 		if(StringUtil.isEmptyNull(inputTournamentBean.getTournamentName())){
-			throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_NAME_EMPTY, PTWConstants.ERROR_DESC_TOURNAMENT_NAME_EMPTY);
+			throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Tournament Name");
 		}
 		
 		TournamentBean queryBean = new TournamentBean();
@@ -136,6 +138,93 @@ public class TournamentBeanValidator {
 			}catch(ParseException exception){
 				throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_END_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_END_DATE_INVALID);
 			}
+		}
+	}
+
+	public static void validateCreateCountryBean(CountryBean countryBean) throws PTWException{
+		if(StringUtil.isEmptyNull(countryBean.getCountryName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Name");
+		}
+		if(StringUtil.isEmptyNull(countryBean.getCountryShortName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_SHORT_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Short Name");
+		}
+	}
+	
+	public static void validateUpdateCountryBean(CountryBean countryBean) throws PTWException{
+		validateCountryId(countryBean.getCountryId());
+		if(StringUtil.isEmptyNull(countryBean.getCountryName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Name");
+		}
+		if(StringUtil.isEmptyNull(countryBean.getCountryShortName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_SHORT_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Short Name");
+		}
+	}
+	
+	public static void validateCountryId(Integer countryId) throws PTWException{
+		if(StringUtil.isEmptyNull(countryId)){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Id");
+		}
+	}
+	
+	public static void validateCreateTeamBean(TeamBean teamBean, TournamentDao tournamentDao) throws PTWException{
+		if(StringUtil.isEmptyNull(teamBean.getTeamName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Name");
+		}
+		if(StringUtil.isEmptyNull(teamBean.getTeamShortName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_SHORT_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Short Name");
+		}
+		if(StringUtil.isEmptyNull(teamBean.getCountryId())){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Name");
+		}
+		validateCountry(teamBean.getCountryId(), tournamentDao);
+		
+		if(StringUtil.isEmptyNull(teamBean.getSportTypeId())){
+			throw new PTWException(PTWConstants.ERROR_CODE_SPORT_TYPE_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Sport Type");
+		}
+		validateSportType(teamBean.getSportTypeId(), tournamentDao);
+		
+		if(StringUtil.isEmptyNull(teamBean.getTeamTypeId())){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Type");
+		}
+		validateTeamType(teamBean.getTeamTypeId(), tournamentDao);
+	}
+	
+	private static void validateCountry(Integer countryId, TournamentDao tournamentDao)throws PTWException{
+		CountryBean countryBean = new CountryBean();
+		countryBean.setCountryId(countryId);
+		List<CountryBean> foundCountryList = tournamentDao.getCountryList(countryBean);
+		if(foundCountryList == null || foundCountryList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_NOT_FOUND, PTWConstants.ERROR_DESC_COUNTRY_ID_NOT_FOUND);
+		}
+		
+	}
+	
+	public static void validateUpdateTeamBean(TeamBean teamBean, TournamentDao tournamentDao) throws PTWException{
+		validateTeamId(teamBean.getTeamId());
+		if(StringUtil.isEmptyNull(teamBean.getTeamName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Name");
+		}
+		if(StringUtil.isEmptyNull(teamBean.getTeamShortName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_SHORT_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Short Name");
+		}
+		
+		if(!StringUtil.isEmptyNull(teamBean.getCountryId())){
+			validateCountry(teamBean.getCountryId(), tournamentDao);
+		}
+		
+		if(!StringUtil.isEmptyNull(teamBean.getSportTypeId())){
+			validateSportType(teamBean.getSportTypeId(), tournamentDao);
+		}
+		
+		if(!StringUtil.isEmptyNull(teamBean.getTeamTypeId())){
+			validateTeamType(teamBean.getTeamTypeId(), tournamentDao);
+		}
+		
+	}
+	
+	public static void validateTeamId(Integer teamId) throws PTWException{
+		if(StringUtil.isEmptyNull(teamId)){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Id");
 		}
 	}
 	
