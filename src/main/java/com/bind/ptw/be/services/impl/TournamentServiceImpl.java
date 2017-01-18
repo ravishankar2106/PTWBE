@@ -11,8 +11,11 @@ import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.dto.CountryBeanList;
+import com.bind.ptw.be.dto.PlayerBean;
+import com.bind.ptw.be.dto.PlayerBeanList;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeBeanList;
+import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamTypeBean;
@@ -226,5 +229,102 @@ public class TournamentServiceImpl implements TournamentService{
 		}
 		return returnBean;
 	}
+	
+	@Override
+	public PlayerBean createPlayer(PlayerBean playerBean) {
+		PlayerBean returnBean;
+		try{
+			TournamentBeanValidator.vaidateRequest(playerBean);
+			TournamentBeanValidator.validateCreatePlayerBean(playerBean, tournamentDao);
+			returnBean = tournamentDao.createPlayer(playerBean); 
+		}catch(PTWException exception){
+			returnBean = new PlayerBean();
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
 
+	@Override
+	public PlayerBeanList getPlayerList(PlayerBean playerBean) {
+		PlayerBeanList returnBeanList = new PlayerBeanList();
+		try{
+			List<PlayerBean> playerList = tournamentDao.getPlayerList(playerBean);
+			returnBeanList.setPlayers(playerList);
+		}catch(PTWException exception){
+			returnBeanList.setResultCode(exception.getCode());
+			returnBeanList.setResultDescription(exception.getDescription());
+		}
+		return returnBeanList;
+	}
+
+	@Override
+	public BaseBean updatePlayer(PlayerBean playerBean) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(playerBean);
+			TournamentBeanValidator.validateUpdatePlayerBean(playerBean, tournamentDao);
+			tournamentDao.updatePlayer(playerBean); 
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public BaseBean deletePlayer(PlayerBean playerBean) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(playerBean);
+			TournamentBeanValidator.validatePlayerId(playerBean.getPlayerId());
+			tournamentDao.deletePlayer(playerBean); 
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public BaseBean addCountriesToSportType(SportTypeCountryList sportTypeCountryList) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(sportTypeCountryList);
+			TournamentBeanValidator.validateCountriesToSportMapping(sportTypeCountryList, tournamentDao);
+			tournamentDao.addCountryToSport(sportTypeCountryList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+	
+	@Override
+	public SportTypeCountryList getCountriesForSportType(SportTypeCountryList sportTypeCountryList) {
+		SportTypeCountryList returnBean = new SportTypeCountryList();
+		try{
+			TournamentBeanValidator.vaidateRequest(sportTypeCountryList);
+			TournamentBeanValidator.validateCountriesForSportMapping(sportTypeCountryList, tournamentDao);
+			returnBean = tournamentDao.getCountriesForSport(sportTypeCountryList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public BaseBean removeCountriesFromSportType(SportTypeCountryList sportTypeCountryList) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(sportTypeCountryList);
+			TournamentBeanValidator.validateCountriesToSportMapping(sportTypeCountryList, tournamentDao);
+			tournamentDao.removeCountryFromSport(sportTypeCountryList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
 }

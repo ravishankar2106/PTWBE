@@ -62,19 +62,21 @@ public class CountryHome {
 				if(!StringUtils.isEmpty(countryBean.getCountryId())){
 					queryToExecute.append("AND cy.countryId =:countryId");
 				}else{
-					queryToExecute.append("AND (");
-					if(!StringUtil.isEmptyNull(countryBean.getCountryName())){
-						firstQuery=true;
-						queryToExecute.append("cy.countryName =:countryName ");
-					}
-					
-					if(!StringUtil.isEmptyNull(countryBean.getCountryShortName())){
-						if(firstQuery){
-							queryToExecute.append("OR ");
+					if(!StringUtil.isEmptyNull(countryBean.getCountryName()) || !StringUtil.isEmptyNull(countryBean.getCountryShortName())){
+						queryToExecute.append("AND (");
+						if(!StringUtil.isEmptyNull(countryBean.getCountryName())){
+							firstQuery=true;
+							queryToExecute.append("cy.countryName =:countryName ");
 						}
-						queryToExecute.append("cy.countryShortName =:countryShortName ");
+						
+						if(!StringUtil.isEmptyNull(countryBean.getCountryShortName())){
+							if(firstQuery){
+								queryToExecute.append("OR ");
+							}
+							queryToExecute.append("cy.countryShortName =:countryShortName ");
+						}
+						queryToExecute.append(")");
 					}
-					queryToExecute.append(")");
 				}
 			}
 			System.out.println(queryToExecute.toString());

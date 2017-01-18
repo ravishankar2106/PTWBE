@@ -7,7 +7,9 @@ import java.util.List;
 import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CountryBean;
+import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
+import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
@@ -166,6 +168,31 @@ public class TournamentBeanValidator {
 		}
 	}
 	
+	public static void validateCountriesToSportMapping(SportTypeCountryList sportTypeCountryList, TournamentDao tournamentDao) throws PTWException{
+		validateSportTypeId(sportTypeCountryList.getSportTypeId());
+		validateSportType(sportTypeCountryList.getSportTypeId(), tournamentDao);
+		List<Integer> countriesList = sportTypeCountryList.getCountryIdList();
+		if(countriesList == null || countriesList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Id");
+		}
+		for (Integer countryId : countriesList) {
+			validateCountry(countryId, tournamentDao);
+		}
+	}
+	
+	public static void validateCountriesForSportMapping(SportTypeCountryList sportTypeCountryList, TournamentDao tournamentDao) throws PTWException{
+		validateSportTypeId(sportTypeCountryList.getSportTypeId());
+		validateSportTypeId(sportTypeCountryList.getSportTypeId());
+		validateSportType(sportTypeCountryList.getSportTypeId(), tournamentDao);
+		
+	}
+		
+	private static void validateSportTypeId(Integer sportTypeId) throws PTWException{
+		if(StringUtil.isEmptyNull(sportTypeId)){
+			throw new PTWException(PTWConstants.ERROR_CODE_SPORT_TYPE_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Sport Type Id");
+		}
+	}
+	
 	public static void validateCreateTeamBean(TeamBean teamBean, TournamentDao tournamentDao) throws PTWException{
 		if(StringUtil.isEmptyNull(teamBean.getTeamName())){
 			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Name");
@@ -225,6 +252,49 @@ public class TournamentBeanValidator {
 	public static void validateTeamId(Integer teamId) throws PTWException{
 		if(StringUtil.isEmptyNull(teamId)){
 			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Team Id");
+		}
+	}
+
+	public static void validateCreatePlayerBean(PlayerBean playerBean, TournamentDao tournamentDao) throws PTWException{
+		if(StringUtil.isEmptyNull(playerBean.getFirstName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_FIRST_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player First Name");
+		}
+		if(StringUtil.isEmptyNull(playerBean.getFirstName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_LAST_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player Last Name");
+		}
+		if(StringUtil.isEmptyNull(playerBean.getCountryId())){
+			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Name");
+		}
+		validateCountry(playerBean.getCountryId(), tournamentDao);
+		
+		if(StringUtil.isEmptyNull(playerBean.getSportTypeId())){
+			throw new PTWException(PTWConstants.ERROR_CODE_SPORT_TYPE_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Sport Type");
+		}
+		validateSportType(playerBean.getSportTypeId(), tournamentDao);
+		
+	}
+
+	public static void validateUpdatePlayerBean(PlayerBean playerBean, TournamentDao tournamentDao) throws PTWException{
+		validatePlayerId(playerBean.getPlayerId());
+		if(StringUtil.isEmptyNull(playerBean.getFirstName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_FIRST_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player First Name");
+		}
+		if(StringUtil.isEmptyNull(playerBean.getLastName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_LAST_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player Last Name");
+		}
+		
+		if(!StringUtil.isEmptyNull(playerBean.getCountryId())){
+			validateCountry(playerBean.getCountryId(), tournamentDao);
+		}
+		
+		if(!StringUtil.isEmptyNull(playerBean.getSportTypeId())){
+			validateSportType(playerBean.getSportTypeId(), tournamentDao);
+		}
+	}
+		
+	public static void validatePlayerId(Integer playerId) throws PTWException{
+		if(StringUtil.isEmptyNull(playerId)){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player Id");
 		}
 	}
 	

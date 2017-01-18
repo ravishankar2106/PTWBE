@@ -3,7 +3,9 @@ package com.bind.ptw.be.dao;
 import java.util.List;
 
 import com.bind.ptw.be.dto.CountryBean;
+import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
+import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
@@ -29,4 +31,12 @@ public interface TournamentDao {
 	void updateTeam(TeamBean teamBean) throws PTWException;
 	void deleteTeam(TeamBean teamBean) throws PTWException;
 
+	PlayerBean createPlayer(PlayerBean playerBean) throws PTWException;
+	List<PlayerBean> getPlayerList(PlayerBean playerBean) throws PTWException;
+	void updatePlayer(PlayerBean playerBean) throws PTWException;
+	void deletePlayer(PlayerBean playerBean) throws PTWException;
+	
+	void addCountryToSport(SportTypeCountryList sportTypeCountryList) throws PTWException;
+	void removeCountryFromSport(SportTypeCountryList sportTypeCountryList) throws PTWException;
+	SportTypeCountryList getCountriesForSport(SportTypeCountryList sportTypeCountryList) throws PTWException;
 }

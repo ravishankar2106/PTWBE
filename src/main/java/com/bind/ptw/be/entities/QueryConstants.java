@@ -28,4 +28,6 @@ public class QueryConstants {
 	public static final String RETRIEVE_CITIES = "from City c where 1=1 ";
 	public static final String RETRIEVE_COUNTRIES = "from Country cy where 1=1 ";
 	public static final String RETRIEVE_TEAMS = "from Team team where 1=1 ";
+	public static final String RETRIEVE_PLAYERS = "from Player play where 1=1 ";
+	public static final String RETRIEVE_COUNTRIES_FOR_SPORT = "select csMapping from CountrySportTypeMapping csMapping where 1=1 ";
 }

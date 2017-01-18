@@ -10,13 +10,20 @@ import org.springframework.stereotype.Repository;
 
 import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dto.CountryBean;
+import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
+import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.entities.Country;
 import com.bind.ptw.be.entities.CountryHome;
+import com.bind.ptw.be.entities.CountrySportTypeMapping;
+import com.bind.ptw.be.entities.CountrySportTypeMappingKey;
+import com.bind.ptw.be.entities.Player;
+import com.bind.ptw.be.entities.PlayerHome;
 import com.bind.ptw.be.entities.SportType;
+import com.bind.ptw.be.entities.SportTypeHome;
 import com.bind.ptw.be.entities.Team;
 import com.bind.ptw.be.entities.TeamHome;
 import com.bind.ptw.be.entities.TeamType;
@@ -346,6 +353,165 @@ public class TournamentDaoImpl implements TournamentDao{
 		}
 		teamHome.remove(foundTeam);
 		
+	}
+	
+	@Override
+	public PlayerBean createPlayer(PlayerBean playerBean) throws PTWException{
+		try{
+			PlayerHome playerHome = new PlayerHome(getSession());
+			
+			Player player = new Player();
+			player.setFirstName(playerBean.getFirstName());
+			player.setLastName(playerBean.getLastName());
+			
+			Country country = new Country();
+			country.setCountryId(playerBean.getCountryId());
+			player.setCountry(country);
+			
+			SportType sportType = new SportType();
+			sportType.setSportTypeId(playerBean.getSportTypeId());
+			player.setSportType(sportType);
+			
+			playerHome.persist(player);
+			
+			playerBean.setPlayerId(player.getPlayerId());
+			
+			return playerBean;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public List<PlayerBean> getPlayerList(PlayerBean playerBean) throws PTWException{
+		PlayerHome playerHome = new PlayerHome(getSession());
+		try{
+			List<PlayerBean> retPlayerBeanList = null;
+			List<Player> dbPlayers = playerHome.findPlayerByFilter(playerBean);
+			if(dbPlayers != null && !dbPlayers.isEmpty()){
+				retPlayerBeanList = new ArrayList<PlayerBean>();
+				for (Player team : dbPlayers) {
+					PlayerBean retPlayerBean = new PlayerBean();
+					retPlayerBean.setPlayerId(team.getPlayerId());
+					retPlayerBean.setFirstName(team.getFirstName());
+					retPlayerBean.setLastName(team.getLastName());
+					retPlayerBean.setCountryId(team.getCountry().getCountryId());
+					retPlayerBean.setCountryName(team.getCountry().getCountryName());
+					retPlayerBean.setSportTypeId(team.getSportType().getSportTypeId());
+					retPlayerBean.setSportTypeName(team.getSportType().getSportTypeName());
+					retPlayerBeanList.add(retPlayerBean);
+				}
+			}
+			return retPlayerBeanList;
+		}catch(Exception exception){
+				throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+
+	@Override
+	public void updatePlayer(PlayerBean playerBean) throws PTWException {
+		try{
+			PlayerHome playerHome = new PlayerHome(getSession());
+			Player foundPlayer = playerHome.findById(playerBean.getPlayerId());
+			if(foundPlayer == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_ID_NOT_FOUND, PTWConstants.ERROR_DESC_PLAYER_ID_NOT_FOUND);
+			}
+			foundPlayer.setFirstName(playerBean.getFirstName());
+			foundPlayer.setLastName(playerBean.getLastName());
+			
+			if(!StringUtil.isEmptyNull(playerBean.getCountryId())){
+				Country country = new Country();
+				country.setCountryId(playerBean.getCountryId());
+				foundPlayer.setCountry(country);
+			}
+			
+			if(!StringUtil.isEmptyNull(playerBean.getSportTypeId())){
+				SportType sportType = new SportType();
+				sportType.setSportTypeId(playerBean.getSportTypeId());
+				foundPlayer.setSportType(sportType);
+			}
+			
+			playerHome.merge(foundPlayer);
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void deletePlayer(PlayerBean playerBean) throws PTWException {
+		try{
+			PlayerHome playerHome = new PlayerHome(getSession());
+			Player foundPlayer = playerHome.findById(playerBean.getPlayerId());
+			if(foundPlayer == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_ID_NOT_FOUND, PTWConstants.ERROR_DESC_PLAYER_ID_NOT_FOUND);
+			}
+			playerHome.remove(foundPlayer);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void addCountryToSport(SportTypeCountryList sportTypeCountryList) throws PTWException {
+		try{
+			SportTypeHome sportTypeHome = new SportTypeHome(getSession());
+			for (Integer countryId : sportTypeCountryList.getCountryIdList()) {
+				CountrySportTypeMapping mapping = new CountrySportTypeMapping();
+				CountrySportTypeMappingKey key = new CountrySportTypeMappingKey();
+				key.setCountryId(countryId);
+				key.setSportTypeId(sportTypeCountryList.getSportTypeId());
+				mapping.setCountrySportTypeMappingKey(key);
+				sportTypeHome.persist(mapping);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public void removeCountryFromSport(SportTypeCountryList sportTypeCountryList) throws PTWException {
+		try{
+			SportTypeHome sportTypeHome = new SportTypeHome(getSession());
+			for (Integer countryId : sportTypeCountryList.getCountryIdList()) {
+				CountrySportTypeMapping mapping = new CountrySportTypeMapping();
+				CountrySportTypeMappingKey key = new CountrySportTypeMappingKey();
+				key.setCountryId(countryId);
+				key.setSportTypeId(sportTypeCountryList.getSportTypeId());
+				mapping.setCountrySportTypeMappingKey(key);
+				sportTypeHome.remove(mapping);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public SportTypeCountryList getCountriesForSport(SportTypeCountryList sportTypeCountryList) throws PTWException{
+		SportTypeCountryList retSportTypeCountryList = null;
+		SportTypeHome sportTypeHome = new SportTypeHome(getSession());
+		List<CountrySportTypeMapping>  dbCountries = sportTypeHome.getCountrySportTypeMappings(sportTypeCountryList.getSportTypeId());
+		if(dbCountries != null && !dbCountries.isEmpty()){
+			retSportTypeCountryList = new SportTypeCountryList();
+			retSportTypeCountryList.setSportTypeId(sportTypeCountryList.getSportTypeId());
+			List<Integer> countries = new ArrayList<Integer>();
+			for (CountrySportTypeMapping countrySportTypeMapping : dbCountries) {
+				countries.add(countrySportTypeMapping.getCountrySportTypeMappingKey().getCountryId());
+			}
+			retSportTypeCountryList.setCountryIdList(countries);
+		}
+		return retSportTypeCountryList;
 	}
 
 	

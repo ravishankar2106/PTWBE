@@ -133,5 +133,12 @@ public class PTWConstants {
 	public final static String ERROR_CODE_TEAM_TYPE_ID_EMPTY = "187";
 	public final static String ERROR_CODE_SPORT_TYPE_ID_EMPTY = "188";
 
+	public final static String ERROR_CODE_PLAYER_ID_NOT_FOUND = "189";
+	public final static String ERROR_DESC_PLAYER_ID_NOT_FOUND = "Player Not Found";
+	
+	public final static String ERROR_CODE_PLAYER_FIRST_NAME_EMPTY = "190";
+	public final static String ERROR_CODE_PLAYER_LAST_NAME_EMPTY = "191";
+	public final static String ERROR_CODE_PLAYER_ID_EMPTY = "192";
+	
 	public final static int MAX_CONFIRMATION_RETRY_COUNT = 5;
 }
