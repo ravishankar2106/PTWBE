@@ -140,5 +140,8 @@ public class PTWConstants {
 	public final static String ERROR_CODE_PLAYER_LAST_NAME_EMPTY = "191";
 	public final static String ERROR_CODE_PLAYER_ID_EMPTY = "192";
 	
+	public final static String ERROR_CODE_TEAM_ID_INVALID = "193";
+	public final static String ERROR_DESC_TEAM_ID_INVALID = "Team is Invalid";
+	
 	public final static int MAX_CONFIRMATION_RETRY_COUNT = 5;
 }

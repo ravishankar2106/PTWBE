@@ -14,6 +14,7 @@ import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
+import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.entities.Country;
@@ -26,6 +27,9 @@ import com.bind.ptw.be.entities.SportType;
 import com.bind.ptw.be.entities.SportTypeHome;
 import com.bind.ptw.be.entities.Team;
 import com.bind.ptw.be.entities.TeamHome;
+import com.bind.ptw.be.entities.TeamPlayerHome;
+import com.bind.ptw.be.entities.TeamPlayerMapping;
+import com.bind.ptw.be.entities.TeamPlayerMappingKey;
 import com.bind.ptw.be.entities.TeamType;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
@@ -130,8 +134,8 @@ public class TournamentDaoImpl implements TournamentDao{
 	@Override
 	public List<SportTypeBean> getSportTypes(SportTypeBean requestSportTypeBean){
 		List<SportTypeBean> sportTypeBeanList = null;
-		TournamentHome tournamentHome = new TournamentHome(getSession());
-		List<SportType> sportTypeList = tournamentHome.findSportType(requestSportTypeBean);
+		SportTypeHome sportTypeHome = new SportTypeHome(getSession());
+		List<SportType> sportTypeList = sportTypeHome.findSportType(requestSportTypeBean);
 		if(sportTypeList != null && !sportTypeList.isEmpty()){
 			sportTypeBeanList = new ArrayList<SportTypeBean>();
 			for (SportType sportType : sportTypeList) {
@@ -147,8 +151,8 @@ public class TournamentDaoImpl implements TournamentDao{
 	
 	public List<TeamTypeBean> getTeamTypes(TeamTypeBean requestTeamTypeBean){
 		List<TeamTypeBean> teamTypeBeanList = null;
-		TournamentHome tournamentHome = new TournamentHome(getSession());
-		List<TeamType> teamTypeList = tournamentHome.findTeamType(requestTeamTypeBean);
+		TeamPlayerHome teamPlayerHome = new TeamPlayerHome(getSession());
+		List<TeamType> teamTypeList = teamPlayerHome.findTeamType(requestTeamTypeBean);
 		if(teamTypeList != null && !teamTypeList.isEmpty()){
 			teamTypeBeanList = new ArrayList<TeamTypeBean>();
 			for (TeamType teamType : teamTypeList) {
@@ -514,5 +518,61 @@ public class TournamentDaoImpl implements TournamentDao{
 		return retSportTypeCountryList;
 	}
 
+	@Override
+	public void addPlayerToTeam(TeamPlayerList teamPlayerList) throws PTWException {
+		try{
+			TeamPlayerHome teamPlayerHome = new TeamPlayerHome(getSession());
+			for (Integer playerId : teamPlayerList.getPlayerIdList()) {
+				TeamPlayerMapping mapping = new TeamPlayerMapping();
+				TeamPlayerMappingKey key = new TeamPlayerMappingKey();
+				key.setPlayerId(playerId);
+				key.setTeamId(teamPlayerList.getTeamId());
+				mapping.setTeamPlayerMappingKey(key);
+				teamPlayerHome.persist(mapping);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public void removePlayerFromTeam(TeamPlayerList teamPlayerList) throws PTWException {
+		try{
+			TeamPlayerHome teamPlayerHome = new TeamPlayerHome(getSession());
+			for (Integer playerId : teamPlayerList.getPlayerIdList()) {
+				TeamPlayerMapping mapping = new TeamPlayerMapping();
+				TeamPlayerMappingKey key = new TeamPlayerMappingKey();
+				key.setPlayerId(playerId);
+				key.setTeamId(teamPlayerList.getTeamId());
+				mapping.setTeamPlayerMappingKey(key);
+				teamPlayerHome.remove(mapping);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public TeamPlayerList getPlayersForTeam(TeamPlayerList teamPlayerList) throws PTWException{
+		TeamPlayerList retTeamPlayerList = null;
+		TeamPlayerHome teamPlayerHome = new TeamPlayerHome(getSession());
+		List<TeamPlayerMapping>  dbPlayers = teamPlayerHome.getTeamPlayers(teamPlayerList.getTeamId());
+		if(dbPlayers != null && !dbPlayers.isEmpty()){
+			retTeamPlayerList = new TeamPlayerList();
+			retTeamPlayerList.setTeamId(teamPlayerList.getTeamId());
+			List<Integer> players = new ArrayList<Integer>();
+			for (TeamPlayerMapping teamPlayerMapping : dbPlayers) {
+				players.add(teamPlayerMapping.getTeamPlayerMappingKey().getPlayerId());
+			}
+			retTeamPlayerList.setPlayerIdList(players);
+		}
+		return retTeamPlayerList;
+	}
 	
 }

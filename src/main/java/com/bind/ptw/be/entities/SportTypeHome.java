@@ -5,6 +5,9 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import com.bind.ptw.be.dto.SportTypeBean;
+import com.bind.ptw.be.util.StringUtil;
+
 
 public class SportTypeHome {
 
@@ -12,6 +15,37 @@ public class SportTypeHome {
 	
 	public SportTypeHome(Session session){
 		this.session = session;
+	}
+	
+	public List<SportType> findSportType( SportTypeBean sportTypeBean ) {
+		
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecuteBuilder = new StringBuilder();
+			queryToExecuteBuilder.append(QueryConstants.RETRIEVE_SPORT_TYPE);
+			if(!StringUtil.isEmptyNull(sportTypeBean.getSportTypeId())){
+				queryToExecuteBuilder.append("AND st.sportTypeId = :sportTypeId ");
+			}
+			if(!StringUtil.isEmptyNull(sportTypeBean.getSportTypeName())){
+				queryToExecuteBuilder.append("AND st.sportTypeId = :sportTypeName ");
+			}
+            
+			query = session.createQuery(queryToExecuteBuilder.toString());
+			
+			if(!StringUtil.isEmptyNull(sportTypeBean.getSportTypeId())){
+				query.setParameter("sportTypeId", sportTypeBean.getSportTypeId());
+			}
+			if(!StringUtil.isEmptyNull(sportTypeBean.getSportTypeName())){
+				query.setParameter("sportTypeName", sportTypeBean.getSportTypeName());
+			}
+			
+		
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
 	}
 	
 	public void persist(CountrySportTypeMapping transientInstance) {

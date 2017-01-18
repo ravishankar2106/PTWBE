@@ -17,6 +17,7 @@ import com.bind.ptw.be.dto.SportTypeBeanList;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
+import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
@@ -138,5 +139,20 @@ public class TournamentRest {
 	@PostMapping("/removeCountryFromSport")
 	public BaseBean removeCountriesFromSportType(@RequestBody SportTypeCountryList sportTypeCountryList){
 		return tournamentService.removeCountriesFromSportType(sportTypeCountryList);
+	}
+	
+	@PostMapping("/addPlayerToTeam")
+	public BaseBean addPlayersToTeam(@RequestBody TeamPlayerList teamPlayerList){
+		return tournamentService.addPlayersToTeam(teamPlayerList);
+	}
+	
+	@PostMapping("/getPlayerForTeam")
+	public TeamPlayerList getPlayersForTeam(@RequestBody TeamPlayerList teamPlayerList){
+		return tournamentService.getPlayersForTeam(teamPlayerList);
+	}
+	
+	@PostMapping("/removePlayerFromTeam")
+	public BaseBean removePlayersFromTeam(@RequestBody TeamPlayerList teamPlayerList){
+		return tournamentService.removePlayersFromTeam(teamPlayerList);
 	}
 }

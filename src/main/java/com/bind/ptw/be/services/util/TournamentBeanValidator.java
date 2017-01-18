@@ -11,6 +11,7 @@ import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
+import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
@@ -98,6 +99,15 @@ public class TournamentBeanValidator {
 		}
 	}
 	
+	public static void validateTeam(Integer teamId, TournamentDao tournamentDao) throws PTWException{
+		TeamBean requestTeamBean = new TeamBean();
+		requestTeamBean.setTeamId(teamId);
+		List<TeamBean> teamBeanList = tournamentDao.getTeamList(requestTeamBean);
+		if(teamBeanList == null || teamBeanList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_INVALID, PTWConstants.ERROR_DESC_TEAM_ID_INVALID);
+		}
+	}
+	
 	public static void validateTeamType(Integer teamTypeId, TournamentDao tournamentDao) throws PTWException{
 		TeamTypeBean requestTeamTypeBean = new TeamTypeBean();
 		requestTeamTypeBean.setTeamTypeId(teamTypeId);
@@ -180,13 +190,30 @@ public class TournamentBeanValidator {
 		}
 	}
 	
+	public static void validatePlayersToTeam(TeamPlayerList teamPlayerList, TournamentDao tournamentDao) throws PTWException{
+		validateTeamId(teamPlayerList.getTeamId());
+		validateTeam(teamPlayerList.getTeamId(), tournamentDao);
+		List<Integer> playersList = teamPlayerList.getPlayerIdList();
+		if(playersList == null || playersList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player Id");
+		}
+		for (Integer playerId : playersList) {
+			validatePlayer(playerId, tournamentDao);
+		}
+	}
+	
 	public static void validateCountriesForSportMapping(SportTypeCountryList sportTypeCountryList, TournamentDao tournamentDao) throws PTWException{
-		validateSportTypeId(sportTypeCountryList.getSportTypeId());
 		validateSportTypeId(sportTypeCountryList.getSportTypeId());
 		validateSportType(sportTypeCountryList.getSportTypeId(), tournamentDao);
 		
 	}
+	
+	public static void validatePlayersForTeam(TeamPlayerList teamPlayerList, TournamentDao tournamentDao) throws PTWException{
+		validateTeamId(teamPlayerList.getTeamId());
+		validateTeam(teamPlayerList.getTeamId(), tournamentDao);
 		
+	}
+	
 	private static void validateSportTypeId(Integer sportTypeId) throws PTWException{
 		if(StringUtil.isEmptyNull(sportTypeId)){
 			throw new PTWException(PTWConstants.ERROR_CODE_SPORT_TYPE_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Sport Type Id");
@@ -222,6 +249,16 @@ public class TournamentBeanValidator {
 		List<CountryBean> foundCountryList = tournamentDao.getCountryList(countryBean);
 		if(foundCountryList == null || foundCountryList.isEmpty()){
 			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_NOT_FOUND, PTWConstants.ERROR_DESC_COUNTRY_ID_NOT_FOUND);
+		}
+		
+	}
+	
+	private static void validatePlayer(Integer playerId, TournamentDao tournamentDao)throws PTWException{
+		PlayerBean playerBean = new PlayerBean();
+		playerBean.setPlayerId(playerId);
+		List<PlayerBean> foundPlayerList = tournamentDao.getPlayerList(playerBean);
+		if(foundPlayerList == null || foundPlayerList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_ID_NOT_FOUND, PTWConstants.ERROR_DESC_PLAYER_ID_NOT_FOUND);
 		}
 		
 	}

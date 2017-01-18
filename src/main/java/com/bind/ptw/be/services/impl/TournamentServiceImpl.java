@@ -18,6 +18,7 @@ import com.bind.ptw.be.dto.SportTypeBeanList;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
+import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
@@ -327,4 +328,47 @@ public class TournamentServiceImpl implements TournamentService{
 		}
 		return returnBean;
 	}
+	
+	@Override
+	public BaseBean addPlayersToTeam(TeamPlayerList teamPlayerList) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(teamPlayerList);
+			TournamentBeanValidator.validatePlayersToTeam(teamPlayerList, tournamentDao);
+			tournamentDao.addPlayerToTeam(teamPlayerList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+	
+	@Override
+	public TeamPlayerList getPlayersForTeam(TeamPlayerList teamPlayerList) {
+		TeamPlayerList returnBean = new TeamPlayerList();
+		try{
+			TournamentBeanValidator.vaidateRequest(teamPlayerList);
+			TournamentBeanValidator.validatePlayersForTeam(teamPlayerList, tournamentDao);
+			returnBean = tournamentDao.getPlayersForTeam(teamPlayerList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public BaseBean removePlayersFromTeam(TeamPlayerList teamPlayerList) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(teamPlayerList);
+			TournamentBeanValidator.validatePlayersToTeam(teamPlayerList, tournamentDao);
+			tournamentDao.removePlayerFromTeam(teamPlayerList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+	
 }

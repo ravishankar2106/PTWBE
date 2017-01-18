@@ -9,6 +9,7 @@ import com.bind.ptw.be.dto.SportTypeBeanList;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
+import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
@@ -40,4 +41,9 @@ public interface TournamentService {
 	BaseBean addCountriesToSportType(SportTypeCountryList sportTypeCountryList);
 	SportTypeCountryList getCountriesForSportType(SportTypeCountryList sportTypeCountryList);
 	BaseBean removeCountriesFromSportType(SportTypeCountryList sportTypeCountryList);
+	
+	BaseBean addPlayersToTeam(TeamPlayerList teamPlayerList);
+	TeamPlayerList getPlayersForTeam(TeamPlayerList teamPlayerList);
+	BaseBean removePlayersFromTeam(TeamPlayerList teamPlayerList);
+	
 }
