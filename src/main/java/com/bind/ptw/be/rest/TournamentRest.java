@@ -21,6 +21,7 @@ import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
+import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.services.TournamentService;
 
 @EnableAutoConfiguration
@@ -155,4 +156,20 @@ public class TournamentRest {
 	public BaseBean removePlayersFromTeam(@RequestBody TeamPlayerList teamPlayerList){
 		return tournamentService.removePlayersFromTeam(teamPlayerList);
 	}
+	
+	@PostMapping("/addTeamsToTournament")
+	public BaseBean addTeamsToTournament(@RequestBody TournamentTeamBeanList tournamentTeamBeanList){
+		return tournamentService.addTeamsToTournament(tournamentTeamBeanList);
+	}
+	
+	@PostMapping("/getTeamForTournament")
+	public TournamentTeamBeanList getTeamsForTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.getTeamsForTournament(tournamentBean);
+	}
+	
+	@PostMapping("/removeTeamFromTournament")
+	public BaseBean removeTeamFromTournament(@RequestBody TournamentTeamBeanList tournamentTeamBeanList){
+		return tournamentService.removeTeamsFromTournament(tournamentTeamBeanList);
+	}
+	
 }

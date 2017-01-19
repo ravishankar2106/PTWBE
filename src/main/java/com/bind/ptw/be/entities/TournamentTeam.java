@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TOURNAMENT_TEAMS")
+@Table(name = "TOURNAMENT_TEAM")
 public class TournamentTeam {
 	private Integer tournamentTeamId;
 	private Tournament tournament;

@@ -23,6 +23,7 @@ import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
+import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.util.PTWException;
@@ -364,6 +365,49 @@ public class TournamentServiceImpl implements TournamentService{
 			TournamentBeanValidator.vaidateRequest(teamPlayerList);
 			TournamentBeanValidator.validatePlayersToTeam(teamPlayerList, tournamentDao);
 			tournamentDao.removePlayerFromTeam(teamPlayerList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+	
+	@Override
+	public BaseBean addTeamsToTournament(TournamentTeamBeanList tournamentTeamBeanList) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(tournamentTeamBeanList);
+			TournamentBeanValidator.validateTeamsToTournament(tournamentTeamBeanList, tournamentDao);
+			tournamentDao.addTeamToTournament(tournamentTeamBeanList);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+	
+	@Override
+	public TournamentTeamBeanList getTeamsForTournament(TournamentBean tournamentBean) {
+		TournamentTeamBeanList returnBean = new TournamentTeamBeanList();
+		try{
+			TournamentBeanValidator.vaidateRequest(tournamentBean);
+			TournamentBeanValidator.validateTournamentId(tournamentBean.getTournamentId());
+			TournamentBeanValidator.validateTournament(tournamentBean.getTournamentId(), tournamentDao);
+			returnBean = tournamentDao.getTeamsForTournament(tournamentBean);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return returnBean;
+	}
+
+	@Override
+	public BaseBean removeTeamsFromTournament(TournamentTeamBeanList tournamentTeamBeanList) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(tournamentTeamBeanList);
+			TournamentBeanValidator.validateTournamentTeamId(tournamentTeamBeanList);
+			tournamentDao.removeTeamFromTournament(tournamentTeamBeanList);
 		}catch(PTWException exception){
 			returnBean.setResultCode(exception.getCode());
 			returnBean.setResultDescription(exception.getDescription());

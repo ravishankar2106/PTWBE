@@ -10,6 +10,7 @@ public class TournamentTeamBean implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Integer tournamentTeamId;
+	private Integer teamId;
 	private String teamShortName;
 	private String teamName;
 	
@@ -18,6 +19,12 @@ public class TournamentTeamBean implements Serializable{
 	}
 	public void setTournamentTeamId(Integer tournamentTeamId) {
 		this.tournamentTeamId = tournamentTeamId;
+	}
+	public Integer getTeamId() {
+		return teamId;
+	}
+	public void setTeamId(Integer teamId) {
+		this.teamId = teamId;
 	}
 	public String getTeamShortName() {
 		return teamShortName;

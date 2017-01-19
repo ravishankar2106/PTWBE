@@ -17,6 +17,8 @@ import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.entities.Country;
 import com.bind.ptw.be.entities.CountryHome;
 import com.bind.ptw.be.entities.CountrySportTypeMapping;
@@ -33,6 +35,8 @@ import com.bind.ptw.be.entities.TeamPlayerMappingKey;
 import com.bind.ptw.be.entities.TeamType;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
+import com.bind.ptw.be.entities.TournamentTeam;
+import com.bind.ptw.be.entities.TournamentTeamHome;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -573,6 +577,79 @@ public class TournamentDaoImpl implements TournamentDao{
 			retTeamPlayerList.setPlayerIdList(players);
 		}
 		return retTeamPlayerList;
+	}
+	
+	@Override
+	public void addTeamToTournament(TournamentTeamBeanList tournamentTeamBeanList) throws PTWException {
+		try{
+			TournamentTeamHome tournamentTeamHome = new TournamentTeamHome(getSession());
+			Integer tournamentId = tournamentTeamBeanList.getTournamentId();
+			List<TournamentTeamBean> teamList = tournamentTeamBeanList.getTournamentTeamBeanList();
+			for (TournamentTeamBean teamBean : teamList) {
+				TournamentTeam tournamentTeam = new TournamentTeam();
+				Tournament tournament = new Tournament();
+				tournament.setTournamentId(tournamentId);
+				tournamentTeam.setTournament(tournament);
+				
+				Team team = new Team();
+				team.setTeamId(teamBean.getTeamId());
+				tournamentTeam.setTeam(team);
+				
+				tournamentTeamHome.persist(tournamentTeam);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	
+	
+	@Override
+	public TournamentTeamBeanList getTeamsForTournament(TournamentBean tournamentBean) throws PTWException{
+		TournamentTeamBeanList retTournamentTeamList = null;
+		TournamentTeamHome tournamentTeamHome = new TournamentTeamHome(getSession());
+		List<TournamentTeam>  dbTeams = tournamentTeamHome.findTeamsByTournament(tournamentBean);
+		if(dbTeams != null && !dbTeams.isEmpty()){
+			retTournamentTeamList = new TournamentTeamBeanList();
+			retTournamentTeamList.setTournamentId(tournamentBean.getTournamentId());
+			List<TournamentTeamBean> teamBeanList = new ArrayList<TournamentTeamBean>();
+			for (TournamentTeam tournamentTeam : dbTeams) {
+				TournamentTeamBean tournamentTeamBean = new TournamentTeamBean();
+				tournamentTeamBean.setTournamentTeamId(tournamentTeam.getTournamentTeamId());
+				
+				Team team = tournamentTeam.getTeam();
+				tournamentTeamBean.setTeamId(team.getTeamId());
+				tournamentTeamBean.setTeamName(team.getTeamName());
+				tournamentTeamBean.setTeamShortName(team.getTeamShortName());
+				teamBeanList.add(tournamentTeamBean);
+			}
+			retTournamentTeamList.setTournamentTeamBeanList(teamBeanList);
+		}
+		return retTournamentTeamList;
+	}
+	
+	@Override
+	public void removeTeamFromTournament(TournamentTeamBeanList tournamentTeamBeanList) throws PTWException {
+		try{
+			TournamentTeamHome tournamentTeamHome = new TournamentTeamHome(getSession());
+			for (TournamentTeamBean teamBean : tournamentTeamBeanList.getTournamentTeamBeanList()) {
+				TournamentTeam tournamentTeam = tournamentTeamHome.findById(teamBean.getTournamentTeamId());
+				if(tournamentTeam == null){
+					throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_NOT_FOUND, PTWConstants.ERROR_DESC_TEAM_ID_NOT_FOUND);
+				}
+				tournamentTeamHome.remove(tournamentTeam);
+			}
+			
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
 	}
 	
 }
