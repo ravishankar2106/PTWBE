@@ -14,8 +14,10 @@ import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
+import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
+import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
@@ -33,6 +35,8 @@ import com.bind.ptw.be.entities.TeamPlayerHome;
 import com.bind.ptw.be.entities.TeamPlayerMapping;
 import com.bind.ptw.be.entities.TeamPlayerMappingKey;
 import com.bind.ptw.be.entities.TeamType;
+import com.bind.ptw.be.entities.TournTeamPlayer;
+import com.bind.ptw.be.entities.TournTeamPlayerHome;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
 import com.bind.ptw.be.entities.TournamentTeam;
@@ -650,6 +654,72 @@ public class TournamentDaoImpl implements TournamentDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		
+	}
+	
+	@Override
+	public void addPlayerToTournamentTeam(TournTeamPlayerBeanList tournTeamPlayerBeanList) throws PTWException {
+		try{
+			TournTeamPlayerHome tourTeamPlayerHome = new TournTeamPlayerHome(getSession());
+			for (TeamPlayerBean playerBean : tournTeamPlayerBeanList.getTeamPlayerBeanList()) {
+				TournTeamPlayer tourTeamPlayer = new TournTeamPlayer();
+				Player player = new Player();
+				player.setPlayerId(playerBean.getPlayerBean().getPlayerId());
+				tourTeamPlayer.setPlayer(player);
+				
+				TournamentTeam tournamentTeam = new TournamentTeam();
+				tournamentTeam.setTournamentTeamId(tournTeamPlayerBeanList.getTournamentTeamId());
+				tourTeamPlayer.setTournamentTeam(tournamentTeam);
+				tourTeamPlayerHome.persist(tourTeamPlayer);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public void removePlayerFromTournamentTeam(TournTeamPlayerBeanList tournTeamPlayerBeanList) throws PTWException {
+		try{
+			TournTeamPlayerHome tourTeamPlayerHome = new TournTeamPlayerHome(getSession());
+			for (TeamPlayerBean playerBean : tournTeamPlayerBeanList.getTeamPlayerBeanList()) {
+				TournTeamPlayer tourTeamPlayer = new TournTeamPlayer();
+				tourTeamPlayer.setTournTeamPlayerId(playerBean.getTourTeamPlayerId());
+				tourTeamPlayerHome.remove(tourTeamPlayer);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public TournTeamPlayerBeanList getPlayersForTournamentTeam(TournamentTeamBean tournamentTeamBean) throws PTWException{
+		TournTeamPlayerBeanList retTournTeamPlayerList = null;
+		TournTeamPlayerHome tournTeamPlayerHome = new TournTeamPlayerHome(getSession());
+		List<TournTeamPlayer>  dbPlayers = tournTeamPlayerHome.getTournTeamPlayers(tournamentTeamBean.getTournamentTeamId());
+		if(dbPlayers != null && !dbPlayers.isEmpty()){
+			retTournTeamPlayerList = new TournTeamPlayerBeanList();
+			retTournTeamPlayerList.setTournamentTeamId(tournamentTeamBean.getTournamentTeamId());
+			List<TeamPlayerBean> players = new ArrayList<TeamPlayerBean>();
+			for (TournTeamPlayer tourTeamPlayers : dbPlayers) {
+				TeamPlayerBean teamPlayerBean = new TeamPlayerBean();
+				teamPlayerBean.setTourTeamPlayerId(tourTeamPlayers.getTournTeamPlayerId());
+				
+				PlayerBean playerBean = new PlayerBean();
+				Player player = tourTeamPlayers.getPlayer();
+				playerBean.setPlayerId(player.getPlayerId());
+				playerBean.setFirstName(player.getFirstName());
+				playerBean.setLastName(player.getLastName());
+				teamPlayerBean.setPlayerBean(playerBean);
+				players.add(teamPlayerBean);
+			}
+			retTournTeamPlayerList.setTeamPlayerBeanList(players);
+		}
+		return retTournTeamPlayerList;
 	}
 	
 }

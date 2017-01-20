@@ -11,8 +11,10 @@ import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
+import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
+import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
@@ -46,7 +48,7 @@ public class TournamentBeanValidator {
 			throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Tournament Id");
 		}
 	}
-
+	
 	public static void validateCreateTournament(TournamentBean inputTournamentBean, TournamentDao tournamentDao) throws PTWException {
 		if(StringUtil.isEmptyNull(inputTournamentBean.getTournamentName())){
 			throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Tournament Name");
@@ -360,6 +362,21 @@ public class TournamentBeanValidator {
 			validateTeam(teamId, tournamentDao);
 		}
 		
+	}
+	
+	public static void validatePlayerToTournTeam(TournTeamPlayerBeanList tournTeamPlayerBeanList,
+			TournamentDao tournamentDao) throws PTWException{
+		validateTeamId(tournTeamPlayerBeanList.getTournamentTeamId());
+		List<TeamPlayerBean> teamPlayerBeanList = tournTeamPlayerBeanList.getTeamPlayerBeanList();
+		if(teamPlayerBeanList == null || teamPlayerBeanList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player Id");
+		}
+		for (TeamPlayerBean teamPlayerBean : teamPlayerBeanList) {
+			PlayerBean playerBean = teamPlayerBean.getPlayerBean();
+			if(playerBean == null || StringUtil.isEmptyNull(playerBean.getPlayerId())){
+				throw new PTWException(PTWConstants.ERROR_CODE_PLAYER_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Player Id");
+			}
+		}
 	}
 	
 	public static void validateTournamentTeamId(TournamentTeamBeanList tournamentTeamBeanList) throws PTWException{

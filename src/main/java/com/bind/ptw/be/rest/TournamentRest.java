@@ -19,8 +19,10 @@ import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
+import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
+import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.services.TournamentService;
 
@@ -170,6 +172,21 @@ public class TournamentRest {
 	@PostMapping("/removeTeamFromTournament")
 	public BaseBean removeTeamFromTournament(@RequestBody TournamentTeamBeanList tournamentTeamBeanList){
 		return tournamentService.removeTeamsFromTournament(tournamentTeamBeanList);
+	}
+	
+	@PostMapping("/addPlayersToTournTeam")
+	public BaseBean addPlayersToTournTeam(@RequestBody TournTeamPlayerBeanList tournTeamPlayerBeanList){
+		return tournamentService.addPlayersToTournamentTeam(tournTeamPlayerBeanList);
+	}
+	
+	@PostMapping("/getPlayerForTournTeam")
+	public TournTeamPlayerBeanList getPlayersForTournTeam(@RequestBody TournamentTeamBean tournamentTeamBean){
+		return tournamentService.getPlayersForTournamentTeam(tournamentTeamBean);
+	}
+	
+	@PostMapping("/removePlayerFromTournTeam")
+	public BaseBean removePlayerFromTournTeam(@RequestBody TournTeamPlayerBeanList tournTeamPlayerBeanList){
+		return tournamentService.removePlayersFromTournament(tournTeamPlayerBeanList);
 	}
 	
 }

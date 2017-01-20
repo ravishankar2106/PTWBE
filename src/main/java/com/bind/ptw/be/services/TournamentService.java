@@ -11,8 +11,10 @@ import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
+import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
+import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
 
 public interface TournamentService {
@@ -50,5 +52,9 @@ public interface TournamentService {
 	BaseBean addTeamsToTournament(TournamentTeamBeanList tournamentTeamBeanList);
 	TournamentTeamBeanList getTeamsForTournament(TournamentBean tournamentBean);
 	BaseBean removeTeamsFromTournament(TournamentTeamBeanList tournamentTeamBeanList);
+	
+	BaseBean addPlayersToTournamentTeam(TournTeamPlayerBeanList tournTeamPlayerBeanList);
+	TournTeamPlayerBeanList getPlayersForTournamentTeam(TournamentTeamBean tournamentTeamBean);
+	BaseBean removePlayersFromTournament(TournTeamPlayerBeanList tournTeamPlayerBeanList);
 	
 }

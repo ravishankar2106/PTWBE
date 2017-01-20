@@ -2,7 +2,7 @@ package com.bind.ptw.be.dto;
 
 import java.io.Serializable;
 
-public class TournamentTeamBean implements Serializable{
+public class TournamentTeamBean extends BaseBean implements Serializable{
 	
 	/**
 	 * 
