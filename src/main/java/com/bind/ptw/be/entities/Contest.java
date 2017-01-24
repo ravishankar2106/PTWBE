@@ -22,6 +22,7 @@ public class Contest {
 	private Integer contestId;
 	private String contestName;
 	private Match match;
+	private Tournament tournament;
 	private ContestType contestType;
 	private Date publishStartDateTime;
 	private Date publishEndDateTime;
@@ -48,6 +49,16 @@ public class Contest {
 	
 	public void setContestName(String contestName) {
 		this.contestName = contestName;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TOURNAMENT_ID", nullable = true)
+	public Tournament getTournament() {
+		return tournament;
+	}
+	
+	public void setTournament(Tournament tournament) {
+		this.tournament = tournament;
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)

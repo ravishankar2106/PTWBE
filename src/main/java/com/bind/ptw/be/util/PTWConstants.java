@@ -143,5 +143,31 @@ public class PTWConstants {
 	public final static String ERROR_CODE_TEAM_ID_INVALID = "193";
 	public final static String ERROR_DESC_TEAM_ID_INVALID = "Team is Invalid";
 	
+	public final static String ERROR_CODE_MATCH_DATE_EMPTY = "201";
+	public final static String ERROR_CODE_MATCH_DATE_INVALID = "202";
+	
+	public final static String ERROR_CODE_MATCH_TEAMS_INVALID = "203";
+	public final static String ERROR_DESC_MATCH_TEAMS_INVALID = "Match Teams selected is Invalid";
+	
+	public final static String ERROR_CODE_MATCH_ID_EMPTY = "204";
+	
+	public final static String ERROR_CODE_MATCH_NOT_FOUND = "205";
+	public final static String ERROR_DESC_MATCH_NOT_FOUND = "Match Not Found";
+	
+	public final static String ERROR_CODE_MATCH_STATUS_ID_EMPTY = "206";
+	
 	public final static int MAX_CONFIRMATION_RETRY_COUNT = 5;
+	
+	public final static String ERROR_CODE_CONTEST_NAME_EMPTY = "210";
+	public final static String ERROR_CODE_CONTEST_START_DATE_EMPTY = "211";
+	public final static String ERROR_CODE_CONTEST_END_DATE_EMPTY = "212";
+	public final static String ERROR_CODE_CONTEST_CUTOFF_DATE_EMPTY = "213";
+	public final static String ERROR_CODE_CONTEST_DATE_INVALID = "214";
+	public final static String ERROR_CODE_CONTEST_TYPE_INVALID = "215";
+	
+	public final static String ERROR_CODE_CONTEST_MATCH_INVALID = "216";
+	public final static String ERROR_DESC_CONTEST_MATCH_INVALID = "Invalid Match for Tournament";
+	public final static String ERROR_CODE_CONTEST_ID_EMPTY = "217";
+	public final static String ERROR_CODE_CONTEST_STATUS_ID_EMPTY = "218";
+	
 }

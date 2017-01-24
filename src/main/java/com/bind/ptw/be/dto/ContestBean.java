@@ -13,10 +13,14 @@ public class ContestBean extends BaseBean implements Serializable{
 	
 	private Integer contestId;
 	private String contestName;
+	private Integer tournamentId;
 	private Integer matchId;
-	private String contestType;
+	private Integer contestTypeId;
+	private String contestTypeName;
 	private Date publishStartDate;
 	private String publishStartDateStr;
+	private Date publishEndDate;
+	private String publishEndDateStr;
 	private Date cutoffDate;
 	private String cutoffDateStr;
 	private List<ContestQuestionBean> questionList;
@@ -35,17 +39,30 @@ public class ContestBean extends BaseBean implements Serializable{
 	public void setContestName(String contestName) {
 		this.contestName = contestName;
 	}
+	public Integer getTournamentId() {
+		return tournamentId;
+	}
+	public void setTournamentId(Integer tournamentId) {
+		this.tournamentId = tournamentId;
+	}
 	public Integer getMatchId() {
 		return matchId;
 	}
 	public void setMatchId(Integer matchId) {
 		this.matchId = matchId;
 	}
-	public String getContestType() {
-		return contestType;
+	
+	public Integer getContestTypeId() {
+		return contestTypeId;
 	}
-	public void setContestType(String contestType) {
-		this.contestType = contestType;
+	public void setContestTypeId(Integer contestTypeId) {
+		this.contestTypeId = contestTypeId;
+	}
+	public String getContestTypeName() {
+		return contestTypeName;
+	}
+	public void setContestTypeName(String contestTypeName) {
+		this.contestTypeName = contestTypeName;
 	}
 	public Date getPublishStartDate() {
 		return publishStartDate;
@@ -58,6 +75,18 @@ public class ContestBean extends BaseBean implements Serializable{
 	}
 	public void setPublishStartDateStr(String publishStartDateStr) {
 		this.publishStartDateStr = publishStartDateStr;
+	}
+	public Date getPublishEndDate() {
+		return publishEndDate;
+	}
+	public void setPublishEndDate(Date publishEndDate) {
+		this.publishEndDate = publishEndDate;
+	}
+	public String getPublishEndDateStr() {
+		return publishEndDateStr;
+	}
+	public void setPublishEndDateStr(String publishEndDateStr) {
+		this.publishEndDateStr = publishEndDateStr;
 	}
 	public Date getCutoffDate() {
 		return cutoffDate;

@@ -18,11 +18,12 @@ import javax.persistence.Table;
 public class Match {
 	private Integer matchId;
 	private Tournament tournament;
-	private String matchNo;
+	private Integer matchNo;
 	private Date matchDateTime;
 	private String venue;
 	private TournamentTeam teamA;
 	private TournamentTeam teamB;
+	private MatchStatus matchStatus;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -45,10 +46,10 @@ public class Match {
 	}
 	
 	@Column(name = "MATCH_NO")
-	public String getMatchNo() {
+	public Integer getMatchNo() {
 		return matchNo;
 	}
-	public void setMatchNo(String matchNo) {
+	public void setMatchNo(Integer matchNo) {
 		this.matchNo = matchNo;
 	}
 	
@@ -86,6 +87,16 @@ public class Match {
 	
 	public void setTeamB(TournamentTeam teamB) {
 		this.teamB = teamB;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MATCH_STATUS_ID", nullable = false)
+	public MatchStatus getMatchStatus() {
+		return matchStatus;
+	}
+	
+	public void setMatchStatus(MatchStatus matchStatus) {
+		this.matchStatus = matchStatus;
 	}
 	
 }
