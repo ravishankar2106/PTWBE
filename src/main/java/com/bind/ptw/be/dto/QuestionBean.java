@@ -3,7 +3,7 @@ package com.bind.ptw.be.dto;
 import java.io.Serializable;
 import java.util.List;
 
-public class ContestQuestionBean implements Serializable, Comparable<Object>{
+public class QuestionBean extends BaseBean implements Serializable, Comparable<Object>{
 	
 	/**
 	 * 
@@ -11,14 +11,13 @@ public class ContestQuestionBean implements Serializable, Comparable<Object>{
 	private static final long serialVersionUID = 1L;
 	
 	private Integer questionId;
-	private Integer tournamentId;
 	private Integer contestId;
 	private Integer questionSlNo;
+	private Integer answerTypeId;
 	private String answerType;
 	private String question;
 	private Integer answerCount;
 	private List<AnswerOptionBean> answerOptionList;
-	private List<AnswerBean> correctAnswerList;
 	//private String pointsRule;
 	
 	public Integer getQuestionId() {
@@ -27,17 +26,17 @@ public class ContestQuestionBean implements Serializable, Comparable<Object>{
 	public void setQuestionId(Integer questionId) {
 		this.questionId = questionId;
 	}
-	public Integer getTournamentId() {
-		return tournamentId;
-	}
-	public void setTournamentId(Integer tournamentId) {
-		this.tournamentId = tournamentId;
-	}
 	public Integer getContestId() {
 		return contestId;
 	}
 	public void setContestId(Integer contestId) {
 		this.contestId = contestId;
+	}
+	public Integer getAnswerTypeId() {
+		return answerTypeId;
+	}
+	public void setAnswerTypeId(Integer answerTypeId) {
+		this.answerTypeId = answerTypeId;
 	}
 	public Integer getQuestionSlNo() {
 		return questionSlNo;
@@ -70,12 +69,6 @@ public class ContestQuestionBean implements Serializable, Comparable<Object>{
 		this.answerOptionList = answerOptionList;
 	}
 	
-	public List<AnswerBean> getCorrectAnswerList() {
-		return correctAnswerList;
-	}
-	public void setCorrectAnswerList(List<AnswerBean> correctAnswerList) {
-		this.correctAnswerList = correctAnswerList;
-	}
 	/*public String getPointsRule() {
 		return pointsRule;
 	}
@@ -84,7 +77,7 @@ public class ContestQuestionBean implements Serializable, Comparable<Object>{
 	}*/
 	@Override
 	public int compareTo(Object o) {
-		ContestQuestionBean comparable = (ContestQuestionBean)o;
+		QuestionBean comparable = (QuestionBean)o;
 		int returnVal = 0;
 		if(this.questionSlNo > comparable.questionSlNo){
 			returnVal = 1;

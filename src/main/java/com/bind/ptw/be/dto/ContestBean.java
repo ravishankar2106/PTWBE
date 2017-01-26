@@ -23,7 +23,7 @@ public class ContestBean extends BaseBean implements Serializable{
 	private String publishEndDateStr;
 	private Date cutoffDate;
 	private String cutoffDateStr;
-	private List<ContestQuestionBean> questionList;
+	private List<QuestionBean> questionList;
 	private Integer contestStatusId;
 	private Integer bonusPoints;
 	
@@ -100,10 +100,10 @@ public class ContestBean extends BaseBean implements Serializable{
 	public void setCutoffDateStr(String cutoffDateStr) {
 		this.cutoffDateStr = cutoffDateStr;
 	}
-	public List<ContestQuestionBean> getQuestionList() {
+	public List<QuestionBean> getQuestionList() {
 		return questionList;
 	}
-	public void setQuestionList(List<ContestQuestionBean> questionList) {
+	public void setQuestionList(List<QuestionBean> questionList) {
 		this.questionList = questionList;
 	}
 	public Integer getContestStatusId() {

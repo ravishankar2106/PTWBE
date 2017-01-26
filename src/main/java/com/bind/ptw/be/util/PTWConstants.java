@@ -169,5 +169,7 @@ public class PTWConstants {
 	public final static String ERROR_DESC_CONTEST_MATCH_INVALID = "Invalid Match for Tournament";
 	public final static String ERROR_CODE_CONTEST_ID_EMPTY = "217";
 	public final static String ERROR_CODE_CONTEST_STATUS_ID_EMPTY = "218";
+	public final static String ERROR_CODE_QUESTION_ANSWER_COUNT_INVALID = "219";
+	public final static String ERROR_DESC_QUESTION_ANSWER_COUNT_INVALID = "Answer Count is Invalid";
 	
 }

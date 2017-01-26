@@ -26,12 +26,10 @@ public class Question {
 	private Integer questionSlNo;
 	private AnswerType answerType;
 	private String questionDescription;
-	private Integer questionCount;
+	private Integer answerCount;
 	private List<AnswerOption> answerOptions = new ArrayList<AnswerOption>(
 			0);
-	private Set<Answer> correctAnswerList = new HashSet<Answer>(0);
-	//private String pointsRule;
-	
+		
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "CONTEST_QUESTION_ID", unique = true, nullable = false)
@@ -80,11 +78,11 @@ public class Question {
 	}
 	
 	@Column(name = "ANSWERS_COUNT")
-	public Integer getQuestionCount() {
-		return questionCount;
+	public Integer getAnswerCount() {
+		return answerCount;
 	}
-	public void setQuestionCount(Integer questionCount) {
-		this.questionCount = questionCount;
+	public void setAnswerCount(Integer answerCount) {
+		this.answerCount = answerCount;
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
@@ -96,28 +94,6 @@ public class Question {
 			List<AnswerOption> answerOptions) {
 		this.answerOptions = answerOptions;
 	}
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
-	public Set<Answer> getCorrectAnswerList() {
-		return this.correctAnswerList;
-	}
-	
-	public void setCorrectAnswerList(
-			Set<Answer> correctAnswerList) {
-		this.correctAnswerList = correctAnswerList;
-	}
-	
-	/*@Column(name = "POINTS_RULE")
-	public String getPointsRule() {
-		return pointsRule;
-	}
-	
-	public void setPointsRule(String pointsRule) {
-		this.pointsRule = pointsRule;
-	}*/
-	
-	
-	
-	
-	
+		
+		
 }

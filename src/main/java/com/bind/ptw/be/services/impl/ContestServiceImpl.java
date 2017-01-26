@@ -1,5 +1,6 @@
 package com.bind.ptw.be.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.TournamentDao;
+import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
+import com.bind.ptw.be.dto.QuestionBean;
+import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
@@ -171,6 +175,99 @@ public class ContestServiceImpl implements ContestService{
 			TournamentBeanValidator.vaidateRequest(contestBean);
 			ContestBeanValidator.validateContestId(contestBean.getContestId());
 			contestDao.deleteContest(contestBean);
+		}catch(PTWException exception){
+			retBean.setResultCode(exception.getCode());
+			retBean.setResultDescription(exception.getDescription());
+		}
+		return retBean;
+	}
+
+	@Override
+	public QuestionBean createQuestion(QuestionBean questionBean) {
+		QuestionBean retBean = null;
+		try{
+			TournamentBeanValidator.vaidateRequest(questionBean);
+			ContestBeanValidator.validateCreateQuestion(questionBean, tournamentDao, contestDao);
+			retBean = contestDao.createQuestion(questionBean);
+			
+			if(questionBean.getAnswerTypeId() == 1){
+				Integer contestId = questionBean.getContestId();
+				ContestBean contestBean = new ContestBean();
+				contestBean.setContestId(contestId);
+				List<ContestBean> contestList = contestDao.getMatches(contestBean, false);
+				if(contestList != null && !contestList.isEmpty()){
+					ContestBean dbContestBean = contestList.get(0);
+					Integer matchId = dbContestBean.getMatchId();
+					MatchBean matchBean = new MatchBean();
+					matchBean.setMatchId(matchId);
+					List<TournamentTeamBean> tournamentTeams = contestDao.getMatchTeams(matchBean);
+					if(tournamentTeams != null && !tournamentTeams.isEmpty()){
+						List<AnswerOptionBean> answerOptionBeanList = new ArrayList<AnswerOptionBean>();
+						for (TournamentTeamBean tournamentTeam : tournamentTeams) {
+							AnswerOptionBean answerOptionBean = new AnswerOptionBean();
+							answerOptionBean.setAnswerOptionStr(tournamentTeam.getTeamName());
+							answerOptionBeanList.add(answerOptionBean);
+						}
+						QuestionBean answerQuestionBean = new QuestionBean();
+						answerQuestionBean.setQuestionId(retBean.getQuestionId());
+						answerQuestionBean.setAnswerOptionList(answerOptionBeanList);
+						contestDao.createAnswerOptions(answerQuestionBean);
+					}
+				}
+				
+			}
+			
+		}catch(PTWException exception){
+			retBean = new QuestionBean();
+			retBean.setResultCode(exception.getCode());
+			retBean.setResultDescription(exception.getDescription());
+		}
+		return retBean;
+	}
+
+	@Override
+	public BaseBean updateQuestion(QuestionBean questionBean) {
+		BaseBean retBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(questionBean);
+			ContestBeanValidator.validateUpdateQuestion(questionBean, tournamentDao, contestDao);
+			contestDao.updateQuestion(questionBean);
+		}catch(PTWException exception){
+			retBean.setResultCode(exception.getCode());
+			retBean.setResultDescription(exception.getDescription());
+		}
+		return retBean;
+	}
+
+	@Override
+	public ContestBean getContestQuestion(ContestBean contestBean) {
+		ContestBean retBean = new ContestBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(contestBean);
+			ContestBeanValidator.validateContestId(contestBean.getContestId());
+			List<QuestionBean> questionList = contestDao.getQuestion(contestBean);
+			retBean.setContestId(contestBean.getContestId());
+			retBean.setQuestionList(questionList);
+		}catch(PTWException exception){
+			retBean.setResultCode(exception.getCode());
+			retBean.setResultDescription(exception.getDescription());
+		}
+		return retBean;
+	}
+
+	@Override
+	public BaseBean deleteQuestion(ContestBean contestBean) {
+		BaseBean retBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(contestBean);
+			ContestBeanValidator.validateContestId(contestBean.getContestId());
+			List<QuestionBean> questionList = contestDao.getQuestion(contestBean);
+			if(questionList != null && !questionList.isEmpty()){
+				for (QuestionBean questionBean : questionList) {
+					contestDao.deleteQuestion(questionBean);
+				}
+			}
+			
 		}catch(PTWException exception){
 			retBean.setResultCode(exception.getCode());
 			retBean.setResultDescription(exception.getDescription());

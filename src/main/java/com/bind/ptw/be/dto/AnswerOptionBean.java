@@ -12,6 +12,8 @@ public class AnswerOptionBean implements Serializable{
 	private Integer answerOptionId;
 	private Integer contestId;
 	private String answerOptionStr;
+	private Boolean correctAnswerFlag;
+	private Integer points;
 	
 	public Integer getAnswerOptionId() {
 		return answerOptionId;
@@ -30,6 +32,18 @@ public class AnswerOptionBean implements Serializable{
 	}
 	public void setAnswerOptionStr(String answerOptionStr) {
 		this.answerOptionStr = answerOptionStr;
+	}
+	public Boolean getCorrectAnswerFlag() {
+		return correctAnswerFlag;
+	}
+	public void setCorrectAnswerFlag(Boolean correctAnswerFlag) {
+		this.correctAnswerFlag = correctAnswerFlag;
+	}
+	public Integer getPoints() {
+		return points;
+	}
+	public void setPoints(Integer points) {
+		this.points = points;
 	}
 		
 }

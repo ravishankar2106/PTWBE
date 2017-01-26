@@ -7,6 +7,7 @@ import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
+import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
@@ -107,6 +108,9 @@ public class ContestBeanValidator {
 			if(!(contestTypeId == 1 || contestTypeId == 2)){
 				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_TYPE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Contest Type");
 			}
+			if(contestTypeId==1 && StringUtil.isEmptyNull(contestBean.getMatchId())){
+				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_TYPE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Contest Type");
+			}
 		}
 		
 		if(StringUtil.isEmptyNull(contestBean.getBonusPoints())){
@@ -166,6 +170,9 @@ public class ContestBeanValidator {
 			if(!(contestTypeId == 1 || contestTypeId == 2)){
 				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_TYPE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Contest Type");
 			}
+			if(contestTypeId==1 && StringUtil.isEmptyNull(contestBean.getMatchId())){
+				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_TYPE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Contest Type");
+			}
 		}
 		
 	}
@@ -198,4 +205,57 @@ public class ContestBeanValidator {
 			throw new PTWException(PTWConstants.ERROR_CODE_MATCH_STATUS_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Match Status Id");
 		}
 	}
+	
+	public static void validateCreateQuestion(QuestionBean questionBean, TournamentDao tournamentDao, ContestDao contestDao) throws PTWException{
+		validateContestId(questionBean.getContestId());
+		
+		String questionStr = questionBean.getQuestion();
+		if(StringUtil.isEmptyNull(questionStr)){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Question");
+		}
+		
+		Integer answerTypeId = questionBean.getAnswerTypeId();
+		if(StringUtil.isEmptyNull(answerTypeId)){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Answer Type");
+		}
+		
+		if(StringUtil.isEmptyNull(questionBean.getAnswerCount())){
+			questionBean.setAnswerCount(1);
+		}else{
+			if(questionBean.getAnswerCount() > 4){
+				throw new PTWException(PTWConstants.ERROR_CODE_QUESTION_ANSWER_COUNT_INVALID, PTWConstants.ERROR_DESC_QUESTION_ANSWER_COUNT_INVALID);
+			}
+		}
+		
+	}
+	
+	public static void validateUpdateQuestion(QuestionBean questionBean, TournamentDao tournamentDao, ContestDao contestDao) throws PTWException{
+		validateQuestionId(questionBean.getQuestionId());
+		
+		String questionStr = questionBean.getQuestion();
+		if(StringUtil.isEmptyNull(questionStr)){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Question");
+		}
+		
+		Integer answerTypeId = questionBean.getAnswerTypeId();
+		if(StringUtil.isEmptyNull(answerTypeId)){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Answer Type");
+		}
+		
+		if(StringUtil.isEmptyNull(questionBean.getAnswerCount())){
+			questionBean.setAnswerCount(1);
+		}else{
+			if(questionBean.getAnswerCount() > 4){
+				throw new PTWException(PTWConstants.ERROR_CODE_QUESTION_ANSWER_COUNT_INVALID, PTWConstants.ERROR_DESC_QUESTION_ANSWER_COUNT_INVALID);
+			}
+		}
+		
+	}
+	
+	public static void validateQuestionId(Integer questionId) throws PTWException{
+		if(StringUtil.isEmptyNull(questionId)){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Question Id");
+		}
+	}
+	
 }

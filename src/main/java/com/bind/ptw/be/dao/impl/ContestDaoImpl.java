@@ -9,9 +9,14 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.bind.ptw.be.dao.ContestDao;
+import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
+import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.entities.AnswerOption;
+import com.bind.ptw.be.entities.AnswerOptionHome;
+import com.bind.ptw.be.entities.AnswerType;
 import com.bind.ptw.be.entities.Contest;
 import com.bind.ptw.be.entities.ContestHome;
 import com.bind.ptw.be.entities.ContestStatus;
@@ -19,6 +24,8 @@ import com.bind.ptw.be.entities.ContestType;
 import com.bind.ptw.be.entities.Match;
 import com.bind.ptw.be.entities.MatchHome;
 import com.bind.ptw.be.entities.MatchStatus;
+import com.bind.ptw.be.entities.Question;
+import com.bind.ptw.be.entities.QuestionHome;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
 import com.bind.ptw.be.entities.TournamentTeam;
@@ -173,6 +180,24 @@ public class ContestDaoImpl implements ContestDao{
 	}
 
 	@Override
+	public List<TournamentTeamBean> getMatchTeams(MatchBean matchBean) throws PTWException{
+		List<TournamentTeamBean> tournamentTeamBeanList = new ArrayList<TournamentTeamBean>();
+		MatchHome matchHome = new MatchHome(this.getSession());
+		try{
+			Match match = matchHome.findById(matchBean.getMatchId());
+			TournamentTeam tournamentTeamA = match.getTeamA();
+			TournamentTeam tournamentTeamB = match.getTeamB();
+			TournamentTeamBean tournamentTeamBeanA = getTournamentTeamBean(tournamentTeamA);
+			TournamentTeamBean tournamentTeamBeanB = getTournamentTeamBean(tournamentTeamB);
+			tournamentTeamBeanList.add(tournamentTeamBeanA);
+			tournamentTeamBeanList.add(tournamentTeamBeanB);
+		}catch(Exception exception){
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return tournamentTeamBeanList;
+	}
+	
+	@Override
 	public ContestBean createContest(ContestBean contestBean) throws PTWException {
 		ContestBean retContestBean = new ContestBean();
 		ContestHome contestHome = new ContestHome(this.getSession());
@@ -310,8 +335,147 @@ public class ContestDaoImpl implements ContestDao{
 		}
 			
 	}
-	
-	
+
+	@Override
+	public QuestionBean createQuestion(QuestionBean questionBean) throws PTWException {
+		QuestionBean retQuestionBean = new QuestionBean();
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		try{
+			int newQuestionSlNo=1;
+			ContestBean contestBean = new ContestBean();
+			contestBean.setContestId(questionBean.getContestId());
+			List<Question> existingQuestionList = questionHome.findQuestionByFilter(contestBean);
+			if(existingQuestionList!=null && !existingQuestionList.isEmpty()){
+				newQuestionSlNo = existingQuestionList.size() + 1;
+			}
+			
+			Question question = new Question();
+			question.setQuestionDescription(questionBean.getQuestion());
+			question.setQuestionSlNo(newQuestionSlNo);
+			question.setAnswerCount(questionBean.getAnswerCount());
+			
+			Contest contest = new Contest();
+			contest.setContestId(questionBean.getContestId());
+			question.setContest(contest);
+			
+			AnswerType answerType = new AnswerType();
+			answerType.setAnswerTypeId(questionBean.getAnswerTypeId());
+			question.setAnswerType(answerType);
+			
+			questionHome.persist(question);
+			retQuestionBean.setQuestionId(question.getQuestionId());
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retQuestionBean;
+	}
+
+	@Override
+	public List<QuestionBean> getQuestion(ContestBean contestBean) throws PTWException {
+		List<QuestionBean> retQuestionBeanList = null;
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		try{
+			List<Question> dbQuestionList = questionHome.findQuestionByFilter(contestBean);
+			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
+				retQuestionBeanList = new ArrayList<QuestionBean>();
+				for (Question question : dbQuestionList) {
+					QuestionBean questionBean = new QuestionBean();
+					questionBean.setQuestionId(question.getQuestionId());
+					questionBean.setQuestion(question.getQuestionDescription());
+					questionBean.setAnswerCount(question.getAnswerCount());
+					questionBean.setContestId(question.getContest().getContestId());
+					questionBean.setAnswerTypeId(question.getAnswerType().getAnswerTypeId());
+					questionBean.setAnswerType(question.getAnswerType().getAnswerTypeName());
+					retQuestionBeanList.add(questionBean);
+				}
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retQuestionBeanList;
+	}
+
+	@Override
+	public void updateQuestion(QuestionBean questionBean) throws PTWException {
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		try{
+			Question dbQuestion = questionHome.findById(questionBean.getQuestionId());
+			if(dbQuestion == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_CONTEST, PTWConstants.ERROR_DESC_INVALID_CONTEST);
+			}
+			dbQuestion.setQuestionDescription(questionBean.getQuestion());
+			dbQuestion.setAnswerCount(questionBean.getAnswerCount());
+			if(!StringUtil.isEmptyNull(questionBean.getAnswerTypeId())){
+				dbQuestion.getAnswerType().setAnswerTypeId(questionBean.getAnswerTypeId());
+			}
+			questionHome.merge(dbQuestion);
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void deleteQuestion(QuestionBean questionBean) throws PTWException {
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		try{
+			Question dbQuestion = questionHome.findById(questionBean.getQuestionId());
+			if(dbQuestion == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_CONTEST, PTWConstants.ERROR_DESC_INVALID_CONTEST);
+			}
+			questionHome.remove(dbQuestion);
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void createAnswerOptions(QuestionBean questionBean) throws PTWException {
+		AnswerOptionHome answerHome = new AnswerOptionHome(this.getSession());
+		try{
+			Integer questionId = questionBean.getQuestionId();
+			List<AnswerOptionBean> answerOptionBeanList = questionBean.getAnswerOptionList();
+			for (AnswerOptionBean answerOptionBean : answerOptionBeanList) {
+				AnswerOption answerOption = new AnswerOption();
+				answerOption.setAnswerOptionStr(answerOptionBean.getAnswerOptionStr());
+				answerOption.setCorrectAnswerFlag(false);
+				answerOption.setPoints(0);
+				
+				Question question = new Question();
+				question.setQuestionId(questionId);
+				answerOption.setQuestion(question);
+				answerHome.persist(answerOption);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void updateAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<AnswerOptionBean> getAnswersForQuestion(QuestionBean questionBean) throws PTWException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

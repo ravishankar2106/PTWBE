@@ -18,6 +18,8 @@ public class AnswerOption {
 	private Integer answerOptionId;
 	private Question question;
 	private String answerOptionStr;
+	private Boolean correctAnswerFlag;
+	private Integer points;
 		
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -46,6 +48,24 @@ public class AnswerOption {
 	
 	public void setAnswerOptionStr(String answerOptionStr) {
 		this.answerOptionStr = answerOptionStr;
+	}
+	
+	@Column(name = "CORRECT_ANSWER_FLAG")
+	public Boolean getCorrectAnswerFlag() {
+		return correctAnswerFlag;
+	}
+	
+	public void setCorrectAnswerFlag(Boolean correctAnswerFlag) {
+		this.correctAnswerFlag = correctAnswerFlag;
+	}
+	
+	@Column(name = "POINTS")
+	public Integer getPoints() {
+		return points;
+	}
+	
+	public void setPoints(Integer points) {
+		this.points = points;
 	}
 	
 }

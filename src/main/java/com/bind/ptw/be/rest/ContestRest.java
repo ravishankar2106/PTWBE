@@ -12,6 +12,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
+import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.services.ContestService;
 
 @EnableAutoConfiguration
@@ -70,5 +71,25 @@ public class ContestRest {
 	@PostMapping("/deleteContest")
 	public BaseBean deleteContest(@RequestBody ContestBean contestBean){
 		return contestService.deleteContest(contestBean);
+	}
+	
+	@PostMapping("/createQuestion")
+	public QuestionBean createQuestion(@RequestBody QuestionBean questionBean){
+		return contestService.createQuestion(questionBean);
+	}
+	
+	@PostMapping("/getContestQuestion")
+	public ContestBean getContestQuestion(@RequestBody ContestBean contestBean){
+		return contestService.getContestQuestion(contestBean);
+	}
+	
+	@PostMapping("/updateQuestion")
+	public BaseBean updateQuestion(@RequestBody QuestionBean questionBean){
+		return contestService.updateQuestion(questionBean);
+	}
+	
+	@PostMapping("/deleteQuestion")
+	public BaseBean deleteQuestion(@RequestBody ContestBean contestBean){
+		return contestService.deleteQuestion(contestBean);
 	}
 }

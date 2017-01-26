@@ -8,7 +8,7 @@ public class QueryConstants {
 	public static final String RETRIEVE_TOURNAMENT_CONTEST = "from Contest c where 1=1 ";
 	public static final String RETRIEVE_PRIZE_CONTEST = "from PrizeContest pc where 1=1 ";
 	public static final String DELETE_PRIZE_CONTEST = "delete from PrizeContestWinners pcw where pcw.prizeContest.prizeContestId =:prizeContestId";
-	public static final String RETRIEVE_QUESTION_ANSWERS = "from Answer a where 1=1 ";
+	public static final String RETRIEVE_QUESTION_ANSWERS = "from AnswerOption ao where 1=1 ";
 	public static final String RETRIEVE_QUESTIONS = "from Question q where 1=1 ";
 	public static final String RETRIEVE_USER_ANSWER = "from UserAnswer ua where 1=1 ";
 	public static final String RETRIEVE_TOTAL_SCORE = "select new list( SUM(us.pointsScored) AS TOTAL_POINTS, us.userId) FROM UserAnswer us "
