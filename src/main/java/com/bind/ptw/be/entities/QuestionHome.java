@@ -76,4 +76,23 @@ public class QuestionHome {
 		return query.list();
 	}
 	
+	public List<Question> findQuestionForMatch(Integer matchId){
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append(QueryConstants.RETRIEVE_QUESTIONS);
+			queryToExecute.append("AND q.contest.contestId IN (");
+			queryToExecute.append("Select c.contestId from Contest c ");
+			queryToExecute.append("where c.match.matchId = :matchId");
+			queryToExecute.append(")");
+			query = session.createQuery(queryToExecute.toString());
+			
+			query.setParameter("matchId", matchId);
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
 }

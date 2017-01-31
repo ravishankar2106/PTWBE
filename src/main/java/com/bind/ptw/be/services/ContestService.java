@@ -1,19 +1,20 @@
 package com.bind.ptw.be.services;
 
-import java.util.List;
-
+import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
+import com.bind.ptw.be.dto.QuestionBeanList;
 
 public interface ContestService {
 	MatchBean createMatch(MatchBean matchBean);
 	MatchBeanList getMatches(MatchBean matchBean);
 	BaseBean updateMatchStatus(MatchBean matchBean);
 	BaseBean deleteMatch(MatchBean matchBean);
+	QuestionBeanList getMatchQuestions(MatchBean matchBean);
 	
 	ContestBean createContest(ContestBean contestBean);
 	ContestBeanList getContests(ContestBean contestBean);
@@ -26,5 +27,11 @@ public interface ContestService {
 	BaseBean updateQuestion(QuestionBean questionBean);
 	ContestBean getContestQuestion(ContestBean contestBean);
 	BaseBean deleteQuestion(ContestBean contestBean);
+	
+	BaseBean createAnswerOptions(QuestionBean questionBean);
+	BaseBean updateAnswerOption(AnswerOptionBean answerOptionBean);
+	QuestionBean getAnswersForQuestion(QuestionBean questionBean);
+	BaseBean deleteAnswerOption(AnswerOptionBean answerOptionBean);
+	
 	
 }

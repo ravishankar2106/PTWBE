@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.springframework.util.StringUtils;
 
 import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.util.StringUtil;
 
 public class ContestHome {
@@ -89,6 +90,26 @@ public class ContestHome {
 				}
 				
 			}
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
+	
+	public List<Long> getMatchContests(MatchBean matchBean){
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append("Select c.contestId from Contest c where ");
+			queryToExecute.append("c.match.matchId =: matchId");
+							
+			queryToExecute.append("ORDER BY c.contestId");
+			query = session.createQuery(queryToExecute.toString());
+			
+			query.setParameter("matchId", matchBean.getMatchId());;
+				
 		}catch(RuntimeException e){
 			throw e;
 		}

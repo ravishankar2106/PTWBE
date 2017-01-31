@@ -2,9 +2,11 @@ package com.bind.ptw.be.services.util;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.TournamentDao;
+import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
@@ -255,6 +257,30 @@ public class ContestBeanValidator {
 	public static void validateQuestionId(Integer questionId) throws PTWException{
 		if(StringUtil.isEmptyNull(questionId)){
 			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Question Id");
+		}
+	}
+	
+	public static void validateAnswerOptionId(Integer answerOption) throws PTWException{
+		if(StringUtil.isEmptyNull(answerOption)){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Answer Id");
+		}
+	}
+	
+	public static void validateAnswerOption(List<AnswerOptionBean> answerOptionBeanList) throws PTWException{
+		if(answerOptionBeanList == null || answerOptionBeanList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Answer Option");
+		}
+		for (AnswerOptionBean answerOptionBean : answerOptionBeanList) {
+			if(StringUtil.isEmptyNull(answerOptionBean.getAnswerOptionStr())){
+				throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Answer Option");
+			}
+		}
+		
+	}
+	
+	public static void validateAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException{
+		if(StringUtil.isEmptyNull(answerOptionBean.getAnswerOptionStr())){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Answer Option");
 		}
 	}
 	

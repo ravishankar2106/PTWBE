@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
+import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.services.ContestService;
 
 @EnableAutoConfiguration
@@ -53,10 +55,6 @@ public class ContestRest {
 		return contestService.getContests(contestBean);
 	}
 	
-	@PostMapping("/getOngoingContest")
-	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
-		return contestService.getOngoingContests(contestBean);
-	}
 	
 	@PostMapping("/updateContest")
 	public BaseBean updateContest(@RequestBody ContestBean contestBean){
@@ -92,4 +90,25 @@ public class ContestRest {
 	public BaseBean deleteQuestion(@RequestBody ContestBean contestBean){
 		return contestService.deleteQuestion(contestBean);
 	}
+	
+	@PostMapping("/createAnswerOption")
+	public BaseBean createAnswerOptions(@RequestBody QuestionBean questionBean){
+		return contestService.createAnswerOptions(questionBean);
+	}
+	
+	@PostMapping("/updateAnswerOption")
+	public BaseBean updateAnswerOption(@RequestBody AnswerOptionBean answerOptionBean){
+		return contestService.updateAnswerOption(answerOptionBean);
+	}
+	
+	@PostMapping("/getAnswerForQuestion")
+	public QuestionBean getAnswersForQuestion(@RequestBody QuestionBean questionBean){
+		return contestService.getAnswersForQuestion(questionBean);
+	}
+	
+	@PostMapping("/deleteAnswerOption")
+	public BaseBean deleteAnswerOption(@RequestBody AnswerOptionBean answerOptionBean){
+		return contestService.deleteAnswerOption(answerOptionBean);
+	}
+	
 }

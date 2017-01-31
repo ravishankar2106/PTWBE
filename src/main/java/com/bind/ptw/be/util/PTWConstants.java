@@ -171,5 +171,8 @@ public class PTWConstants {
 	public final static String ERROR_CODE_CONTEST_STATUS_ID_EMPTY = "218";
 	public final static String ERROR_CODE_QUESTION_ANSWER_COUNT_INVALID = "219";
 	public final static String ERROR_DESC_QUESTION_ANSWER_COUNT_INVALID = "Answer Count is Invalid";
+	public final static String ERROR_CODE_ANSWER_NOT_FOUND = "220";
+	public final static String ERROR_DESC_ANSWER_NOT_FOUND = "Answer Not Found";
+	
 	
 }

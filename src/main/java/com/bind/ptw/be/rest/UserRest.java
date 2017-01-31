@@ -10,8 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bind.ptw.be.dto.CityBeanList;
+import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.ContestBeanList;
+import com.bind.ptw.be.dto.MatchBean;
+import com.bind.ptw.be.dto.QuestionBeanList;
+import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.services.ContestService;
+import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.UserService;
 
 @EnableAutoConfiguration
@@ -22,6 +30,13 @@ public class UserRest {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	ContestService contestService;
+	
+	@Autowired
+	TournamentService tournamentService;
+	
 	
 	@PostMapping("/register")
 	public UserBean loginUser(@RequestBody UserBean inputUser){
@@ -46,5 +61,24 @@ public class UserRest {
 		CityBeanList response = userService.getCities();
 		return response;
 	}
+	
+	@PostMapping("/getMatchQuestion")
+	public QuestionBeanList getMatchQuestion(@RequestBody MatchBean matchBean){
+		return contestService.getMatchQuestions(matchBean);
+	}
 
+	/**
+	 * User API
+	 * @param contestBean
+	 * @return
+	 */
+	@PostMapping("/getOngoingContest")
+	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
+		return contestService.getOngoingContests(contestBean);
+	}
+
+	@PostMapping("/getTournament")
+	public TournamentBeanList getOngoingTournament (@RequestBody TournamentBean tournamentBean){
+		return tournamentService.getOngoingTournament(tournamentBean);
+	}
 }

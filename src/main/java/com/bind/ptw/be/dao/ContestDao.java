@@ -24,6 +24,7 @@ public interface ContestDao {
 	
 	QuestionBean createQuestion(QuestionBean questionBean) throws PTWException;
 	List<QuestionBean> getQuestion(ContestBean contestBean) throws PTWException;
+	List<QuestionBean> getQuestionAndAnswer(ContestBean contestBean) throws PTWException;
 	void updateQuestion(QuestionBean questionBean) throws PTWException;
 	void deleteQuestion(QuestionBean questionBean) throws PTWException;
 	
@@ -31,5 +32,6 @@ public interface ContestDao {
 	void updateAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException;
 	List<AnswerOptionBean> getAnswersForQuestion(QuestionBean questionBean) throws PTWException;
 	void deleteAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException;
+	List<QuestionBean> getMatchQuestions(MatchBean matchBean) throws PTWException;
 	
 }

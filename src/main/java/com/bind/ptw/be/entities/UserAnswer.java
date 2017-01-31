@@ -6,8 +6,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -17,7 +20,7 @@ public class UserAnswer {
 	private Integer userAnswerId;
 	private Integer userId;
 	private Integer questionId;
-	private String userAnswer;
+	private AnswerOption answerOption;
 	private Date answeredDateTime;
 	private Integer pointsScored;
 		
@@ -48,13 +51,14 @@ public class UserAnswer {
 		this.questionId = questionId;
 	}
 	
-	@Column(name = "USER_ANSWER")
-	public String getUserAnswer() {
-		return userAnswer;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SELECTED_ANSWER_OPTION_ID", nullable = false)
+	public AnswerOption getAnswerOption() {
+		return answerOption;
 	}
 	
-	public void setUserAnswer(String userAnswer) {
-		this.userAnswer = userAnswer;
+	public void setAnswerOption(AnswerOption answerOption) {
+		this.answerOption = answerOption;
 	}
 	
 	@Column(name = "ANSWERED_DATE_TIME")

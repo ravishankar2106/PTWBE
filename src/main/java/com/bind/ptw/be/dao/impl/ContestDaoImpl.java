@@ -281,6 +281,31 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		return retContestBeanList;
 	}
+	
+	@Override
+	public List<QuestionBean> getMatchQuestions(MatchBean matchBean) throws PTWException{
+		List<QuestionBean> retQuestionBeanList = null;
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		try{
+			List<Question> dbQuestionList = questionHome.findQuestionForMatch(matchBean.getMatchId());
+			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
+				retQuestionBeanList = new ArrayList<QuestionBean>();
+				for (Question question : dbQuestionList) {
+					QuestionBean questionBean = createQuestionBean(question);
+					List<AnswerOption> dbAnswerOptionList = question.getAnswerOptions();
+					if(dbAnswerOptionList != null && !dbAnswerOptionList.isEmpty()){
+						List<AnswerOptionBean> answerOptionBeanList = createAnswerOptionBeanList(dbAnswerOptionList);
+						questionBean.setAnswerOptionList(answerOptionBeanList);
+					}
+					retQuestionBeanList.add(questionBean);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retQuestionBeanList;
+	}
 
 	@Override
 	public void updateContest(ContestBean contestBean) throws PTWException {
@@ -380,13 +405,7 @@ public class ContestDaoImpl implements ContestDao{
 			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
 				retQuestionBeanList = new ArrayList<QuestionBean>();
 				for (Question question : dbQuestionList) {
-					QuestionBean questionBean = new QuestionBean();
-					questionBean.setQuestionId(question.getQuestionId());
-					questionBean.setQuestion(question.getQuestionDescription());
-					questionBean.setAnswerCount(question.getAnswerCount());
-					questionBean.setContestId(question.getContest().getContestId());
-					questionBean.setAnswerTypeId(question.getAnswerType().getAnswerTypeId());
-					questionBean.setAnswerType(question.getAnswerType().getAnswerTypeName());
+					QuestionBean questionBean = createQuestionBean(question);
 					retQuestionBeanList.add(questionBean);
 				}
 			}
@@ -398,6 +417,41 @@ public class ContestDaoImpl implements ContestDao{
 		return retQuestionBeanList;
 	}
 
+	private QuestionBean createQuestionBean(Question question) {
+		QuestionBean questionBean = new QuestionBean();
+		questionBean.setQuestionId(question.getQuestionId());
+		questionBean.setQuestion(question.getQuestionDescription());
+		questionBean.setAnswerCount(question.getAnswerCount());
+		questionBean.setContestId(question.getContest().getContestId());
+		questionBean.setAnswerTypeId(question.getAnswerType().getAnswerTypeId());
+		questionBean.setAnswerType(question.getAnswerType().getAnswerTypeName());
+		return questionBean;
+	}
+
+	@Override
+	public List<QuestionBean> getQuestionAndAnswer(ContestBean contestBean) throws PTWException{
+		List<QuestionBean> retQuestionBeanList = null;
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		
+		try{
+			List<Question> dbQuestionList = questionHome.findQuestionByFilter(contestBean);
+			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
+				retQuestionBeanList = new ArrayList<QuestionBean>();
+				for (Question question : dbQuestionList) {
+					QuestionBean questionBean = createQuestionBean(question);
+					List<AnswerOptionBean> answerOptionBeanList = getAnswersForQuestion(questionBean);
+					questionBean.setAnswerOptionList(answerOptionBeanList);
+					retQuestionBeanList.add(questionBean);
+				}
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retQuestionBeanList;
+	}
+	
 	@Override
 	public void updateQuestion(QuestionBean questionBean) throws PTWException {
 		QuestionHome questionHome = new QuestionHome(this.getSession());
@@ -422,11 +476,13 @@ public class ContestDaoImpl implements ContestDao{
 	@Override
 	public void deleteQuestion(QuestionBean questionBean) throws PTWException {
 		QuestionHome questionHome = new QuestionHome(this.getSession());
+		AnswerOptionHome anwerHome = new AnswerOptionHome(this.getSession());
 		try{
 			Question dbQuestion = questionHome.findById(questionBean.getQuestionId());
 			if(dbQuestion == null){
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_CONTEST, PTWConstants.ERROR_DESC_INVALID_CONTEST);
 			}
+			anwerHome.deleteAnswerForQuestion(questionBean);
 			questionHome.remove(dbQuestion);
 		}catch(PTWException exception){
 			throw exception;
@@ -461,19 +517,79 @@ public class ContestDaoImpl implements ContestDao{
 
 	@Override
 	public void updateAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException {
-		// TODO Auto-generated method stub
+		AnswerOptionHome answerHome = new AnswerOptionHome(this.getSession());
+		try{
+			Integer answerOptionId = answerOptionBean.getAnswerOptionId();
+			AnswerOption answerOption = answerHome.findById(answerOptionId);
+			if(answerOption == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_ANSWER_NOT_FOUND, PTWConstants.ERROR_DESC_ANSWER_NOT_FOUND);
+			}
+			
+			if(!StringUtil.isEmptyNull(answerOptionBean.getAnswerOptionStr())){
+				answerOption.setAnswerOptionStr(answerOptionBean.getAnswerOptionStr());
+			}
+			if(answerOptionBean.getCorrectAnswerFlag() != null){
+				answerOption.setCorrectAnswerFlag(answerOptionBean.getCorrectAnswerFlag());
+			}
+			if(!StringUtil.isEmptyNull(answerOptionBean.getPoints())){
+				answerOption.setPoints(answerOptionBean.getPoints());
+			}
+			
+			answerHome.persist(answerOption);
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
 		
 	}
 
 	@Override
 	public List<AnswerOptionBean> getAnswersForQuestion(QuestionBean questionBean) throws PTWException {
-		// TODO Auto-generated method stub
-		return null;
+		AnswerOptionHome answerHome = new AnswerOptionHome(this.getSession());
+		List<AnswerOptionBean> answerOptionBeanList = null;
+		try{
+			List<AnswerOption> answerOptionList = answerHome.findAnswerOptionByFilter(questionBean);
+			if(answerOptionList != null && !answerOptionList.isEmpty()){
+				answerOptionBeanList = createAnswerOptionBeanList(answerOptionList);
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return answerOptionBeanList;
+	}
+
+	private List<AnswerOptionBean> createAnswerOptionBeanList(List<AnswerOption> answerOptionList) {
+		List<AnswerOptionBean> answerOptionBeanList;
+		answerOptionBeanList = new ArrayList<AnswerOptionBean>();
+		for (AnswerOption answerOption : answerOptionList) {
+			AnswerOptionBean answerOptionBean = new AnswerOptionBean();
+			answerOptionBean.setAnswerOptionId(answerOption.getAnswerOptionId());
+			answerOptionBean.setAnswerOptionStr(answerOption.getAnswerOptionStr());
+			answerOptionBean.setCorrectAnswerFlag(answerOption.getCorrectAnswerFlag());
+			answerOptionBean.setPoints(answerOption.getPoints());
+			answerOptionBeanList.add(answerOptionBean);
+		}
+		return answerOptionBeanList;
 	}
 
 	@Override
 	public void deleteAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException {
-		// TODO Auto-generated method stub
+		AnswerOptionHome answerHome = new AnswerOptionHome(this.getSession());
+		try{
+			AnswerOption answerOption = answerHome.findById(answerOptionBean.getAnswerOptionId());
+			if(answerOption == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_ANSWER_NOT_FOUND, PTWConstants.ERROR_DESC_ANSWER_NOT_FOUND);
+			}
+			answerHome.remove(answerOption);
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
 		
 	}
 	

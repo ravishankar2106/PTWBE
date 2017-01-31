@@ -49,6 +49,15 @@ public class AnswerOptionHome {
 			throw re;
 		}
 	}
+
+	public void deleteAnswerForQuestion(QuestionBean questionBean){
+		try{
+			String queryString = QueryConstants.DELETE_QUESTION_ANSWERS;
+			session.persist(queryString);
+		}catch(RuntimeException e){
+			throw e;
+		}
+	}
 	
 	public List<AnswerOption> findAnswerOptionByFilter(QuestionBean questionBean){
 		Query query = null;

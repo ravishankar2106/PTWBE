@@ -39,10 +39,6 @@ public class TournamentRest {
 		return tournamentService.createTournament(tournamentBean);
 	}
 	
-	@PostMapping("/getTournament")
-	public TournamentBeanList getOngoingTournament (@RequestBody TournamentBean tournamentBean){
-		return tournamentService.getOngoingTournament(tournamentBean);
-	}
 	
 	@PostMapping("/updateTournament")
 	public BaseBean updateTournament(@RequestBody TournamentBean tournamentBean){
