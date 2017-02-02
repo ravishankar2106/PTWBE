@@ -1,6 +1,7 @@
 package com.bind.ptw.be.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -9,11 +10,14 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.bind.ptw.be.dao.ContestDao;
+import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.dto.UserAnswerBean;
+import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.entities.AnswerOption;
 import com.bind.ptw.be.entities.AnswerOptionHome;
 import com.bind.ptw.be.entities.AnswerType;
@@ -30,6 +34,8 @@ import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
 import com.bind.ptw.be.entities.TournamentTeam;
 import com.bind.ptw.be.entities.TournamentTeamHome;
+import com.bind.ptw.be.entities.UserAnswer;
+import com.bind.ptw.be.entities.UserAnswerHome;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -243,7 +249,38 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		return retContestBean;
 	}
-
+	@Override
+	public ContestBean getContest(ContestBean contestBean) throws PTWException{
+		ContestHome contestHome = new ContestHome(this.getSession());
+		ContestBean retContestBean = null;
+		try{
+			Contest contest = contestHome.findById(contestBean.getContestId());
+			if(contest == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_CONTEST, PTWConstants.ERROR_DESC_INVALID_CONTEST);
+			}
+			retContestBean = new ContestBean();
+			retContestBean.setContestId(contest.getContestId());
+			retContestBean.setContestName(contest.getContestName());
+			retContestBean.setPublishStartDate(contest.getPublishStartDateTime());
+			retContestBean.setPublishStartDateStr(StringUtil.convertDateTImeToString(contest.getPublishStartDateTime()));
+			retContestBean.setPublishEndDate(contest.getPublishEndDateTime());
+			retContestBean.setPublishEndDateStr(StringUtil.convertDateTImeToString(contest.getPublishEndDateTime()));
+			retContestBean.setCutoffDate(contest.getCutoffDateTime());
+			retContestBean.setCutoffDateStr(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
+			retContestBean.setBonusPoints(contest.getBonusPoints());
+			retContestBean.setContestTypeId(contest.getContestType().getContestTypeId());
+			retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
+			retContestBean.setTournamentId(contest.getTournament().getTournamentId());
+			retContestBean.setContestStatusId(contest.getContestStatus().getContestStatusId());
+		}catch(PTWException exception){
+			throw exception;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retContestBean;
+	}
+	
 	@Override
 	public List<ContestBean> getMatches(ContestBean contestBean, Boolean isOngoingContest) throws PTWException {
 		List<ContestBean> retContestBeanList = null;
@@ -354,6 +391,8 @@ public class ContestDaoImpl implements ContestDao{
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_CONTEST, PTWConstants.ERROR_DESC_INVALID_CONTEST);
 			}
 			contestHome.remove(contest);
+		}catch(PTWException exception){
+			throw exception;
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
@@ -590,6 +629,67 @@ public class ContestDaoImpl implements ContestDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		
+		
+	}
+
+	@Override
+	public void addUserAnswer(UserContestAnswer userContestAnswer) throws PTWException {
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		try{
+			int userId = userContestAnswer.getUserId();
+			List<UserAnswerBean> userAnswerBeanList = userContestAnswer.getUserAnswerList();
+			Date currentDate = new Date();
+			Integer[] questionIdList = getQuestionId(userAnswerBeanList);
+			checkAndRemoveDuplicateAnswer(answerHome, userId, questionIdList);
+			for (UserAnswerBean userAnswerBean : userAnswerBeanList) {
+				Integer questionId = userAnswerBean.getQuestionId();
+				
+				List<AnswerBean> answerBeanList = userAnswerBean.getSelectedAnswerList();
+				for (AnswerBean answerBean : answerBeanList) {
+					UserAnswer userAnswer = new UserAnswer();
+					userAnswer.setQuestionId(questionId);
+					userAnswer.setUserId(userId);
+					userAnswer.setAnsweredDateTime(currentDate);
+					AnswerOption answerOption = new AnswerOption();
+					answerOption.setAnswerOptionId(answerBean.getAnswerOptionId());
+					userAnswer.setAnswerOption(answerOption);
+					answerHome.persist(userAnswer);
+				}
+				
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+
+	private void checkAndRemoveDuplicateAnswer(UserAnswerHome answerHome, int userId, Integer[] questionIdList) {
+		List<UserAnswer> existingAnswers = answerHome.getUserAnswer(userId, questionIdList[0]);
+		if(existingAnswers!=null && !existingAnswers.isEmpty()){
+			answerHome.deleteUserAnswer(userId, questionIdList);
+			this.getSession().flush();
+		}
+	}
+
+	private Integer[] getQuestionId(List<UserAnswerBean> userAnswerBeanList) {
+		Integer[] questionIdArr = new Integer[userAnswerBeanList.size()];
+		int index=0;
+		for (UserAnswerBean userAnswerBean : userAnswerBeanList) {
+			questionIdArr[index++]= userAnswerBean.getQuestionId();
+		}
+		return questionIdArr;
+	}
+
+	@Override
+	public UserContestAnswer getUserAnswer(ContestBean contestBean) throws PTWException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeUserAnswer(ContestBean contestBean) throws PTWException {
+		// TODO Auto-generated method stub
 		
 	}
 	

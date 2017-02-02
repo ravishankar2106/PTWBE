@@ -8,6 +8,7 @@ import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
+import com.bind.ptw.be.dto.UserContestAnswer;
 
 public interface ContestService {
 	MatchBean createMatch(MatchBean matchBean);
@@ -33,5 +34,6 @@ public interface ContestService {
 	QuestionBean getAnswersForQuestion(QuestionBean questionBean);
 	BaseBean deleteAnswerOption(AnswerOptionBean answerOptionBean);
 	
+	BaseBean submitUserAnswer(UserContestAnswer userContestAsnwer);
 	
 }

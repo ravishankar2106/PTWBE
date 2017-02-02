@@ -6,11 +6,14 @@ import java.util.List;
 
 import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.TournamentDao;
+import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.dto.UserAnswerBean;
+import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -282,6 +285,38 @@ public class ContestBeanValidator {
 		if(StringUtil.isEmptyNull(answerOptionBean.getAnswerOptionStr())){
 			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Answer Option");
 		}
+	}
+	
+	public static void validateUserAnswer(UserContestAnswer userContestAnswer, ContestDao contestDao)throws PTWException{
+		validateContestId(userContestAnswer.getContestId());
+		UserBeanValidator.validateUserId(userContestAnswer.getUserId());
+		List<UserAnswerBean> userAnswerBeanList = userContestAnswer.getUserAnswerList();
+		if(userAnswerBeanList == null || userAnswerBeanList.isEmpty()){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
+		}
+		
+		for (UserAnswerBean userAnswerBean : userAnswerBeanList) {
+			Integer questionId = userAnswerBean.getQuestionId();
+			validateQuestionId(questionId);
+			List<AnswerBean> answerBeanList = userAnswerBean.getSelectedAnswerList();
+			if(answerBeanList == null || answerBeanList.isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
+			}
+			for (AnswerBean answerBean : answerBeanList) {
+				if(StringUtil.isEmptyNull(answerBean.getAnswerOptionId())){
+					throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
+				}
+			}
+		}
+		
+		ContestBean queryContest = new ContestBean();
+		queryContest.setContestId(userContestAnswer.getContestId());
+		ContestBean contest = contestDao.getContest(queryContest);
+		if(contest.getContestStatusId()!=1 || contest.getCutoffDate().before(new Date())){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_CUTOFF_TIME_OVER, PTWConstants.ERROR_DESC_CONTEST_CUTOFF_TIME_OVER);
+		}
+		
+		
 	}
 	
 }

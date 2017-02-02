@@ -19,6 +19,7 @@ import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
@@ -367,5 +368,18 @@ public class ContestServiceImpl implements ContestService{
 		return retBean;
 	}
 
+	@Override
+	public BaseBean submitUserAnswer(UserContestAnswer userContestAsnwer){
+		BaseBean retBean = new BaseBean();
+		try{
+			ContestBeanValidator.validateUserAnswer(userContestAsnwer, contestDao);
+			contestDao.addUserAnswer(userContestAsnwer);
+		}catch(PTWException exception){
+			retBean.setResultCode(exception.getCode());
+			retBean.setResultDescription(exception.getDescription());
+		}
+		
+		return retBean;
+	}
 	
 }

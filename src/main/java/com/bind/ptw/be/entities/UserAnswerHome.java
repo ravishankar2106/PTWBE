@@ -1,13 +1,11 @@
 package com.bind.ptw.be.entities;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-
-import com.bind.ptw.be.dto.QuestionBean;
-import com.bind.ptw.be.dto.TeamTypeBean;
-import com.bind.ptw.be.util.StringUtil;
 
 
 public class UserAnswerHome {
@@ -34,15 +32,42 @@ public class UserAnswerHome {
 		}
 	}
 	
-	public List<UserAnswer> getUserAnswer(QuestionBean questionBean){
+	public List<UserAnswer> getUserAnswer(Integer userId, Integer questionId){
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();
 		queryToExecute.append(QueryConstants.RETRIEVE_USER_ANSWER);
-		queryToExecute.append("AND ua.questionId =: questionId");
+		queryToExecute.append("AND ua.userId =:userId ");
+		queryToExecute.append("AND ua.questionId =:questionId");
 		query = session.createQuery(queryToExecute.toString());
-		query.setParameter("questionId", questionBean.getQuestionId());
+		query.setParameter("userId", userId);
+		query.setParameter("questionId", questionId);
 		return query.list();
 	}
 
+	public void deleteUserAnswer(Integer userId, Integer[] questionIdList){
+		Query query = null;
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("DELETE FROM UserAnswer ua where ua.userId = ");
+		queryToExecute.append(userId);
+		queryToExecute.append(" ");
+		queryToExecute.append("AND ua.questionId IN ( ");
+		queryToExecute.append(appendQuestionId(questionIdList));
+		queryToExecute.append(")");
+		query = session.createQuery(queryToExecute.toString());
+		query.executeUpdate();
+	}
 	
+	private String appendQuestionId(Integer[] questionIdList){
+		StringBuilder strBuilder = new StringBuilder();
+		int index = 0;
+		for (Integer questionId : questionIdList) {
+			strBuilder.append(questionId);
+			index++;
+			if(index < questionIdList.length){
+				strBuilder.append(",");
+			}
+		}
+		
+		return strBuilder.toString();
+	}
 }

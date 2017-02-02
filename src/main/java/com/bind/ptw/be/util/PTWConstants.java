@@ -173,6 +173,7 @@ public class PTWConstants {
 	public final static String ERROR_DESC_QUESTION_ANSWER_COUNT_INVALID = "Answer Count is Invalid";
 	public final static String ERROR_CODE_ANSWER_NOT_FOUND = "220";
 	public final static String ERROR_DESC_ANSWER_NOT_FOUND = "Answer Not Found";
-	
+	public final static String ERROR_CODE_CONTEST_CUTOFF_TIME_OVER = "251";
+	public final static String ERROR_DESC_CONTEST_CUTOFF_TIME_OVER = "Contest is over for submitting answer";
 	
 }

@@ -9,6 +9,7 @@ public class AnswerBean implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer answerId;
+	private Integer answerOptionId;
 	private String answerStr;
 	private Integer pointsAllocated;
 	private Integer pointsScored=0;
@@ -18,6 +19,12 @@ public class AnswerBean implements Serializable{
 	}
 	public void setAnswerId(Integer answerId) {
 		this.answerId = answerId;
+	}
+	public Integer getAnswerOptionId() {
+		return answerOptionId;
+	}
+	public void setAnswerOptionId(Integer answerOptionId) {
+		this.answerOptionId = answerOptionId;
 	}
 	public String getAnswerStr() {
 		return answerStr;

@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan("com.bind.ptw.be.entities")
-@PropertySource(value = {"classpath:application.properties"})
 @PropertySource("file:${prop.path}/app.properties")
 public class HibernateConfiguration {
 	
@@ -56,11 +55,9 @@ public class HibernateConfiguration {
   public DataSource getDataSource() {
     BasicDataSource dataSource = new BasicDataSource();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-    dataSource.setUrl("jdbc:mysql://:"+ env.getProperty("db.port")+"/"+env.getProperty("db.dbname"));;
+    dataSource.setUrl("jdbc:mysql://"+ env.getProperty("db.dbURL") + ":"+ env.getProperty("db.port")+"/"+env.getProperty("db.dbname"));;
     dataSource.setUsername(env.getProperty("db.username"));
     dataSource.setPassword(env.getProperty("db.password"));
-
-
     return dataSource;
   }
 

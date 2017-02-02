@@ -7,6 +7,8 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.dto.UserAnswerBean;
+import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.util.PTWException;
 
 public interface ContestDao {
@@ -21,6 +23,7 @@ public interface ContestDao {
 	List<ContestBean> getMatches(ContestBean contestBean, Boolean isOngoingContest) throws PTWException;
 	void updateContest(ContestBean contestBean) throws PTWException;
 	void deleteContest(ContestBean contestBean) throws PTWException;
+	ContestBean getContest(ContestBean contestBean) throws PTWException;
 	
 	QuestionBean createQuestion(QuestionBean questionBean) throws PTWException;
 	List<QuestionBean> getQuestion(ContestBean contestBean) throws PTWException;
@@ -33,5 +36,10 @@ public interface ContestDao {
 	List<AnswerOptionBean> getAnswersForQuestion(QuestionBean questionBean) throws PTWException;
 	void deleteAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException;
 	List<QuestionBean> getMatchQuestions(MatchBean matchBean) throws PTWException;
+	
+	void addUserAnswer(UserContestAnswer userContestAnswer)throws PTWException;
+	UserContestAnswer getUserAnswer(ContestBean contestBean) throws PTWException;
+	void removeUserAnswer(ContestBean contestBean) throws PTWException;
+	
 	
 }

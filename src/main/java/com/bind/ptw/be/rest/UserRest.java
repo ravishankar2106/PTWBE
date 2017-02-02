@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
@@ -18,6 +19,7 @@ import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.UserService;
@@ -66,7 +68,11 @@ public class UserRest {
 	public QuestionBeanList getMatchQuestion(@RequestBody MatchBean matchBean){
 		return contestService.getMatchQuestions(matchBean);
 	}
-
+	
+	@PostMapping("/submitUserAnswer")
+	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
+		return contestService.submitUserAnswer(userContestAsnwer);
+	}
 	/**
 	 * User API
 	 * @param contestBean
