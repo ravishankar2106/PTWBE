@@ -2,6 +2,7 @@ package com.bind.ptw.be.dao;
 
 import java.util.List;
 
+import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
@@ -9,6 +10,7 @@ import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserAnswerBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.util.PTWException;
 
 public interface ContestDao {
@@ -24,6 +26,7 @@ public interface ContestDao {
 	void updateContest(ContestBean contestBean) throws PTWException;
 	void deleteContest(ContestBean contestBean) throws PTWException;
 	ContestBean getContest(ContestBean contestBean) throws PTWException;
+	List<ContestBean> getContestList(ContestBean contestBean) throws PTWException;
 	
 	QuestionBean createQuestion(QuestionBean questionBean) throws PTWException;
 	List<QuestionBean> getQuestion(ContestBean contestBean) throws PTWException;
@@ -40,6 +43,8 @@ public interface ContestDao {
 	void addUserAnswer(UserContestAnswer userContestAnswer)throws PTWException;
 	UserContestAnswer getUserAnswer(ContestBean contestBean) throws PTWException;
 	void removeUserAnswer(ContestBean contestBean) throws PTWException;
+	List<UserSelectedAnswerBean> getUserAnswers(UserSelectedAnswerBean userSelectedAnswerBean) throws PTWException;
+	void updatePointsForUserAnswer(List<AnswerBean> answerBeanList) throws PTWException;
 	
 	
 }

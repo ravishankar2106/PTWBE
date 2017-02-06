@@ -1,15 +1,20 @@
 package com.bind.ptw.be.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.TournamentDao;
+import com.bind.ptw.be.dao.UserDao;
+import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.ContestBean;
@@ -20,11 +25,13 @@ import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
+import com.bind.ptw.be.util.StringUtil;
 
 @Service("contestService")
 @Transactional
@@ -35,6 +42,9 @@ public class ContestServiceImpl implements ContestService{
 	
 	@Autowired
 	TournamentDao tournamentDao;
+	
+	@Autowired
+	UserDao userDao;
 	
 	@Autowired
 	HibernateTemplate hibernateTemplate;
@@ -208,6 +218,131 @@ public class ContestServiceImpl implements ContestService{
 			retBean.setResultDescription(exception.getDescription());
 		}
 		return retBean;
+	}
+	
+	@Override
+	public BaseBean processContests(ContestBean contestBean){
+		BaseBean retBean = new BaseBean();
+		try{
+			if(contestBean == null){
+				contestBean = new ContestBean();
+			}
+			if(!StringUtil.isEmptyNull(contestBean.getContestId()) && !(StringUtil.isEmptyNull(contestBean.getContestStatusId()))){
+				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_PROCESS_REQUEST, PTWConstants.ERROR_DESC_FIELD_INVALID + "Status Id");
+			}
+			if(StringUtil.isEmptyNull(contestBean.getContestId())){
+				contestBean.setContestStatusId(2);
+			}
+			List<ContestBean> contestBeanList = contestDao.getContestList(contestBean);
+			if(contestBeanList == null || contestBeanList.isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_PROCESS_NO_RECORD, PTWConstants.ERROR_DESC_CONTEST_PROCESS_NO_RECORD);
+			}
+			for (ContestBean dbContestBean : contestBeanList) {
+				processResults(dbContestBean);
+			}
+		}catch(PTWException exception){
+			retBean.setResultCode(exception.getCode());
+			retBean.setResultDescription(exception.getDescription());
+		}
+		return retBean;
+	}
+
+	private void processResults(ContestBean dbContestBean) throws PTWException {
+		int contestId = dbContestBean.getContestId();
+		int tournamentId = dbContestBean.getTournamentId();
+		int contestBonusPoint = dbContestBean.getBonusPoints();
+		int totalMaxPoints = 0;
+		Map<Integer,Integer> userPointMap = new HashMap<Integer, Integer>();
+		Map<Integer,Integer> selectedAnswerPointMap = new HashMap<Integer, Integer>();
+		
+		List<QuestionBean> contestQuestionsList = contestDao.getQuestion(dbContestBean);
+		if(contestQuestionsList != null && !contestQuestionsList.isEmpty()){
+			for (QuestionBean questionBean : contestQuestionsList) {
+				List<AnswerOptionBean> answerOptions = contestDao.getAnswersForQuestion(questionBean);
+				for (AnswerOptionBean answerOptionBean : answerOptions) {
+					int pointsScored = answerOptionBean.getPoints();
+					if(StringUtil.isEmptyNull(answerOptionBean.getPoints())){
+						continue;
+					}
+					if(answerOptionBean.getCorrectAnswerFlag()){
+						totalMaxPoints += pointsScored;
+					}
+					
+					Integer correctAnswerOptionId = answerOptionBean.getAnswerOptionId();
+					System.out.println("Correct Answer Option " + correctAnswerOptionId);
+					System.out.println("Points Scored " + pointsScored);
+					selectedAnswerPointMap.put(correctAnswerOptionId, pointsScored);
+					
+					UserSelectedAnswerBean reqSelectedAnswer = new UserSelectedAnswerBean();
+					reqSelectedAnswer.setSelectedAnswerOptionId(correctAnswerOptionId);
+					List<UserSelectedAnswerBean> userSelectedAnswerList = contestDao.getUserAnswers(reqSelectedAnswer);
+					if(userSelectedAnswerList != null && !userSelectedAnswerList.isEmpty()){
+						for (UserSelectedAnswerBean userSelectedAnswerBean : userSelectedAnswerList) {
+							Integer userId = userSelectedAnswerBean.getUserId();
+							System.out.println("Correct answer given by " + userId);
+							Integer newPoints = pointsScored;
+							if(userPointMap.containsKey(userId)){
+								Integer currentPoints = userPointMap.get(userId);
+								newPoints = newPoints + currentPoints;
+							}
+							userPointMap.put(userId, newPoints);
+						}
+					}
+				}
+			}
+			
+			List<Integer> bonusWinners = null;
+			if(!userPointMap.isEmpty()){
+				if(!StringUtil.isEmptyNull(dbContestBean.getBonusPoints())){
+					bonusWinners = new ArrayList<Integer>();
+					for (Map.Entry<Integer, Integer> userIdPointMap : userPointMap.entrySet()) {
+						Integer userId = userIdPointMap.getKey();
+						Integer pointsWon = userIdPointMap.getValue();
+						if(pointsWon == totalMaxPoints){
+							bonusWinners.add(userId);
+						}
+					}
+				}
+			}
+			
+			updateUserAnswers(selectedAnswerPointMap);
+			if(!StringUtil.isEmptyNull(contestBonusPoint )){
+				updateBonusPoints(contestId, contestBonusPoint, bonusWinners);
+			}
+			markContestAsCompleted(contestId);
+			
+		}
+		
+		
+	}
+
+	private void updateBonusPoints(int contestId, int contestBonusPoint, List<Integer> bonusWinners)
+			throws PTWException {
+		ContestBean contestBean = new ContestBean();
+		contestBean.setContestId(contestId);
+		contestBean.setBonusPoints(contestBonusPoint);
+		userDao.updateBonusPoints(contestBean, bonusWinners);
+	}
+
+	private void markContestAsCompleted(int contestId) throws PTWException {
+		ContestBean newContestStatus = new ContestBean();
+		newContestStatus.setContestId(contestId);
+		newContestStatus.setContestStatusId(4);
+		contestDao.updateContest(newContestStatus);
+	}
+
+	private void updateUserAnswers(Map<Integer, Integer> selectedAnswerPointMap) throws PTWException{
+		if(selectedAnswerPointMap!= null && !selectedAnswerPointMap.isEmpty()){
+			List<AnswerBean> answerBeanList = new ArrayList<AnswerBean>();
+			for (Map.Entry<Integer, Integer> answerOptionPointMap : selectedAnswerPointMap.entrySet()) {
+				AnswerBean answerBean = new AnswerBean();
+				answerBean.setAnswerOptionId(answerOptionPointMap.getKey());
+				answerBean.setPointsScored(answerOptionPointMap.getValue());
+				answerBeanList.add(answerBean);
+			}
+			contestDao.updatePointsForUserAnswer(answerBeanList);
+		}
+		
 	}
 
 	@Override

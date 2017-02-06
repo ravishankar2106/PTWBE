@@ -81,6 +81,11 @@ public class ContestRest {
 		return contestService.getContestQuestion(contestBean);
 	}
 	
+	@PostMapping("/processContests")
+	public BaseBean processContests(@RequestBody ContestBean contestBean){
+		return contestService.processContests(contestBean);
+	}
+	
 	@PostMapping("/updateQuestion")
 	public BaseBean updateQuestion(@RequestBody QuestionBean questionBean){
 		return contestService.updateQuestion(questionBean);

@@ -43,6 +43,16 @@ public class UserAnswerHome {
 		query.setParameter("questionId", questionId);
 		return query.list();
 	}
+	
+	public List<UserAnswer> findByAnswerOption(Integer answerOptionId){
+		Query query = null;
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append(QueryConstants.RETRIEVE_USER_ANSWER);
+		queryToExecute.append("AND ua.answerOption.answerOptionId =:answerOptionId ");
+		query = session.createQuery(queryToExecute.toString());
+		query.setParameter("answerOptionId", answerOptionId);
+		return query.list();
+	}
 
 	public void deleteUserAnswer(Integer userId, Integer[] questionIdList){
 		Query query = null;
@@ -69,5 +79,17 @@ public class UserAnswerHome {
 		}
 		
 		return strBuilder.toString();
+	}
+
+	public void saveUserPoints(Integer answerOptionId, Integer pointsScored) {
+		Query query = null;
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("Update UserAnswer ua set ua.pointsScored =:pointsScored ");
+		queryToExecute.append("Where ua.answerOption.answerOptionId =:answerOptionId");
+		query = session.createQuery(queryToExecute.toString());
+		query.setParameter("answerOptionId", answerOptionId);
+		query.setParameter("pointsScored", pointsScored);
+		query.executeUpdate();
+		
 	}
 }

@@ -1,5 +1,6 @@
 package com.bind.ptw.be.services.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,11 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bind.ptw.be.dao.UserDao;
+import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.CityBeanList;
+import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.services.UserService;
+import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.services.util.UserBeanValidator;
 import com.bind.ptw.be.util.DBConstants;
 import com.bind.ptw.be.util.EmailContent;
@@ -137,6 +142,41 @@ public class UserServiceImpl implements UserService{
 		List<CityBean> cityBeaList = userDao.getCities();
 		cityBeanList.setCities(cityBeaList);
 		return cityBeanList;
+	}
+
+	@Override
+	public BaseBean registerUserToTournament(UserTournmentRegisterBean userTournament) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(userTournament);
+			UserBeanValidator.validateTournamentRegistration(userTournament);
+			userDao.registerUserToTournament(userTournament);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
+
+	@Override
+	public UserTournmentRegisterBean getUserRegisterTournament(UserBean userBean) {
+		UserTournmentRegisterBean userTournamentRegisterBean = new UserTournmentRegisterBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(userBean);
+			UserBeanValidator.validateUserId(userBean.getUserId());
+			List<TournamentBean> tournamentList = userDao.getUserRegisteredTournament(userBean);
+			if(tournamentList!=null && !tournamentList.isEmpty()){
+				List<Integer> tournamentIdList = new ArrayList<Integer>();
+				for (TournamentBean tournament : tournamentList) {
+					tournamentIdList.add(tournament.getTournamentId());
+				}
+				userTournamentRegisterBean.setTournamentList(tournamentIdList);
+			}
+		}catch(PTWException exception){
+			userTournamentRegisterBean.setResultCode(exception.getCode());
+			userTournamentRegisterBean.setResultDescription(exception.getDescription());
+		}
+		return userTournamentRegisterBean;
 	}
 	
 	

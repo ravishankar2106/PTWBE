@@ -8,6 +8,7 @@ import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -186,4 +187,21 @@ public class UserBeanValidator {
 					PTWConstants.ERROR_DESC_USER_TEAM_NAME_DUPLICATE);
 		}
 	}
+
+	public static void validateTournamentRegistration(UserTournmentRegisterBean userTournament) throws PTWException{
+		validateUserId(userTournament.getUserId());
+		List<Integer> tournamentIdList = userTournament.getTournamentList();
+		if(tournamentIdList == null || tournamentIdList.isEmpty()){
+			throw new PTWException( PTWConstants.ERROR_CODE_TOURNAMENT_ID_EMPTY, 
+					PTWConstants.ERROR_DESC_FIELD_INVALID +"Tournament Id");
+		}
+		for (Integer tournamentId : tournamentIdList) {
+			if(StringUtil.isEmptyNull(tournamentId)){
+				throw new PTWException( PTWConstants.ERROR_CODE_TOURNAMENT_ID_EMPTY, 
+						PTWConstants.ERROR_DESC_FIELD_INVALID +"Tournament Id");
+			}
+		}
+	}
+
+	
 }
