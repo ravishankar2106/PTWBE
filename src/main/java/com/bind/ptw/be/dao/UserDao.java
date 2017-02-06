@@ -3,8 +3,11 @@ package com.bind.ptw.be.dao;
 import java.util.List;
 
 import com.bind.ptw.be.dto.CityBean;
+import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.util.PTWException;
 
 public interface UserDao {
@@ -20,4 +23,7 @@ public interface UserDao {
 	void deleteConfirmationCode(UserConfirmationBean userConfirmationBean);
 	List<CityBean> getCities();
 	CityBean getCity(CityBean cityBean);
+	void updateBonusPoints(ContestBean contestBean, List<Integer> userIdList) throws PTWException;
+	void registerUserToTournament(UserTournmentRegisterBean userTournament) throws PTWException;
+	List<TournamentBean> getUserRegisteredTournament(UserBean userBean) throws PTWException;
 }

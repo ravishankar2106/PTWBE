@@ -11,17 +11,25 @@ import org.springframework.stereotype.Repository;
 
 import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.CityBean;
+import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.entities.City;
+import com.bind.ptw.be.entities.UserBonusPoint;
+import com.bind.ptw.be.entities.UserBonusPointHome;
 import com.bind.ptw.be.entities.UserConfirmation;
 import com.bind.ptw.be.entities.UserConfirmationHome;
 import com.bind.ptw.be.entities.UserHome;
 import com.bind.ptw.be.entities.UserStatus;
 import com.bind.ptw.be.entities.UserToken;
 import com.bind.ptw.be.entities.UserTokenHome;
+import com.bind.ptw.be.entities.UserTournamentRegistration;
+import com.bind.ptw.be.entities.UserTournamentRegistrationHome;
 import com.bind.ptw.be.entities.Users;
 import com.bind.ptw.be.util.DBConstants;
+import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 
 
@@ -202,5 +210,60 @@ public class UserDaoImpl implements UserDao{
 			returnBean.setCityName(city.getCityName());
 		}
 		return returnBean;
+	}
+	
+	@Override
+	public void updateBonusPoints(ContestBean contestBean, List<Integer> userIdList) throws PTWException{
+		UserBonusPointHome userBonusPointHome = new UserBonusPointHome(this.getSession());
+		try{
+			for (Integer userId : userIdList) {
+				UserBonusPoint userBonus = new UserBonusPoint();
+				userBonus.setContestId(contestBean.getContestId());
+				userBonus.setUserId(userId);
+				userBonus.setPoints(contestBean.getBonusPoints());
+				userBonusPointHome.save(userBonus);
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void registerUserToTournament(UserTournmentRegisterBean userTournament)throws PTWException {
+		UserTournamentRegistrationHome userTournamentHome = new UserTournamentRegistrationHome(this.getSession());
+		try{
+			List<Integer> tournamentIds = userTournament.getTournamentList();
+			for (Integer tournamentId : tournamentIds) {
+				UserTournamentRegistration userTournamentRegistration = new UserTournamentRegistration();
+				userTournamentRegistration.setUserId(userTournament.getUserId());
+				userTournamentRegistration.setTournamentId(tournamentId);
+				userTournamentHome.persist(userTournamentRegistration);
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public List<TournamentBean> getUserRegisteredTournament(UserBean userBean) throws PTWException {
+		List<TournamentBean> tournamentList = null;
+		UserTournamentRegistrationHome userTournamentHome = new UserTournamentRegistrationHome(this.getSession());
+		try{
+			List<UserTournamentRegistration> userRegisteredTournamentList = userTournamentHome.findByFilter(null, userBean.getUserId());
+			if(userRegisteredTournamentList!=null && !userRegisteredTournamentList.isEmpty()){
+				tournamentList = new ArrayList<TournamentBean>();
+				for (UserTournamentRegistration userTournamentRegistration : userRegisteredTournamentList) {
+					TournamentBean tournamentBean = new TournamentBean();
+					tournamentBean.setTournamentId(userTournamentRegistration.getTournamentId());
+					tournamentList.add(tournamentBean);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return tournamentList;
 	}
 }

@@ -23,6 +23,7 @@ public interface ContestService {
 	BaseBean updateContestStatus(ContestBean contestBean);
 	BaseBean deleteContest(ContestBean contestBean);
 	ContestBeanList getOngoingContests(ContestBean contestBean);
+	BaseBean processContests(ContestBean contestBean);
 	
 	QuestionBean createQuestion(QuestionBean questionBean);
 	BaseBean updateQuestion(QuestionBean questionBean);
@@ -35,5 +36,6 @@ public interface ContestService {
 	BaseBean deleteAnswerOption(AnswerOptionBean answerOptionBean);
 	
 	BaseBean submitUserAnswer(UserContestAnswer userContestAsnwer);
+	
 	
 }

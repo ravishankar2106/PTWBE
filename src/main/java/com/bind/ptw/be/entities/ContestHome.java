@@ -60,7 +60,7 @@ public class ContestHome {
 			queryToExecute.append(QueryConstants.RETRIEVE_TOURNAMENT_CONTEST);
 			if( contestBean != null ) {
 				if(!StringUtils.isEmpty(contestBean.getContestId())){
-					queryToExecute.append("AND c.contestId =:contestId");
+					queryToExecute.append("AND c.contestId =:contestId ");
 				}else if(!StringUtil.isEmptyNull(contestBean.getMatchId())){
 					queryToExecute.append("AND c.match.matchId =:matchId ");
 				}else if(!StringUtil.isEmptyNull(contestBean.getTournamentId())){

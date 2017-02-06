@@ -176,4 +176,8 @@ public class PTWConstants {
 	public final static String ERROR_CODE_CONTEST_CUTOFF_TIME_OVER = "251";
 	public final static String ERROR_DESC_CONTEST_CUTOFF_TIME_OVER = "Contest is over for submitting answer";
 	
+	public final static String ERROR_CODE_CONTEST_PROCESS_NO_RECORD = "300";
+	public final static String ERROR_DESC_CONTEST_PROCESS_NO_RECORD = "No Contests to be processed";
+	public final static String ERROR_CODE_INVALID_PROCESS_REQUEST = "301";
+	
 }

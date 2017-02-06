@@ -13,7 +13,6 @@ import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.dto.CountryBeanList;
 import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.PlayerBeanList;
-import com.bind.ptw.be.dto.SportTypeBeanList;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
@@ -21,9 +20,9 @@ import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
-import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
+import com.bind.ptw.be.entities.SportTypeBeanList;
 import com.bind.ptw.be.services.TournamentService;
 
 @EnableAutoConfiguration
