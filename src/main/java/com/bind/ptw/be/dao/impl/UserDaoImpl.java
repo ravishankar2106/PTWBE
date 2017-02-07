@@ -88,7 +88,7 @@ public class UserDaoImpl implements UserDao{
 					retrievedUserBean.setTeamName(user.getTeamName());
 					retrievedUserBean.setEmail(user.getEmailId());
 					retrievedUserBean.setPhone(user.getPhone());
-					retrievedUserBean.setUserId(user.getUserStatus().getUserStatusId());
+					retrievedUserBean.setUserStatusId(user.getUserStatus().getUserStatusId());
 					retrievedUserBean.setCityId(user.getCity().getCityId());
 					retrievedUserBeanList.add(retrievedUserBean);
 				}

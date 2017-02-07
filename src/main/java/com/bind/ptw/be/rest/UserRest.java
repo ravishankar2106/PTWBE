@@ -89,17 +89,9 @@ public class UserRest {
 	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
 		return contestService.submitUserAnswer(userContestAsnwer);
 	}
-	/**
-	 * User API
-	 * @param contestBean
-	 * @return
-	 */
-	@PostMapping("/getOngoingContest")
-	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
-		return contestService.getOngoingContests(contestBean);
-	}
+	
 
-	@PostMapping("/getTournament")
+	@PostMapping("/getOngoingTournament")
 	public TournamentBeanList getOngoingTournament (@RequestBody TournamentBean tournamentBean){
 		return tournamentService.getOngoingTournament(tournamentBean);
 	}
@@ -112,5 +104,15 @@ public class UserRest {
 	@PostMapping("/getUserRegisteredTournament")
 	public UserTournmentRegisterBean getUserRegisterTournament(@RequestBody UserBean userBean){
 		return userService.getUserRegisterTournament(userBean);
+	}
+	
+	/**
+	 * User API
+	 * @param contestBean
+	 * @return
+	 */
+	@PostMapping("/getOngoingContest")
+	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
+		return contestService.getOngoingContests(contestBean);
 	}
 }

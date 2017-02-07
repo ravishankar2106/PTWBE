@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,8 @@ import com.bind.ptw.be.util.StringUtil;
 @Transactional
 public class UserServiceImpl implements UserService{
 
+	private static final Logger logger = Logger.getLogger(UserServiceImpl.class);
+	
 	@Autowired
 	UserDao userDao;
 	
@@ -42,13 +46,14 @@ public class UserServiceImpl implements UserService{
 	public UserBean createUser(UserBean registerUser){
 		UserBean userResponse;
 		try{
+			logger.debug("Entering register User");
 			UserBeanValidator.validateRegisterUser(registerUser, userDao);
 			userResponse = userDao.save(registerUser);
 			registerUser.setUserId(userResponse.getUserId());
 			createUserToken(registerUser);
 			createConfirmationRecord(registerUser);
 		}catch(PTWException exception){
-			exception.printStackTrace();
+			logger.error(exception);
 			userResponse = new UserBean();
 			userResponse.setResultCode(exception.getCode());
 			userResponse.setResultDescription(exception.getDescription());
