@@ -3,6 +3,7 @@ package com.bind.ptw.be.dao.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,11 @@ import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
+import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserAnswerBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.entities.AnswerOption;
 import com.bind.ptw.be.entities.AnswerOptionHome;
@@ -37,6 +40,8 @@ import com.bind.ptw.be.entities.TournamentTeam;
 import com.bind.ptw.be.entities.TournamentTeamHome;
 import com.bind.ptw.be.entities.UserAnswer;
 import com.bind.ptw.be.entities.UserAnswerHome;
+import com.bind.ptw.be.entities.UserScoreBoard;
+import com.bind.ptw.be.entities.UserScoreBoardHome;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -765,6 +770,54 @@ public class ContestDaoImpl implements ContestDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		
+		
+	}
+
+	@Override
+	public void updateUserScoreBoard(List<UserScoreBoardBean> userScoreBoardBeanList) throws PTWException {
+		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
+		try{
+			for (UserScoreBoardBean userScoreBoardBean : userScoreBoardBeanList) {
+				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(userScoreBoardBean.getTournamentId(), userScoreBoardBean.getUserId());
+				if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
+					UserScoreBoard userScoreBoard = userScoreBoardList.get(0);
+					userScoreBoard.setTotalPoints(userScoreBoardBean.getPointsScored());	
+					userScoreBoardHome.merge(userScoreBoard);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public List<Integer> getTournamentScores(TournamentBean tournamentBean)throws PTWException{
+		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
+		try{
+			List<Integer> scoresList = userScoreBoardHome.getPointsForTournament(tournamentBean.getTournamentId());
+			return scoresList;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public void updateUserRanks(Set<Integer> reOrderedList) throws PTWException {
+		try{
+			UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
+			int rank = 1;
+			for (Integer orderedRank : reOrderedList) {
+				int updatedRows = userScoreBoardHome.updateRanks(orderedRank, rank);
+				rank += updatedRows;
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
 		
 	}
 	

@@ -4,6 +4,7 @@ import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 
 public interface UserService {
@@ -13,4 +14,6 @@ public interface UserService {
 	CityBeanList getCities();
 	BaseBean registerUserToTournament(UserTournmentRegisterBean userTournament);
 	UserTournmentRegisterBean getUserRegisterTournament(UserBean userBean);
+	BaseBean resetPassword(UserBean userBean);
+	BaseBean updatePassword(UserPasswordBean userPasswordBean);
 }

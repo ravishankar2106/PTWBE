@@ -11,7 +11,7 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailUtil {
 
-	public static final String FROM_ADDRESS = "ravishankar2106@gmail.com";
+	public static final String FROM_ADDRESS = "ravishankar@innovationculture.in";
 	public static final String SMTP_USERNAME = "AKIAJUIM6EUWQ2PNBFKQ";
 	public static final String SMTP_PASSWORD = "AhsTBBggJN2wcx72bAQJjC7uA20WrC8U48X6+YJ/ZD9L";
 	public static final String HOST = "email-smtp.us-west-2.amazonaws.com";

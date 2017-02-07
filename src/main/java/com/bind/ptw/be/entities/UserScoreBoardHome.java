@@ -79,5 +79,49 @@ public class UserScoreBoardHome {
 		return query.list();
 	}
 	
+	public List<Integer> getPointsForTournament( Integer tournamentId ) {
+		
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append("SELECT DISTINCT(totalPoints) FROM UserScoreBoard where tournamentId =:tournamentId ");
+			/*if(userIdList != null && !userIdList.isEmpty()){
+				queryToExecute.append("AND userId IN (:userIdList) ");
+			}*/
+			          
+			query = session.createQuery(queryToExecute.toString());
+			
+			query.setParameter("tournamentId", tournamentId);
+			/*if(userIdList != null && !userIdList.isEmpty()){
+				query.setParameter("statusIdArr", userIdList);
+			}*/
+			
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
+
+	public int updateRanks(Integer points, Integer rank){
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append("Update UserScoreBoard SET rank =:rank ");
+			queryToExecute.append(" where totalPoints =:points");
+			query = session.createQuery(queryToExecute.toString());
+			
+			query.setParameter("rank", rank);
+			query.setParameter("points", points);
+			
+			int returnInt = query.executeUpdate();
+			return returnInt;
+			
+		}catch(RuntimeException e){
+			throw e;
+		}
+	}
 		
 }

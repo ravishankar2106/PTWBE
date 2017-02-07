@@ -8,6 +8,7 @@ import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
@@ -85,7 +86,7 @@ public class UserBeanValidator {
 		userBean.setPassword(sha256hex);
 	}
 
-	private static void validateUserLoginId(String loginId) throws PTWException{
+	public static void validateUserLoginId(String loginId) throws PTWException{
 		
 		if(StringUtil.isEmptyNull(loginId)){
 			throw new PTWException(PTWConstants.ERROR_CODE_USER_LOGIN_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Login Id");
@@ -201,6 +202,12 @@ public class UserBeanValidator {
 						PTWConstants.ERROR_DESC_FIELD_INVALID +"Tournament Id");
 			}
 		}
+	}
+
+	public static void validateUpdatePassword(UserPasswordBean userPasswordBean) throws PTWException{
+		validateUserLoginId(userPasswordBean.getUserLoginId());
+		validateUserPassword(userPasswordBean.getOldPassword());
+		validateUserPassword(userPasswordBean.getPassword());
 	}
 
 	

@@ -31,6 +31,7 @@ import com.bind.ptw.be.entities.Users;
 import com.bind.ptw.be.util.DBConstants;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
+import com.bind.ptw.be.util.StringUtil;
 
 
 @Repository("userDao")
@@ -164,10 +165,18 @@ public class UserDaoImpl implements UserDao{
 	public void updateUser(UserBean userBean) {
 		UserHome userHome = new UserHome(getSession());
 		Users user = userHome.findById(userBean.getUserId());
-		
-		user.setUserName(userBean.getUserName());
-		user.setEmailId(userBean.getEmail());
-		user.setPhone(userBean.getPhone());
+		if(!StringUtil.isEmptyNull(userBean.getUserName())){
+			user.setUserName(userBean.getUserName());
+		}
+		if(!StringUtil.isEmptyNull(userBean.getEmail())){
+			user.setEmailId(userBean.getEmail());
+		}
+		if(!StringUtil.isEmptyNull(userBean.getPhone())){
+			user.setPhone(userBean.getPhone());
+		}
+		if(!StringUtil.isEmptyNull(userBean.getPassword())){
+			user.setPassword(userBean.getPassword());
+		}
 		userHome.merge(user);
 	}
 

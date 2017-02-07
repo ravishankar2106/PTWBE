@@ -3,6 +3,7 @@ package com.bind.ptw.be.services.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -16,6 +17,7 @@ import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.services.UserService;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
@@ -178,6 +180,80 @@ public class UserServiceImpl implements UserService{
 		}
 		return userTournamentRegisterBean;
 	}
+
+	@Override
+	public BaseBean resetPassword(UserBean userBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(userBean);
+			UserBeanValidator.validateUserLoginId(userBean.getUserLoginId());
+			List<UserBean> foundUserList = userDao.getUsers(userBean);
+			if(foundUserList == null || foundUserList.size() != 1){
+				throw new PTWException(PTWConstants.ERROR_CODE_USER_INVALID, PTWConstants.ERROR_DESC_USER_INVALID);
+			}
+			UserBean foundUser = foundUserList.get(0);
+			int newPassword = generateRandomPassword();
+			
+			String sha256hexPwd = org.apache.commons.codec.digest.DigestUtils.sha256Hex(String.valueOf(newPassword));
+			foundUser.setPassword(sha256hexPwd);
+			userDao.updateUser(foundUser);
+			
+			EmailContent emailContent = new EmailContent();
+			emailContent.setToAddress(foundUser.getEmail());
+		    StringBuilder bodyBuilder = new StringBuilder();
+		    bodyBuilder.append("Thanks for contacting for resetting password. Your new password is ");
+		    bodyBuilder.append(String.valueOf(newPassword));
+		    bodyBuilder.append("\r\n");
+		    bodyBuilder.append(" ");
+		    bodyBuilder.append("\r\n");
+		    bodyBuilder.append("This is auto generated Mail.");
+		    emailContent.setEmailBody(bodyBuilder.toString());
+		    
+		    String subj = "Predict To Win: New Password";
+		    emailContent.setEmailSubject(subj);
+			EmailUtil.sendEmail(emailContent);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
 	
-	
+	private int generateRandomPassword() {
+		int Min = 100000;
+		int Max = 999999;
+		
+		Random random = new Random();
+		int nextNumber;
+		do{
+			nextNumber = random.nextInt(Max);
+		}while(!((nextNumber > Min) && (nextNumber < Max)));
+		return nextNumber;
+	}
+
+	@Override
+	public BaseBean updatePassword(UserPasswordBean userPasswordBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.vaidateRequest(userPasswordBean);
+			UserBeanValidator.validateUpdatePassword(userPasswordBean);
+			UserBean userBean = new UserBean();
+			userBean.setUserLoginId(userPasswordBean.getUserLoginId());
+			String encryptedOldPwd = org.apache.commons.codec.digest.DigestUtils.sha256Hex(userPasswordBean.getOldPassword());
+			userBean.setPassword(encryptedOldPwd);
+			List<UserBean> foundUserList = userDao.getUsers(userBean);
+			if(foundUserList == null || foundUserList.size() != 1 ){
+				throw new PTWException(PTWConstants.ERROR_CODE_USER_INVALID, PTWConstants.ERROR_DESC_USER_INVALID);
+			}
+			UserBean foundUser = foundUserList.get(0);
+			String encryptedNewPwd = org.apache.commons.codec.digest.DigestUtils.sha256Hex(userPasswordBean.getPassword());
+			foundUser.setPassword(encryptedNewPwd);
+			userDao.updateUser(foundUser);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
+
 }

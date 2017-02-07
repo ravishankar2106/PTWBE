@@ -20,6 +20,7 @@ import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.TournamentService;
@@ -42,7 +43,7 @@ public class UserRest {
 	
 	
 	@PostMapping("/register")
-	public UserBean loginUser(@RequestBody UserBean inputUser){
+	public UserBean registerUser(@RequestBody UserBean inputUser){
 		UserBean returnUserBean = userService.createUser(inputUser);
 		return returnUserBean;
 	}
@@ -59,11 +60,25 @@ public class UserRest {
 		return response;
 	}
 	
+	@PostMapping("/resetPassword")
+	public BaseBean resetPassword(@RequestBody UserBean userBean){
+		BaseBean response = userService.resetPassword(userBean);
+		return response;
+	}
+	
+	@PostMapping("/updatePassword")
+	public BaseBean updatePassword(@RequestBody UserPasswordBean userPasswordBean){
+		BaseBean response = userService.updatePassword(userPasswordBean);
+		return response;
+	}
+	
 	@GetMapping("/cities")
 	public CityBeanList getCities(){
 		CityBeanList response = userService.getCities();
 		return response;
 	}
+	
+	
 	
 	@PostMapping("/getMatchQuestion")
 	public QuestionBeanList getMatchQuestion(@RequestBody MatchBean matchBean){

@@ -1,15 +1,17 @@
 package com.bind.ptw.be.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
+import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
-import com.bind.ptw.be.dto.UserAnswerBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.util.PTWException;
 
@@ -45,6 +47,9 @@ public interface ContestDao {
 	void removeUserAnswer(ContestBean contestBean) throws PTWException;
 	List<UserSelectedAnswerBean> getUserAnswers(UserSelectedAnswerBean userSelectedAnswerBean) throws PTWException;
 	void updatePointsForUserAnswer(List<AnswerBean> answerBeanList) throws PTWException;
+	void updateUserScoreBoard(List<UserScoreBoardBean> userScoreBoardBeanList) throws PTWException;
+	List<Integer> getTournamentScores(TournamentBean tournamentBean) throws PTWException;
+	void updateUserRanks(Set<Integer> reOrderedList) throws PTWException;
 	
 	
 }

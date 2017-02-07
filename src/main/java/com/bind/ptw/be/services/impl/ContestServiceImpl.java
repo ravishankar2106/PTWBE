@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.TournamentDao;
@@ -23,8 +24,10 @@ import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
+import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
@@ -293,13 +296,15 @@ public class ContestServiceImpl implements ContestService{
 			
 			List<Integer> bonusWinners = null;
 			if(!userPointMap.isEmpty()){
-				if(!StringUtil.isEmptyNull(dbContestBean.getBonusPoints())){
+				if(!StringUtil.isEmptyNull(contestBonusPoint)){
 					bonusWinners = new ArrayList<Integer>();
 					for (Map.Entry<Integer, Integer> userIdPointMap : userPointMap.entrySet()) {
 						Integer userId = userIdPointMap.getKey();
 						Integer pointsWon = userIdPointMap.getValue();
 						if(pointsWon == totalMaxPoints){
 							bonusWinners.add(userId);
+							pointsWon = pointsWon+contestBonusPoint;
+							userPointMap.put(userId, pointsWon);
 						}
 					}
 				}
@@ -309,11 +314,38 @@ public class ContestServiceImpl implements ContestService{
 			if(!StringUtil.isEmptyNull(contestBonusPoint )){
 				updateBonusPoints(contestId, contestBonusPoint, bonusWinners);
 			}
+			updateScoreBoard(tournamentId, userPointMap);
+			processRanking(tournamentId);
 			markContestAsCompleted(contestId);
 			
 		}
 		
 		
+	}
+
+	private void processRanking(int tournamentId)throws PTWException {
+		TournamentBean tournamentBean = new TournamentBean();
+		tournamentBean.setTournamentId(tournamentId);
+		List<Integer> pointsList = contestDao.getTournamentScores(tournamentBean);
+		Set<Integer> newPointRanking = new TreeSet<Integer>().descendingSet();
+		for (Integer points : pointsList) {
+			newPointRanking.add(points);
+		}
+		contestDao.updateUserRanks(newPointRanking);
+	}
+
+	private void updateScoreBoard(Integer tournamentId, Map<Integer, Integer> userPointMap) throws PTWException{
+		List<UserScoreBoardBean> userScoreBoardBeanList = new ArrayList<UserScoreBoardBean>();
+		for (Map.Entry<Integer, Integer> userPointScored : userPointMap.entrySet()){
+			Integer userId = userPointScored.getKey();
+			Integer pointsScored = userPointScored.getValue();
+			UserScoreBoardBean userScoreBoardBean = new UserScoreBoardBean();
+			userScoreBoardBean.setUserId(userId);
+			userScoreBoardBean.setTournamentId(tournamentId);
+			userScoreBoardBean.setPointsScored(pointsScored);
+			userScoreBoardBeanList.add(userScoreBoardBean);
+		}
+		contestDao.updateUserScoreBoard(userScoreBoardBeanList);
 	}
 
 	private void updateBonusPoints(int contestId, int contestBonusPoint, List<Integer> bonusWinners)
