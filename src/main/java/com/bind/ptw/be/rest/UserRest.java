@@ -106,11 +106,7 @@ public class UserRest {
 		return userService.getUserRegisterTournament(userBean);
 	}
 	
-	/**
-	 * User API
-	 * @param contestBean
-	 * @return
-	 */
+	
 	@PostMapping("/getOngoingContest")
 	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
 		return contestService.getOngoingContests(contestBean);
