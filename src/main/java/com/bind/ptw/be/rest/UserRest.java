@@ -79,19 +79,6 @@ public class UserRest {
 		return response;
 	}
 	
-	
-	
-	@PostMapping("/getMatchQuestion")
-	public QuestionBeanList getMatchQuestion(@RequestBody MatchBean matchBean){
-		return contestService.getMatchQuestions(matchBean);
-	}
-	
-	@PostMapping("/submitUserAnswer")
-	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
-		return contestService.submitUserAnswer(userContestAsnwer);
-	}
-	
-
 	@PostMapping("/getOngoingTournament")
 	public TournamentBeanList getOngoingTournament (@RequestBody TournamentBean tournamentBean){
 		return tournamentService.getOngoingTournament(tournamentBean);
@@ -112,4 +99,17 @@ public class UserRest {
 	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
 		return contestService.getOngoingContests(contestBean);
 	}
+	
+	@PostMapping("/getMatchQuestion")
+	public QuestionBeanList getMatchQuestion(@RequestBody MatchBean matchBean){
+		return contestService.getMatchQuestions(matchBean);
+	}
+	
+	@PostMapping("/submitUserAnswer")
+	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
+		return contestService.submitUserAnswer(userContestAsnwer);
+	}
+	
+
+	
 }

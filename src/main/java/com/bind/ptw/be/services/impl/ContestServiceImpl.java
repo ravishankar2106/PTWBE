@@ -163,17 +163,20 @@ public class ContestServiceImpl implements ContestService{
 			TournamentBeanValidator.vaidateRequest(contestBean);
 			TournamentBeanValidator.validateTournamentId(contestBean.getTournamentId());
 			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, true);
-			for (ContestBean retContestBean : contestBeanList) {
-				List<QuestionBean> questionList = contestDao.getQuestion(retContestBean);
-				if(questionList != null && !questionList.isEmpty()){
-					for (QuestionBean questionBean : questionList) {
-						List<AnswerOptionBean> answers = contestDao.getAnswersForQuestion(questionBean);
-						questionBean.setAnswerOptionList(answers);
+			if(contestBeanList != null && !contestBeanList.isEmpty()){
+				for (ContestBean retContestBean : contestBeanList) {
+					List<QuestionBean> questionList = contestDao.getQuestion(retContestBean);
+					if(questionList != null && !questionList.isEmpty()){
+						for (QuestionBean questionBean : questionList) {
+							List<AnswerOptionBean> answers = contestDao.getAnswersForQuestion(questionBean);
+							questionBean.setAnswerOptionList(answers);
+						}
 					}
+					retContestBean.setQuestionList(questionList);
 				}
-				retContestBean.setQuestionList(questionList);
+				retContestBeanList.setContestBeanList(contestBeanList);
 			}
-			retContestBeanList.setContestBeanList(contestBeanList);
+			
 		}catch(PTWException exception){
 			retContestBeanList.setResultCode(exception.getCode());
 			retContestBeanList.setResultDescription(exception.getDescription());
