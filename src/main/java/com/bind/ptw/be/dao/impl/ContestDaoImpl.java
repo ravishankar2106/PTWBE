@@ -803,7 +803,8 @@ public class ContestDaoImpl implements ContestDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 	}
-
+	
+	
 	@Override
 	public void updateUserRanks(Set<Integer> reOrderedList) throws PTWException {
 		try{

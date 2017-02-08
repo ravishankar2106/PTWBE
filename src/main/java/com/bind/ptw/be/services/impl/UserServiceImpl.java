@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,8 @@ import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserPasswordBean;
+import com.bind.ptw.be.dto.UserTournamentBean;
+import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.services.UserService;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
@@ -166,19 +167,16 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserTournmentRegisterBean getUserRegisterTournament(UserBean userBean) {
-		UserTournmentRegisterBean userTournamentRegisterBean = new UserTournmentRegisterBean();
+	public UserTournamentBeanList getUserRegisterTournament(UserBean userBean) {
+		UserTournamentBeanList userTournamentRegisterBean = new UserTournamentBeanList();
 		try{
 			TournamentBeanValidator.vaidateRequest(userBean);
 			UserBeanValidator.validateUserId(userBean.getUserId());
-			List<TournamentBean> tournamentList = userDao.getUserRegisteredTournament(userBean);
-			if(tournamentList!=null && !tournamentList.isEmpty()){
-				List<Integer> tournamentIdList = new ArrayList<Integer>();
-				for (TournamentBean tournament : tournamentList) {
-					tournamentIdList.add(tournament.getTournamentId());
-				}
-				userTournamentRegisterBean.setTournamentList(tournamentIdList);
-			}
+			
+			userTournamentRegisterBean.setUserId(userBean.getUserId());
+			
+			List<UserTournamentBean> tournamentList = userDao.getUserRegisteredTournament(userBean);
+			userTournamentRegisterBean.setUserTournamentList(tournamentList);
 		}catch(PTWException exception){
 			userTournamentRegisterBean.setResultCode(exception.getCode());
 			userTournamentRegisterBean.setResultDescription(exception.getDescription());

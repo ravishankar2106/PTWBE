@@ -21,6 +21,7 @@ import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserPasswordBean;
+import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.TournamentService;
@@ -102,7 +103,7 @@ public class UserRest {
 	}
 	
 	@PostMapping("/getUserRegisteredTournament")
-	public UserTournmentRegisterBean getUserRegisterTournament(@RequestBody UserBean userBean){
+	public UserTournamentBeanList getUserRegisterTournament(@RequestBody UserBean userBean){
 		return userService.getUserRegisterTournament(userBean);
 	}
 	

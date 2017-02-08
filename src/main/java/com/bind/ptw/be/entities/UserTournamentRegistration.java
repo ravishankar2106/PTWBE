@@ -4,8 +4,11 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,7 +16,7 @@ import javax.persistence.Table;
 public class UserTournamentRegistration {
 	private Integer userTournamentRegistrationId;
 	private Integer userId;
-	private Integer tournamentId;
+	private Tournament tournament;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -33,12 +36,13 @@ public class UserTournamentRegistration {
 		this.userId = userId;
 	}
 	
-	@Column(name = "TOURNAMENT_ID")
-	public Integer getTournamentId() {
-		return tournamentId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TOURNAMENT_ID", nullable = true)
+	public Tournament getTournament() {
+		return tournament;
 	}
-	public void setTournamentId(Integer tournamentId) {
-		this.tournamentId = tournamentId;
+	public void setTournament(Tournament tournament) {
+		this.tournament = tournament;
 	}
 	
 	

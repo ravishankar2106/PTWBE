@@ -10,7 +10,7 @@ public class UserTournamentBeanList extends BaseBean{
 	private static final long serialVersionUID = 1888628800905334534L;
 	
 	private List<UserTournamentBean> userTournamentList;
-	private UserBean userBean;
+	private Integer userId;
 
 	public List<UserTournamentBean> getUserTournamentList() {
 		return userTournamentList;
@@ -20,12 +20,13 @@ public class UserTournamentBeanList extends BaseBean{
 		this.userTournamentList = userTournamentList;
 	}
 
-	public UserBean getUserBean() {
-		return userBean;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUserBean(UserBean userBean) {
-		this.userBean = userBean;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
+	
 
 }

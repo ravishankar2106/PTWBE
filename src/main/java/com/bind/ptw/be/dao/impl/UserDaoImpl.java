@@ -15,13 +15,17 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.entities.City;
+import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
 import com.bind.ptw.be.entities.UserConfirmation;
 import com.bind.ptw.be.entities.UserConfirmationHome;
 import com.bind.ptw.be.entities.UserHome;
+import com.bind.ptw.be.entities.UserScoreBoard;
+import com.bind.ptw.be.entities.UserScoreBoardHome;
 import com.bind.ptw.be.entities.UserStatus;
 import com.bind.ptw.be.entities.UserToken;
 import com.bind.ptw.be.entities.UserTokenHome;
@@ -241,13 +245,23 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public void registerUserToTournament(UserTournmentRegisterBean userTournament)throws PTWException {
 		UserTournamentRegistrationHome userTournamentHome = new UserTournamentRegistrationHome(this.getSession());
+		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
 		try{
 			List<Integer> tournamentIds = userTournament.getTournamentList();
 			for (Integer tournamentId : tournamentIds) {
 				UserTournamentRegistration userTournamentRegistration = new UserTournamentRegistration();
 				userTournamentRegistration.setUserId(userTournament.getUserId());
-				userTournamentRegistration.setTournamentId(tournamentId);
+				Tournament tournament = new Tournament();
+				tournament.setTournamentId(tournamentId);
+				userTournamentRegistration.setTournament(tournament);
 				userTournamentHome.persist(userTournamentRegistration);
+				
+				UserScoreBoard userScoreBoard = new UserScoreBoard();
+				userScoreBoard.setUserId(userTournament.getUserId());
+				userScoreBoard.setTournamentId(tournamentId);
+				userScoreBoard.setTotalPoints(0);
+				userScoreBoard.setRank(0);
+				userScoreBoardHome.persist(userScoreBoard);
 			}
 		}catch(Exception exception){
 			exception.printStackTrace();
@@ -256,23 +270,40 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public List<TournamentBean> getUserRegisteredTournament(UserBean userBean) throws PTWException {
-		List<TournamentBean> tournamentList = null;
+	public List<UserTournamentBean> getUserRegisteredTournament(UserBean userBean) throws PTWException {
+		List<UserTournamentBean> userTournamentList = null;
 		UserTournamentRegistrationHome userTournamentHome = new UserTournamentRegistrationHome(this.getSession());
+		UserScoreBoardHome scoreBoardHome = new UserScoreBoardHome(getSession());
 		try{
 			List<UserTournamentRegistration> userRegisteredTournamentList = userTournamentHome.findByFilter(null, userBean.getUserId());
 			if(userRegisteredTournamentList!=null && !userRegisteredTournamentList.isEmpty()){
-				tournamentList = new ArrayList<TournamentBean>();
+				userTournamentList = new ArrayList<UserTournamentBean>();
 				for (UserTournamentRegistration userTournamentRegistration : userRegisteredTournamentList) {
+					UserTournamentBean userTournamentBean = new UserTournamentBean();
+					
 					TournamentBean tournamentBean = new TournamentBean();
-					tournamentBean.setTournamentId(userTournamentRegistration.getTournamentId());
-					tournamentList.add(tournamentBean);
+					Tournament tournament = userTournamentRegistration.getTournament();
+					tournamentBean.setTournamentId(tournament.getTournamentId());
+					tournamentBean.setTournamentName(tournament.getTournamentName());
+					tournamentBean.setTournamentVenue(tournament.getTournamentVenue());
+					tournamentBean.setTournamentDesc(tournament.getTournamentDescription());
+					tournamentBean.setStartDateStr(StringUtil.convertDateTImeToString(tournament.getStartDate()));
+					tournamentBean.setEndDateStr(StringUtil.convertDateTImeToString(tournament.getEndDate()));
+					userTournamentBean.setTournamentBean(tournamentBean);
+					
+					List<UserScoreBoard> scoreBoardList = scoreBoardHome.findByFilter(userTournamentRegistration.getTournament().getTournamentId(), userBean.getUserId());
+					if(scoreBoardList != null && scoreBoardList.size() == 1){
+						UserScoreBoard userScores = scoreBoardList.get(0);
+						userTournamentBean.setTotalPoints(userScores.getTotalPoints());
+						userTournamentBean.setRank(userScores.getRank());
+					}
+					userTournamentList.add(userTournamentBean);
 				}
 			}
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
-		return tournamentList;
+		return userTournamentList;
 	}
 }
