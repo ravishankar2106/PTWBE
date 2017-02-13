@@ -10,7 +10,7 @@ public class SportTypeCountryList extends BaseBean{
 	private static final long serialVersionUID = 1888628800905334534L;
 	
 	private Integer sportTypeId;
-	private List<Integer> countryIdList;
+	private List<CountryBean> countryBeanList;
 
 	public Integer getSportTypeId() {
 		return sportTypeId;
@@ -20,13 +20,13 @@ public class SportTypeCountryList extends BaseBean{
 		this.sportTypeId = sportTypeId;
 	}
 
-	public List<Integer> getCountryIdList() {
-		return countryIdList;
+	public List<CountryBean> getCountryBeanList() {
+		return countryBeanList;
 	}
 
-	public void setCountryIdList(List<Integer> countryIdList) {
-		this.countryIdList = countryIdList;
+	public void setCountryBeanList(List<CountryBean> countryBeanList) {
+		this.countryBeanList = countryBeanList;
 	}
-	
+
 	
 }

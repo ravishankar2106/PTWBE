@@ -84,4 +84,16 @@ public class AnswerOptionHome {
 		return query.list();
 	}
 	
+	public List<AnswerType> getAnswerType(){
+		Query query = null;
+		
+		try{
+			query = session.createQuery(QueryConstants.RETRIEVE_ANSWER_TYPES);
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
+	
 }

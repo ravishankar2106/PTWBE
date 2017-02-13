@@ -1,11 +1,11 @@
 package com.bind.ptw.be.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import com.bind.ptw.be.util.StringUtil;
 
 
 public class UserAnswerHome {
@@ -61,26 +61,13 @@ public class UserAnswerHome {
 		queryToExecute.append(userId);
 		queryToExecute.append(" ");
 		queryToExecute.append("AND ua.questionId IN ( ");
-		queryToExecute.append(appendQuestionId(questionIdList));
+		queryToExecute.append(StringUtil.convertToTokens(questionIdList));
 		queryToExecute.append(")");
 		query = session.createQuery(queryToExecute.toString());
 		query.executeUpdate();
 	}
 	
-	private String appendQuestionId(Integer[] questionIdList){
-		StringBuilder strBuilder = new StringBuilder();
-		int index = 0;
-		for (Integer questionId : questionIdList) {
-			strBuilder.append(questionId);
-			index++;
-			if(index < questionIdList.length){
-				strBuilder.append(",");
-			}
-		}
-		
-		return strBuilder.toString();
-	}
-
+	
 	public void saveUserPoints(Integer answerOptionId, Integer pointsScored) {
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();

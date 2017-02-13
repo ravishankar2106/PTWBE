@@ -194,12 +194,13 @@ public class TournamentBeanValidator {
 	public static void validateCountriesToSportMapping(SportTypeCountryList sportTypeCountryList, TournamentDao tournamentDao) throws PTWException{
 		validateSportTypeId(sportTypeCountryList.getSportTypeId());
 		validateSportType(sportTypeCountryList.getSportTypeId(), tournamentDao);
-		List<Integer> countriesList = sportTypeCountryList.getCountryIdList();
+		List<CountryBean> countriesList = sportTypeCountryList.getCountryBeanList();
 		if(countriesList == null || countriesList.isEmpty()){
 			throw new PTWException(PTWConstants.ERROR_CODE_COUNTRY_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Country Id");
 		}
-		for (Integer countryId : countriesList) {
-			validateCountry(countryId, tournamentDao);
+		for (CountryBean country : countriesList) {
+			validateCountryId(country.getCountryId());
+			validateCountry(country.getCountryId(), tournamentDao);
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
+import com.bind.ptw.be.dto.AnswerTypeBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
@@ -50,6 +51,7 @@ public interface ContestDao {
 	void updateUserScoreBoard(List<UserScoreBoardBean> userScoreBoardBeanList) throws PTWException;
 	List<Integer> getTournamentScores(TournamentBean tournamentBean) throws PTWException;
 	void updateUserRanks(Set<Integer> reOrderedList) throws PTWException;
+	List<AnswerTypeBean> getAnswerTypes() throws PTWException;
 	
 	
 }

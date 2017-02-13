@@ -2,7 +2,9 @@ package com.bind.ptw.be.services.util;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.TournamentDao;
@@ -295,20 +297,6 @@ public class ContestBeanValidator {
 			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
 		}
 		
-		for (UserAnswerBean userAnswerBean : userAnswerBeanList) {
-			Integer questionId = userAnswerBean.getQuestionId();
-			validateQuestionId(questionId);
-			List<AnswerBean> answerBeanList = userAnswerBean.getSelectedAnswerList();
-			if(answerBeanList == null || answerBeanList.isEmpty()){
-				throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
-			}
-			for (AnswerBean answerBean : answerBeanList) {
-				if(StringUtil.isEmptyNull(answerBean.getAnswerOptionId())){
-					throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
-				}
-			}
-		}
-		
 		ContestBean queryContest = new ContestBean();
 		queryContest.setContestId(userContestAnswer.getContestId());
 		ContestBean contest = contestDao.getContest(queryContest);
@@ -316,7 +304,43 @@ public class ContestBeanValidator {
 			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_CUTOFF_TIME_OVER, PTWConstants.ERROR_DESC_CONTEST_CUTOFF_TIME_OVER);
 		}
 		
+		List<QuestionBean> dbQuestionBeanList = contestDao.getQuestion(queryContest);
+		Map<Integer, QuestionBean> dbQuestionMap = getMatchingQuestion(dbQuestionBeanList);
 		
+		for (UserAnswerBean userAnswerBean : userAnswerBeanList) {
+			Integer questionId = userAnswerBean.getQuestionId();
+			validateQuestionId(questionId);
+			QuestionBean dbQuestionBean = dbQuestionMap.get(questionId);
+			if(dbQuestionBean == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_INVALID_QUESTION, PTWConstants.ERROR_DESC_CONTEST_INVALID_QUESTION);
+			}
+			
+			List<AnswerBean> answerBeanList = userAnswerBean.getSelectedAnswerList();
+			if(answerBeanList == null || answerBeanList.isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
+			}
+			if(answerBeanList.size() != dbQuestionBean.getAnswerCount()){
+				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_INCOMPLETE_ANSWER, PTWConstants.ERROR_DESC_CONTEST_INCOMPLETE_ANSWER);
+			}
+			
+			for (AnswerBean answerBean : answerBeanList) {
+				if(StringUtil.isEmptyNull(answerBean.getAnswerOptionId())){
+					throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
+				}
+			}
+		}
+		
+	}
+
+	private static Map<Integer, QuestionBean> getMatchingQuestion(List<QuestionBean> dbQuestionBeanList) {
+		Map<Integer, QuestionBean> dbQuestionBeanMap = new HashMap<Integer, QuestionBean>();
+		if(dbQuestionBeanList != null && !dbQuestionBeanList.isEmpty() ){
+			for (QuestionBean questionBean : dbQuestionBeanList) {
+				dbQuestionBeanMap.put(questionBean.getQuestionId(), questionBean);
+			}
+		}
+		
+		return dbQuestionBeanMap;
 	}
 	
 }

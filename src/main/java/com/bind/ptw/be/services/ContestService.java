@@ -1,6 +1,7 @@
 package com.bind.ptw.be.services;
 
 import com.bind.ptw.be.dto.AnswerOptionBean;
+import com.bind.ptw.be.dto.AnswerTypeBeanList;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
@@ -36,6 +37,7 @@ public interface ContestService {
 	BaseBean deleteAnswerOption(AnswerOptionBean answerOptionBean);
 	
 	BaseBean submitUserAnswer(UserContestAnswer userContestAsnwer);
+	AnswerTypeBeanList getAnswerTypes();
 	
 	
 }

@@ -17,6 +17,8 @@ import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
+import com.bind.ptw.be.dto.AnswerTypeBean;
+import com.bind.ptw.be.dto.AnswerTypeBeanList;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
@@ -550,6 +552,20 @@ public class ContestServiceImpl implements ContestService{
 		}
 		
 		return retBean;
+	}
+
+	@Override
+	public AnswerTypeBeanList getAnswerTypes() {
+		AnswerTypeBeanList anwerTypeBeanList = new AnswerTypeBeanList();
+		try{
+			List<AnswerTypeBean> answerTypes = contestDao.getAnswerTypes();
+			anwerTypeBeanList.setAnswerTypes(answerTypes);
+		}catch(PTWException exception){
+			anwerTypeBeanList.setResultCode(exception.getCode());
+			anwerTypeBeanList.setResultDescription(exception.getDescription());
+		}
+		
+		return anwerTypeBeanList;
 	}
 	
 }

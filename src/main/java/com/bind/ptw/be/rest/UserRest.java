@@ -100,15 +100,17 @@ public class UserRest {
 		return contestService.getOngoingContests(contestBean);
 	}
 	
+	@PostMapping("/submitUserAnswer")
+	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
+		return contestService.submitUserAnswer(userContestAsnwer);
+	}
+	
 	@PostMapping("/getMatchQuestion")
 	public QuestionBeanList getMatchQuestion(@RequestBody MatchBean matchBean){
 		return contestService.getMatchQuestions(matchBean);
 	}
 	
-	@PostMapping("/submitUserAnswer")
-	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
-		return contestService.submitUserAnswer(userContestAsnwer);
-	}
+	
 	
 
 	

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
+import com.bind.ptw.be.dto.AnswerTypeBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
@@ -807,8 +808,8 @@ public class ContestDaoImpl implements ContestDao{
 	
 	@Override
 	public void updateUserRanks(Set<Integer> reOrderedList) throws PTWException {
+		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
 		try{
-			UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
 			int rank = 1;
 			for (Integer orderedRank : reOrderedList) {
 				int updatedRows = userScoreBoardHome.updateRanks(orderedRank, rank);
@@ -820,6 +821,28 @@ public class ContestDaoImpl implements ContestDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		
+	}
+
+	@Override
+	public List<AnswerTypeBean> getAnswerTypes() throws PTWException {
+		AnswerOptionHome answerOptionHome = new AnswerOptionHome(getSession());
+		List<AnswerTypeBean> answerTypeBeanList = new ArrayList<AnswerTypeBean>();
+		
+		try{
+			List<AnswerType> answerTypeList = answerOptionHome.getAnswerType();
+			if(answerTypeList != null && !answerTypeList.isEmpty()){
+				for (AnswerType answerType : answerTypeList) {
+					AnswerTypeBean answerTypeBean = new AnswerTypeBean();
+					answerTypeBean.setAnswerTypeId(answerType.getAnswerTypeId());
+					answerTypeBean.setAnswerTypeName(answerType.getAnswerTypeName());
+					answerTypeBeanList.add(answerTypeBean);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return answerTypeBeanList;
 	}
 	
 	

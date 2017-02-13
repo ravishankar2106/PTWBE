@@ -175,6 +175,11 @@ public class PTWConstants {
 	public final static String ERROR_DESC_ANSWER_NOT_FOUND = "Answer Not Found";
 	public final static String ERROR_CODE_CONTEST_CUTOFF_TIME_OVER = "251";
 	public final static String ERROR_DESC_CONTEST_CUTOFF_TIME_OVER = "Contest is over for submitting answer";
+	public final static String ERROR_CODE_CONTEST_INVALID_QUESTION = "252";
+	public final static String ERROR_DESC_CONTEST_INVALID_QUESTION = "Invalid Question Answered for the contest";
+	public final static String ERROR_CODE_CONTEST_INCOMPLETE_ANSWER = "253";
+	public final static String ERROR_DESC_CONTEST_INCOMPLETE_ANSWER = "Incomplete Answer for the Question";
+	
 	
 	public final static String ERROR_CODE_CONTEST_PROCESS_NO_RECORD = "300";
 	public final static String ERROR_DESC_CONTEST_PROCESS_NO_RECORD = "No Contests to be processed";

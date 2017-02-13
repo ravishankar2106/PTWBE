@@ -102,4 +102,21 @@ public class CountryHome {
 		
 		return query.list();
 	}
+	
+	public List<Country> findCountryByIds(Integer[] countryIdList){
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append(QueryConstants.RETRIEVE_COUNTRIES);
+			queryToExecute.append("AND cy.countryId IN (");
+			queryToExecute.append(StringUtil.convertToTokens(countryIdList));
+			queryToExecute.append(")");
+			query = session.createQuery(queryToExecute.toString());
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
 }

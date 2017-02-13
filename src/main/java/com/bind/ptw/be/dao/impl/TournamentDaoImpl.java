@@ -473,10 +473,10 @@ public class TournamentDaoImpl implements TournamentDao{
 	public void addCountryToSport(SportTypeCountryList sportTypeCountryList) throws PTWException {
 		try{
 			SportTypeHome sportTypeHome = new SportTypeHome(getSession());
-			for (Integer countryId : sportTypeCountryList.getCountryIdList()) {
+			for (CountryBean countryBean : sportTypeCountryList.getCountryBeanList()) {
 				CountrySportTypeMapping mapping = new CountrySportTypeMapping();
 				CountrySportTypeMappingKey key = new CountrySportTypeMappingKey();
-				key.setCountryId(countryId);
+				key.setCountryId(countryBean.getCountryId());
 				key.setSportTypeId(sportTypeCountryList.getSportTypeId());
 				mapping.setCountrySportTypeMappingKey(key);
 				sportTypeHome.persist(mapping);
@@ -493,10 +493,10 @@ public class TournamentDaoImpl implements TournamentDao{
 	public void removeCountryFromSport(SportTypeCountryList sportTypeCountryList) throws PTWException {
 		try{
 			SportTypeHome sportTypeHome = new SportTypeHome(getSession());
-			for (Integer countryId : sportTypeCountryList.getCountryIdList()) {
+			for (CountryBean countryBean : sportTypeCountryList.getCountryBeanList()) {
 				CountrySportTypeMapping mapping = new CountrySportTypeMapping();
 				CountrySportTypeMappingKey key = new CountrySportTypeMappingKey();
-				key.setCountryId(countryId);
+				key.setCountryId(countryBean.getCountryId());
 				key.setSportTypeId(sportTypeCountryList.getSportTypeId());
 				mapping.setCountrySportTypeMappingKey(key);
 				sportTypeHome.remove(mapping);
@@ -513,15 +513,30 @@ public class TournamentDaoImpl implements TournamentDao{
 	public SportTypeCountryList getCountriesForSport(SportTypeCountryList sportTypeCountryList) throws PTWException{
 		SportTypeCountryList retSportTypeCountryList = null;
 		SportTypeHome sportTypeHome = new SportTypeHome(getSession());
+		CountryHome countryHome = new CountryHome(getSession());
 		List<CountrySportTypeMapping>  dbCountries = sportTypeHome.getCountrySportTypeMappings(sportTypeCountryList.getSportTypeId());
 		if(dbCountries != null && !dbCountries.isEmpty()){
 			retSportTypeCountryList = new SportTypeCountryList();
 			retSportTypeCountryList.setSportTypeId(sportTypeCountryList.getSportTypeId());
-			List<Integer> countries = new ArrayList<Integer>();
+			
+			Integer[] countryIdList = new Integer[dbCountries.size()];
+			int counter = 0;
 			for (CountrySportTypeMapping countrySportTypeMapping : dbCountries) {
-				countries.add(countrySportTypeMapping.getCountrySportTypeMappingKey().getCountryId());
+				countryIdList[counter++] = countrySportTypeMapping.getCountrySportTypeMappingKey().getCountryId();
 			}
-			retSportTypeCountryList.setCountryIdList(countries);
+			List<Country> countryList = countryHome.findCountryByIds(countryIdList);
+			if(countryList!= null && !countryList.isEmpty()){
+				List<CountryBean> countries = new ArrayList<CountryBean>();
+				for (Country country : countryList) {
+					CountryBean countryBean = new CountryBean();
+					countryBean.setCountryId(country.getCountryId());
+					countryBean.setCountryName(country.getCountryName());
+					countryBean.setCountryShortName(country.getCountryShortName());
+					countries.add(countryBean);
+				}
+				retSportTypeCountryList.setCountryBeanList(countries);
+			}
+			
 		}
 		return retSportTypeCountryList;
 	}

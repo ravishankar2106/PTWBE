@@ -69,9 +69,10 @@ public class UserDaoImpl implements UserDao{
 		user.setCity(city);
 		
 		userHome.save(user);
-		userBean.setUserId(user.getUserId());
-		userBean.setUserStatusId(DBConstants.USER_STATUS_PENDING);
-		return userBean;
+		UserBean retUser = new UserBean();
+		retUser.setUserId(user.getUserId());
+		retUser.setUserStatusId(DBConstants.USER_STATUS_PENDING);
+		return retUser;
 	}
 	
 	

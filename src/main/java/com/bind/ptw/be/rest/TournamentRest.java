@@ -33,27 +33,6 @@ public class TournamentRest {
 	@Autowired
 	TournamentService tournamentService;
 	
-	@PostMapping("/create")
-	public TournamentBean create(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.createTournament(tournamentBean);
-	}
-	
-	
-	@PostMapping("/updateTournament")
-	public BaseBean updateTournament(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.updateTournament(tournamentBean);
-	}
-	
-	@PostMapping("/archieveTournament")
-	public BaseBean archieveTournament(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.archieveTournament(tournamentBean);
-	}
-	
-	@PostMapping("/deleteTournament")
-	public BaseBean deleteTournament(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.deleteTournament(tournamentBean);
-	}
-	
 	@GetMapping("/sportTypes")
 	public SportTypeBeanList getSportTypes(){
 		return tournamentService.getSportType();
@@ -63,7 +42,7 @@ public class TournamentRest {
 	public TeamTypeBeanList getTeamTypes(){
 		return tournamentService.getTeamType();
 	}
-
+	
 	@PostMapping("/createCountry")
 	public CountryBean createCountry(@RequestBody CountryBean countryBean){
 		return tournamentService.createCountry(countryBean);
@@ -84,13 +63,18 @@ public class TournamentRest {
 		return tournamentService.deleteCountry(countryBean);
 	}
 	
+	@PostMapping("/getCountryForSport")
+	public SportTypeCountryList getCountriesForSportType(@RequestBody SportTypeCountryList sportTypeCountryList){
+		return tournamentService.getCountriesForSportType(sportTypeCountryList);
+	}
+	
 	@PostMapping("/createTeam")
 	public TeamBean createTeam(@RequestBody TeamBean teamBean){
 		return tournamentService.createTeam(teamBean);
 	}
 	
 	@PostMapping("/getTeam")
-	public TeamBeanList getCountry(@RequestBody TeamBean teamBean){
+	public TeamBeanList getTeam(@RequestBody TeamBean teamBean){
 		return tournamentService.getTeamList(teamBean);
 	}
 	
@@ -110,7 +94,7 @@ public class TournamentRest {
 	}
 	
 	@PostMapping("/getPlayer")
-	public PlayerBeanList getCountry(@RequestBody PlayerBean playerBean){
+	public PlayerBeanList getPlayer(@RequestBody PlayerBean playerBean){
 		return tournamentService.getPlayerList(playerBean);
 	}
 	
@@ -124,19 +108,24 @@ public class TournamentRest {
 		return tournamentService.deletePlayer(playerBean);
 	}
 	
-	@PostMapping("/addCountryToSport")
-	public BaseBean addCountriesToSportType(@RequestBody SportTypeCountryList sportTypeCountryList){
-		return tournamentService.addCountriesToSportType(sportTypeCountryList);
+	@PostMapping("/createTournament")
+	public TournamentBean create(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.createTournament(tournamentBean);
 	}
 	
-	@PostMapping("/getCountryForSport")
-	public SportTypeCountryList getCountriesForSportType(@RequestBody SportTypeCountryList sportTypeCountryList){
-		return tournamentService.getCountriesForSportType(sportTypeCountryList);
+	@PostMapping("/updateTournament")
+	public BaseBean updateTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.updateTournament(tournamentBean);
 	}
 	
-	@PostMapping("/removeCountryFromSport")
-	public BaseBean removeCountriesFromSportType(@RequestBody SportTypeCountryList sportTypeCountryList){
-		return tournamentService.removeCountriesFromSportType(sportTypeCountryList);
+	@PostMapping("/archieveTournament")
+	public BaseBean archieveTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.archieveTournament(tournamentBean);
+	}
+	
+	@PostMapping("/deleteTournament")
+	public BaseBean deleteTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.deleteTournament(tournamentBean);
 	}
 	
 	@PostMapping("/addPlayerToTeam")

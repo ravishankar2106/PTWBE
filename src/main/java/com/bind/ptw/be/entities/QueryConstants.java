@@ -8,6 +8,7 @@ public class QueryConstants {
 	public static final String RETRIEVE_TOURNAMENT_CONTEST = "from Contest c where 1=1 ";
 	public static final String RETRIEVE_PRIZE_CONTEST = "from PrizeContest pc where 1=1 ";
 	public static final String DELETE_PRIZE_CONTEST = "delete from PrizeContestWinners pcw where pcw.prizeContest.prizeContestId =:prizeContestId";
+	public static final String RETRIEVE_ANSWER_TYPES = "from AnswerType at";
 	public static final String RETRIEVE_QUESTION_ANSWERS = "from AnswerOption ao where 1=1 ";
 	public static final String DELETE_QUESTION_ANSWERS = "delete from AnswerOption ao where ao.question.questionId = :questionId ";
 	public static final String RETRIEVE_QUESTIONS = "from Question q where 1=1 ";

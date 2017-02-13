@@ -99,4 +99,19 @@ public class StringUtil {
 		int randomNum = ThreadLocalRandom.current().nextInt(start, end + 1);
 		return randomNum;
 	}
+	
+	public static String convertToTokens(Integer[] intArr){
+		StringBuilder strBuilder = new StringBuilder();
+		int index = 0;
+		for (Integer intEle : intArr) {
+			strBuilder.append(intEle);
+			index++;
+			if(index < intArr.length){
+				strBuilder.append(",");
+			}
+		}
+		
+		return strBuilder.toString();
+	}
+
 }
