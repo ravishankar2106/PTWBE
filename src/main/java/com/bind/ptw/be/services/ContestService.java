@@ -7,6 +7,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
+import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.UserContestAnswer;
@@ -14,7 +15,7 @@ import com.bind.ptw.be.dto.UserContestAnswer;
 public interface ContestService {
 	MatchBean createMatch(MatchBean matchBean);
 	MatchBeanList getMatches(MatchBean matchBean);
-	BaseBean updateMatchStatus(MatchBean matchBean);
+	BaseBean updateMatch(MatchBean matchBean);
 	BaseBean deleteMatch(MatchBean matchBean);
 	QuestionBeanList getMatchQuestions(MatchBean matchBean);
 	
@@ -38,6 +39,7 @@ public interface ContestService {
 	
 	BaseBean submitUserAnswer(UserContestAnswer userContestAsnwer);
 	AnswerTypeBeanList getAnswerTypes();
+	PossibleAnswerBean getPossibleAnswers(QuestionBean questionBean);
 	
 	
 }

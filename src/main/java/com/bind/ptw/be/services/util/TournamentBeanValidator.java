@@ -92,6 +92,20 @@ public class TournamentBeanValidator {
 			}
 		}
 		
+		String publishDateStr = inputTournamentBean.getPublishDateStr();
+		if(StringUtil.isEmptyNull(publishDateStr)){
+			throw new PTWException(PTWConstants.ERROR_CODE_PUBLISH_DATE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Publish Date");
+		}
+		try{
+			Date publishDate = StringUtil.convertStringToDate(publishDateStr);
+			if(publishDate.after(inputTournamentBean.getStartDate())){
+				throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_PUBLISH_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_PUBLISH_DATE_INVALID);
+			}
+			inputTournamentBean.setPublishDate(publishDate);
+		}catch(ParseException exception){
+			throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_PUBLISH_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_PUBLISH_DATE_INVALID);
+		}
+		
 	}
 	
 	public static void validateSportType(Integer sportTypeId, TournamentDao tournamentDao) throws PTWException{
@@ -151,6 +165,21 @@ public class TournamentBeanValidator {
 					throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_END_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_END_DATE_INVALID);
 				}
 				tournamentBean.setEndDate(endDate);
+			}catch(ParseException exception){
+				throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_END_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_END_DATE_INVALID);
+			}
+		}
+		
+		if(!StringUtil.isEmptyNull(tournamentBean.getPublishDateStr())){
+			try{
+				if(tournamentBean.getStartDate() == null){
+					throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_START_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_START_DATE_INVALID);
+				}
+				Date publishDate = StringUtil.convertStringToDate(tournamentBean.getPublishDateStr());
+				if(publishDate.after(tournamentBean.getStartDate())){
+					throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_PUBLISH_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_PUBLISH_DATE_INVALID);
+				}
+				tournamentBean.setPublishDate(publishDate);
 			}catch(ParseException exception){
 				throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_END_DATE_INVALID, PTWConstants.ERROR_DESC_TOURNAMENT_END_DATE_INVALID);
 			}

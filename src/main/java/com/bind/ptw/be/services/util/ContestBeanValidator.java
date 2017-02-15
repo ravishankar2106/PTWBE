@@ -136,6 +136,9 @@ public class ContestBeanValidator {
 		if(StringUtil.isEmptyNull(statusId)){
 			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_STATUS_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Status Id");
 		}
+		if(!(statusId == 2 || statusId == 3)){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_STATUS_ID_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Status Id");
+		}
 	}
 	
 	public static void validateUpdateContest(ContestBean contestBean, TournamentDao tournamentDao, ContestDao contestDao) throws PTWException{
@@ -341,6 +344,21 @@ public class ContestBeanValidator {
 		}
 		
 		return dbQuestionBeanMap;
+	}
+
+	public static void validateUpdateAnswerOption(AnswerOptionBean answerOptionBean) throws PTWException {
+		validateAnswerOptionId(answerOptionBean.getAnswerOptionId());
+		if(answerOptionBean.getCorrectAnswerFlag() != null && answerOptionBean.getCorrectAnswerFlag()){
+			if(StringUtil.isEmptyNull(answerOptionBean.getPoints())){
+				throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Points");
+			}
+		}else{
+			if(!StringUtil.isEmptyNull(answerOptionBean.getPoints())){
+				answerOptionBean.setCorrectAnswerFlag(true);
+			}
+				
+		}
+		
 	}
 	
 }

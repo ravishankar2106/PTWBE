@@ -68,7 +68,7 @@ public class UserBeanValidator {
 		validateUserLoginId(userBean.getUserLoginId());
 		UserBean searchLoginUserBean = new UserBean();
 		searchLoginUserBean.setUserLoginId(userBean.getUserLoginId());
-		List<UserBean> searchedUserList = userDao.getUsers(searchLoginUserBean);
+		List<UserBean> searchedUserList = userDao.getUsers(searchLoginUserBean, false);
 		if(searchedUserList != null && !searchedUserList.isEmpty()){
 			returnBean = searchedUserList.get(0);
 		}
@@ -171,7 +171,7 @@ public class UserBeanValidator {
 			UserDao userDao) throws PTWException {
 		UserBean searchLoginUserBean = new UserBean();
 		searchLoginUserBean.setUserLoginId(loginId);
-		List<UserBean> searchedUserList = userDao.getUsers(searchLoginUserBean);
+		List<UserBean> searchedUserList = userDao.getUsers(searchLoginUserBean, false);
 		if(searchedUserList != null && !searchedUserList.isEmpty()){
 			throw new PTWException( PTWConstants.ERROR_CODE_USER_LOGIN_ID_DUPLICATE, 
 					PTWConstants.ERROR_DESC_USER_LOGIN_ID_DUPLICATE);
@@ -182,7 +182,7 @@ public class UserBeanValidator {
 			UserDao userDao) throws PTWException {
 		UserBean searchLoginUserBean = new UserBean();
 		searchLoginUserBean.setTeamName(teamName);
-		List<UserBean> searchedUserList = userDao.getUsers(searchLoginUserBean);
+		List<UserBean> searchedUserList = userDao.getUsers(searchLoginUserBean, false);
 		if(searchedUserList != null && !searchedUserList.isEmpty()){
 			throw new PTWException( PTWConstants.ERROR_CODE_USER_TEAM_NAME_DUPLICATE, 
 					PTWConstants.ERROR_DESC_USER_TEAM_NAME_DUPLICATE);

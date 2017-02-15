@@ -20,6 +20,9 @@ public class TournamentBean extends BaseBean implements Serializable {
 	private String startDateStr;
 	private Date endDate;
 	private String endDateStr;
+	private Date publishDate;
+	private String publishDateStr;
+	
 	//private Integer groupId;
 	
 	public Integer getTournamentId() {
@@ -88,6 +91,18 @@ public class TournamentBean extends BaseBean implements Serializable {
 	public void setGroupId(Integer groupId) {
 		this.groupId = groupId;
 	}*/
+	public Date getPublishDate() {
+		return publishDate;
+	}
+	public void setPublishDate(Date publishDate) {
+		this.publishDate = publishDate;
+	}
+	public String getPublishDateStr() {
+		return publishDateStr;
+	}
+	public void setPublishDateStr(String publishDateStr) {
+		this.publishDateStr = publishDateStr;
+	}
 	
 	
 	

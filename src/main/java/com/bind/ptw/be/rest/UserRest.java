@@ -51,7 +51,7 @@ public class UserRest {
 	
 	@PostMapping("/login")
     public UserBean authenticate(@RequestBody UserBean request) {
-		UserBean response = userService.authenticateUser(request);
+		UserBean response = userService.authenticateUser(request, false);
         return response;
     }
 	

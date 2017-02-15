@@ -71,6 +71,7 @@ public class PTWConstants {
 	public final static String ERROR_DESC_WRONG_CONFIRMATION_CODE = "Confirmation code does not match. Try again with correct Confirmation Code";
 	
 	public final static String ERROR_CODE_CONFIRMATION_CODE_EMPTY = "128";
+	public final static String ERROR_CODE_PUBLISH_DATE_EMPTY = "129";
 	
 	public final static String ERROR_CODE_INVALID_TOKEN_REQUEST = "130";
 	public final static String ERROR_DESC_INVALID_TOKEN_REQUEST = "Error in submitting answer. Logout and login again.";
@@ -143,6 +144,10 @@ public class PTWConstants {
 	public final static String ERROR_CODE_TEAM_ID_INVALID = "193";
 	public final static String ERROR_DESC_TEAM_ID_INVALID = "Team is Invalid";
 	
+	public final static String ERROR_CODE_TOURNAMENT_PUBLISH_DATE_INVALID = "194";
+	public final static String ERROR_DESC_TOURNAMENT_PUBLISH_DATE_INVALID = "Tournament Publish Date is Invalid";
+	
+	
 	public final static String ERROR_CODE_MATCH_DATE_EMPTY = "201";
 	public final static String ERROR_CODE_MATCH_DATE_INVALID = "202";
 	
@@ -173,6 +178,7 @@ public class PTWConstants {
 	public final static String ERROR_DESC_QUESTION_ANSWER_COUNT_INVALID = "Answer Count is Invalid";
 	public final static String ERROR_CODE_ANSWER_NOT_FOUND = "220";
 	public final static String ERROR_DESC_ANSWER_NOT_FOUND = "Answer Not Found";
+	public final static String ERROR_CODE_CONTEST_STATUS_ID_INVALID = "221";
 	public final static String ERROR_CODE_CONTEST_CUTOFF_TIME_OVER = "251";
 	public final static String ERROR_DESC_CONTEST_CUTOFF_TIME_OVER = "Contest is over for submitting answer";
 	public final static String ERROR_CODE_CONTEST_INVALID_QUESTION = "252";

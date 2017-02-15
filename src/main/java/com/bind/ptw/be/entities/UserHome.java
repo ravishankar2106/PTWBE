@@ -46,34 +46,36 @@ public class UserHome {
 		}
 	}
 
-	public List<Users> findUsersByFilters( UserBean userRequest ) {
+	public List<Users> findUsersByFilters( UserBean userRequest, Boolean adminFlag) {
 		
 		Query query = null;
 		
 		try{
-			String queryToExecute = QueryConstants.RETRIEVE_USERS;
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append(QueryConstants.RETRIEVE_USERS);
 			
 			if( userRequest != null ) {
 				
 				if(userRequest.getUserLoginId() != null){
-					queryToExecute += "AND loginId =:userLoginId ";
+					queryToExecute.append("AND loginId =:userLoginId ");
 				}
 				if(userRequest.getPassword() != null){
-					queryToExecute += "AND password =:userPassword ";
+					queryToExecute.append("AND password =:userPassword ");
 				}
 				if(userRequest.getTeamName() != null){
-					queryToExecute += "AND teamName =:teamName ";
+					queryToExecute.append("AND teamName =:teamName ");
 				}
 				if(userRequest.getEmail() != null){
-					queryToExecute += "AND emailId =:emailId ";
+					queryToExecute.append("AND emailId =:emailId ");
 				}
 				if(userRequest.getPhone() != null){
-					queryToExecute += "AND phone =:phone ";
+					queryToExecute.append("AND phone =:phone ");
 				}
+				queryToExecute.append("AND adminFlag is ");
+				queryToExecute.append(adminFlag);
 			}
 
-            
-			query = session.createQuery(queryToExecute);
+			query = session.createQuery(queryToExecute.toString());
 			
 			if(userRequest != null){
 				

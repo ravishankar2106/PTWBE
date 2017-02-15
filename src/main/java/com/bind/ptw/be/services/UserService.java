@@ -10,7 +10,7 @@ import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 
 public interface UserService {
 	UserBean createUser(UserBean inputUserDto);
-	UserBean authenticateUser(UserBean authUser);
+	UserBean authenticateUser(UserBean authUser, Boolean adminFlag);
 	UserConfirmationBean confirmUser(UserConfirmationBean userConfirmationBean);
 	CityBeanList getCities();
 	BaseBean registerUserToTournament(UserTournmentRegisterBean userTournament);

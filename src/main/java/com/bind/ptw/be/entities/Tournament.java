@@ -26,6 +26,7 @@ public class Tournament {
 	private String tournamentDescription;
 	private Date startDate;
 	private Date endDate;
+	private Date publishDate;
 	private Boolean archievedFlag;
 	private TeamType teamType;
 	private SportType sportType;
@@ -80,6 +81,14 @@ public class Tournament {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	@Column(name = "PUBLISH_DATE")
+	public Date getPublishDate() {
+		return publishDate;
+	}
+	public void setPublishDate(Date publishDate) {
+		this.publishDate = publishDate;
 	}
 	
 	@Column(name = "ARCHIEVED_FLAG")

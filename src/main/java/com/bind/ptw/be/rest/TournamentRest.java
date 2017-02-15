@@ -20,6 +20,7 @@ import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.entities.SportTypeBeanList;
@@ -108,26 +109,6 @@ public class TournamentRest {
 		return tournamentService.deletePlayer(playerBean);
 	}
 	
-	@PostMapping("/createTournament")
-	public TournamentBean create(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.createTournament(tournamentBean);
-	}
-	
-	@PostMapping("/updateTournament")
-	public BaseBean updateTournament(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.updateTournament(tournamentBean);
-	}
-	
-	@PostMapping("/archieveTournament")
-	public BaseBean archieveTournament(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.archieveTournament(tournamentBean);
-	}
-	
-	@PostMapping("/deleteTournament")
-	public BaseBean deleteTournament(@RequestBody TournamentBean tournamentBean){
-		return tournamentService.deleteTournament(tournamentBean);
-	}
-	
 	@PostMapping("/addPlayerToTeam")
 	public BaseBean addPlayersToTeam(@RequestBody TeamPlayerList teamPlayerList){
 		return tournamentService.addPlayersToTeam(teamPlayerList);
@@ -141,6 +122,31 @@ public class TournamentRest {
 	@PostMapping("/removePlayerFromTeam")
 	public BaseBean removePlayersFromTeam(@RequestBody TeamPlayerList teamPlayerList){
 		return tournamentService.removePlayersFromTeam(teamPlayerList);
+	}
+	
+	@PostMapping("/createTournament")
+	public TournamentBean create(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.createTournament(tournamentBean);
+	}
+	
+	@PostMapping("/updateTournament")
+	public BaseBean updateTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.updateTournament(tournamentBean);
+	}
+	
+	@PostMapping("/getTournament")
+	public TournamentBeanList getTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.getTournamentList(tournamentBean);
+	}
+	
+	@PostMapping("/archieveTournament")
+	public BaseBean archieveTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.archieveTournament(tournamentBean);
+	}
+	
+	@PostMapping("/deleteTournament")
+	public BaseBean deleteTournament(@RequestBody TournamentBean tournamentBean){
+		return tournamentService.deleteTournament(tournamentBean);
 	}
 	
 	@PostMapping("/addTeamsToTournament")

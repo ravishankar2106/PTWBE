@@ -12,6 +12,7 @@ public class TournTeamPlayerBeanList extends BaseBean implements Serializable{
 	
 	private Integer tournamentTeamId;
 	private List<TeamPlayerBean> teamPlayerBeanList;
+	
 	public Integer getTournamentTeamId() {
 		return tournamentTeamId;
 	}

@@ -15,6 +15,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
+import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.services.ContestService;
 
@@ -36,9 +37,9 @@ public class ContestRest {
 		return contestService.getMatches(matchBean);
 	}
 	
-	@PostMapping("/updateMatchStatus")
-	public BaseBean updateMatchStatus(@RequestBody MatchBean matchBean){
-		return contestService.updateMatchStatus(matchBean);
+	@PostMapping("/updateMatch")
+	public BaseBean updateMatch(@RequestBody MatchBean matchBean){
+		return contestService.updateMatch(matchBean);
 	}
 	
 	@PostMapping("/deleteMatch")
@@ -56,7 +57,6 @@ public class ContestRest {
 		return contestService.getContests(contestBean);
 	}
 	
-	
 	@PostMapping("/updateContest")
 	public BaseBean updateContest(@RequestBody ContestBean contestBean){
 		return contestService.updateContest(contestBean);
@@ -72,6 +72,16 @@ public class ContestRest {
 		return contestService.deleteContest(contestBean);
 	}
 	
+	@PostMapping("/processContest")
+	public BaseBean processContests(@RequestBody ContestBean contestBean){
+		return contestService.processContests(contestBean);
+	}
+	
+	@GetMapping("/answerTypes")
+	public AnswerTypeBeanList getAnswerTypes(){
+		return contestService.getAnswerTypes();
+	}
+	
 	@PostMapping("/createQuestion")
 	public QuestionBean createQuestion(@RequestBody QuestionBean questionBean){
 		return contestService.createQuestion(questionBean);
@@ -82,11 +92,6 @@ public class ContestRest {
 		return contestService.getContestQuestion(contestBean);
 	}
 	
-	@PostMapping("/processContests")
-	public BaseBean processContests(@RequestBody ContestBean contestBean){
-		return contestService.processContests(contestBean);
-	}
-	
 	@PostMapping("/updateQuestion")
 	public BaseBean updateQuestion(@RequestBody QuestionBean questionBean){
 		return contestService.updateQuestion(questionBean);
@@ -95,6 +100,11 @@ public class ContestRest {
 	@PostMapping("/deleteQuestion")
 	public BaseBean deleteQuestion(@RequestBody ContestBean contestBean){
 		return contestService.deleteQuestion(contestBean);
+	}
+	
+	@PostMapping("/getPossibleAnswers")
+	public PossibleAnswerBean getPossibleAnswers(@RequestBody QuestionBean questionBean){
+		return contestService.getPossibleAnswers(questionBean);
 	}
 	
 	@PostMapping("/createAnswerOption")
@@ -117,9 +127,5 @@ public class ContestRest {
 		return contestService.deleteAnswerOption(answerOptionBean);
 	}
 	
-	@GetMapping("/answerTypes")
-	public AnswerTypeBeanList getAnswerTypes(){
-		return contestService.getAnswerTypes();
-	}
 	
 }

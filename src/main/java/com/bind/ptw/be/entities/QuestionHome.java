@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.util.StringUtils;
 
 import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.util.StringUtil;
 
 public class QuestionHome {
@@ -60,6 +60,18 @@ public class QuestionHome {
 			if( contestBean != null ) {
 				if(!StringUtil.isEmptyNull(contestBean.getContestId())){
 					queryToExecute.append("AND q.contest.contestId =:contestId ");
+				}
+				List<QuestionBean> questionList = contestBean.getQuestionList();
+				if(questionList != null && !questionList.isEmpty()){
+					Integer[] questionIdArr = new Integer[questionList.size()];
+					int counter = 0;
+					for (QuestionBean questionBean : questionList) {
+						questionIdArr[counter++] = questionBean.getQuestionId();
+					}
+					String questionIdStr = StringUtil.convertToTokens(questionIdArr);
+					queryToExecute.append("AND q.questionId IN (");
+					queryToExecute.append(questionIdStr);
+					queryToExecute.append(")");
 				}
 			}
 			query = session.createQuery(queryToExecute.toString());

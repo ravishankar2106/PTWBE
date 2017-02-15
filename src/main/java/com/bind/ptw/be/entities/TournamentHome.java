@@ -63,14 +63,14 @@ public class TournamentHome {
 			if( tournamentRequest != null ) {
 				
 				if(tournamentRequest.getTournamentId() != null){
-					queryToExecute.append("AND tournamentId =:tournamentId ");
+					queryToExecute.append("AND t.tournamentId =:tournamentId ");
 				}
 				if(tournamentRequest.getTournamentName() != null){
-					queryToExecute.append( "AND tournamentName =:tournamentName ");
+					queryToExecute.append( "AND t.tournamentName =:tournamentName ");
 				}
 			}
 			if(onlyOngoingTournament != null && onlyOngoingTournament){
-				queryToExecute.append("AND archievedFlag = 0 ");
+				queryToExecute.append("AND t.archievedFlag = 0 AND t.publishDate < CURRENT_TIMESTAMP() ");
 			}
             
 			query = session.createQuery(queryToExecute.toString());

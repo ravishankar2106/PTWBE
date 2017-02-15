@@ -62,6 +62,7 @@ public class TournamentDaoImpl implements TournamentDao{
 		tournamentEntity.setTournamentVenue(tournament.getTournamentVenue());
 		tournamentEntity.setStartDate(tournament.getStartDate());
 		tournamentEntity.setEndDate(tournament.getEndDate());
+		tournamentEntity.setPublishDate(tournament.getPublishDate());
 		
 		TeamType teamType = new TeamType();
 		teamType.setTeamTypeId(tournament.getTeamTypeId());
@@ -94,6 +95,8 @@ public class TournamentDaoImpl implements TournamentDao{
 				resultTournamentBean.setStartDateStr(StringUtil.convertDateToString(tournament.getStartDate()));
 				resultTournamentBean.setEndDate(tournament.getEndDate());
 				resultTournamentBean.setEndDateStr(StringUtil.convertDateToString(tournament.getEndDate()));
+				resultTournamentBean.setPublishDate(tournament.getPublishDate());
+				resultTournamentBean.setPublishDateStr(StringUtil.convertDateToString(tournament.getPublishDate()));
 				resultTournamentBean.setSportTypeId(tournament.getSportType().getSportTypeId());
 				resultTournamentBean.setTeamTypeId(tournament.getTeamType().getTeamTypeId());
 				resultTournamentBean.setTournamentVenue(tournament.getTournamentVenue());

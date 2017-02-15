@@ -96,16 +96,18 @@ public class UserServiceImpl implements UserService{
 		EmailUtil.sendEmail(emailContent);
 	}
 
-	public UserBean authenticateUser(UserBean authUser){
+	public UserBean authenticateUser(UserBean authUser, Boolean adminFlag){
 		UserBean userResponse;
 		try{
 			UserBeanValidator.validateAuthenticateUser(authUser);
-			List<UserBean> retrievedUsers = userDao.getUsers(authUser);
+			List<UserBean> retrievedUsers = userDao.getUsers(authUser, adminFlag);
 			if(retrievedUsers == null || retrievedUsers.isEmpty()){
 				throw new PTWException(PTWConstants.ERROR_CODE_USER_PWD_NOT_FOUND, PTWConstants.ERROR_DESC_USER_PWD_NOT_FOUND);
 			}
 			userResponse = retrievedUsers.get(0);
-			createUserToken(userResponse);
+			if(!adminFlag){
+				createUserToken(userResponse);
+			}
 		}catch(PTWException exception){
 			userResponse = new UserBean();
 			userResponse.setResultCode(exception.getCode());
@@ -190,7 +192,7 @@ public class UserServiceImpl implements UserService{
 		try{
 			TournamentBeanValidator.vaidateRequest(userBean);
 			UserBeanValidator.validateUserLoginId(userBean.getUserLoginId());
-			List<UserBean> foundUserList = userDao.getUsers(userBean);
+			List<UserBean> foundUserList = userDao.getUsers(userBean, false);
 			if(foundUserList == null || foundUserList.size() != 1){
 				throw new PTWException(PTWConstants.ERROR_CODE_USER_INVALID, PTWConstants.ERROR_DESC_USER_INVALID);
 			}
@@ -244,7 +246,7 @@ public class UserServiceImpl implements UserService{
 			userBean.setUserLoginId(userPasswordBean.getUserLoginId());
 			String encryptedOldPwd = org.apache.commons.codec.digest.DigestUtils.sha256Hex(userPasswordBean.getOldPassword());
 			userBean.setPassword(encryptedOldPwd);
-			List<UserBean> foundUserList = userDao.getUsers(userBean);
+			List<UserBean> foundUserList = userDao.getUsers(userBean, false);
 			if(foundUserList == null || foundUserList.size() != 1 ){
 				throw new PTWException(PTWConstants.ERROR_CODE_USER_INVALID, PTWConstants.ERROR_DESC_USER_INVALID);
 			}

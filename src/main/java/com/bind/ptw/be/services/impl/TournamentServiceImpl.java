@@ -71,6 +71,14 @@ public class TournamentServiceImpl implements TournamentService{
 	}
 	
 	@Override
+	public TournamentBeanList getTournamentList(TournamentBean tournamentBean) {
+		TournamentBeanList tournamentBeanList = new TournamentBeanList();
+		List<TournamentBean> tournaments = tournamentDao.getTournament(tournamentBean, false);
+		tournamentBeanList.setTournamentList(tournaments);
+		return tournamentBeanList;
+	}
+	
+	@Override
 	public TournamentBeanList getOngoingTournament(TournamentBean tournamentBean){
 		TournamentBeanList tournamentBeanList = new TournamentBeanList();
 		List<TournamentBean> tournaments = tournamentDao.getTournament(tournamentBean, true);
@@ -458,5 +466,6 @@ public class TournamentServiceImpl implements TournamentService{
 		}
 		return returnBean;
 	}
+
 	
 }

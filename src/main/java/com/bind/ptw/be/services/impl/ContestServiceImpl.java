@@ -24,6 +24,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
+import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
@@ -85,7 +86,7 @@ public class ContestServiceImpl implements ContestService{
 	}
 
 	@Override
-	public BaseBean updateMatchStatus(MatchBean matchBean) {
+	public BaseBean updateMatch(MatchBean matchBean) {
 		BaseBean retBean = new BaseBean();
 		try{
 			TournamentBeanValidator.vaidateRequest(matchBean);
@@ -497,7 +498,7 @@ public class ContestServiceImpl implements ContestService{
 			if(answerOptionBean == null){
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_REQUEST, PTWConstants.ERROR_DESC_INVALID_REQUEST);
 			}
-			ContestBeanValidator.validateAnswerOptionId(answerOptionBean.getAnswerOptionId());
+			ContestBeanValidator.validateUpdateAnswerOption(answerOptionBean);
 			contestDao.updateAnswerOption(answerOptionBean);
 		}catch(PTWException exception){
 			retBean.setResultCode(exception.getCode());
@@ -566,6 +567,13 @@ public class ContestServiceImpl implements ContestService{
 		}
 		
 		return anwerTypeBeanList;
+	}
+
+	@Override
+	public PossibleAnswerBean getPossibleAnswers(QuestionBean questionBean) {
+		PossibleAnswerBean possibleAnswerBean = new PossibleAnswerBean();
+		
+		return possibleAnswerBean;
 	}
 	
 }

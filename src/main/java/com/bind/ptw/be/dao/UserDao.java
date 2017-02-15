@@ -15,7 +15,7 @@ public interface UserDao {
 	UserBean save(UserBean userBean);
 	void updateUser(UserBean userBean);
 	void updateUserStatus(UserBean userBean);
-	List<UserBean> getUsers(UserBean userBean);
+	List<UserBean> getUsers(UserBean userBean, Boolean adminFlag);
 	void createUserToken(UserBean user)throws PTWException;
 	void createConfirmationCode(UserConfirmationBean userConfirmationBean) throws PTWException;
 	UserConfirmationBean getUserConfirmation(UserConfirmationBean userConfirmationBean);

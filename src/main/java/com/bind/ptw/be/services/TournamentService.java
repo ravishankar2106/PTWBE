@@ -20,6 +20,7 @@ import com.bind.ptw.be.entities.SportTypeBeanList;
 public interface TournamentService {
 	TournamentBean createTournament(TournamentBean tournamentBean);
 	TournamentBeanList getOngoingTournament(TournamentBean tournamentBean);
+	TournamentBeanList getTournamentList(TournamentBean tournamentBean);
 	BaseBean updateTournament(TournamentBean tournamentBean);
 	BaseBean archieveTournament(TournamentBean tournamentBean);
 	BaseBean deleteTournament(TournamentBean tournamentBean);

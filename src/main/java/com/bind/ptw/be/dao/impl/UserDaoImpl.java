@@ -77,26 +77,26 @@ public class UserDaoImpl implements UserDao{
 	
 	
 	@Override
-	public List<UserBean> getUsers(UserBean userBean){
+	public List<UserBean> getUsers(UserBean userBean, Boolean adminFlag){
 		List<UserBean> retrievedUserBeanList = null;
 		
 		UserHome userHome = new UserHome(getSession());
-		List<Users> userList = userHome.findUsersByFilters(userBean);
+		List<Users> userList = userHome.findUsersByFilters(userBean, adminFlag);
 		if(userList != null && !userList.isEmpty()){
 			retrievedUserBeanList = new ArrayList<UserBean>();
 			for(Users user : userList){
-				if(!user.isAdminFlag()){
-					UserBean retrievedUserBean = new UserBean();
-					retrievedUserBean.setUserId(user.getUserId());
-					retrievedUserBean.setUserLoginId(user.getLoginId());
-					retrievedUserBean.setUserName(user.getUserName());
+				UserBean retrievedUserBean = new UserBean();
+				retrievedUserBean.setUserId(user.getUserId());
+				retrievedUserBean.setUserLoginId(user.getLoginId());
+				retrievedUserBean.setUserName(user.getUserName());
+				if(!adminFlag){
 					retrievedUserBean.setTeamName(user.getTeamName());
 					retrievedUserBean.setEmail(user.getEmailId());
 					retrievedUserBean.setPhone(user.getPhone());
 					retrievedUserBean.setUserStatusId(user.getUserStatus().getUserStatusId());
 					retrievedUserBean.setCityId(user.getCity().getCityId());
-					retrievedUserBeanList.add(retrievedUserBean);
 				}
+				retrievedUserBeanList.add(retrievedUserBean);
 			}
 		}
 		
