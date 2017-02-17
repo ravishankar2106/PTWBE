@@ -1,6 +1,5 @@
 package com.bind.ptw.be.services.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +14,6 @@ import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.CityBeanList;
-import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserPasswordBean;
@@ -53,6 +51,7 @@ public class UserServiceImpl implements UserService{
 			registerUser.setUserId(userResponse.getUserId());
 			createUserToken(registerUser);
 			createConfirmationRecord(registerUser);
+			logger.debug("Exiting register User");
 		}catch(PTWException exception){
 			logger.error(exception);
 			userResponse = new UserBean();

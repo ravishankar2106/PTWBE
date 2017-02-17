@@ -495,6 +495,20 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		return retQuestionBeanList;
 	}
+	
+	@Override
+	public QuestionBean getQuestion(QuestionBean questionBean) throws PTWException {
+		QuestionBean retQuestionBean = null;
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		try{
+			Question dbQuestionList = questionHome.findById(questionBean.getQuestionId());
+			retQuestionBean = createQuestionBean(dbQuestionList);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retQuestionBean;
+	}
 
 	private QuestionBean createQuestionBean(Question question) {
 		QuestionBean questionBean = new QuestionBean();

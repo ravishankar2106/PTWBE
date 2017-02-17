@@ -27,8 +27,11 @@ import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
+import com.bind.ptw.be.dto.TeamPlayerBean;
+import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserSelectedAnswerBean;
@@ -572,8 +575,66 @@ public class ContestServiceImpl implements ContestService{
 	@Override
 	public PossibleAnswerBean getPossibleAnswers(QuestionBean questionBean) {
 		PossibleAnswerBean possibleAnswerBean = new PossibleAnswerBean();
-		
+		try{
+			TournamentBeanValidator.vaidateRequest(questionBean);
+			ContestBeanValidator.validateQuestionId(questionBean.getQuestionId());
+			QuestionBean question = contestDao.getQuestion(questionBean);
+			if(question == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_QUESTION_NOT_FOUND, PTWConstants.ERROR_DESC_QUESTION_NOT_FOUND);
+			}
+			int answerTypeId = question.getAnswerTypeId();
+			if(answerTypeId == 2 || answerTypeId == 4){
+				ContestBean queryContest = new ContestBean();
+				queryContest.setContestId(question.getContestId());
+				ContestBean contestBean = contestDao.getContest(queryContest);
+				if(answerTypeId == 2){
+					List<String> playersList = getMatchPlayers(possibleAnswerBean, contestBean);
+					possibleAnswerBean.setPossibleAnswerList(playersList);
+				}else{
+					List<String> teamListStr = new ArrayList<String>();
+					TournamentBean tournamentBean = new TournamentBean();
+					tournamentBean.setTournamentId(contestBean.getTournamentId());;
+					TournamentTeamBeanList teamList = tournamentDao.getTeamsForTournament(tournamentBean);
+					if(teamList != null && teamList.getTournamentTeamBeanList() != null){
+						for (TournamentTeamBean tournamentTeam : teamList.getTournamentTeamBeanList()) {
+							teamListStr.add(tournamentTeam.getTeamName());
+						}
+					}
+					possibleAnswerBean.setPossibleAnswerList(teamListStr);
+				}
+			}
+		}catch(PTWException exception){
+			possibleAnswerBean.setResultCode(exception.getCode());
+			possibleAnswerBean.setResultDescription(exception.getDescription());
+		}
 		return possibleAnswerBean;
+	}
+
+	private List<String> getMatchPlayers(PossibleAnswerBean possibleAnswerBean, ContestBean contestBean) throws PTWException {
+		List<String> namesList = new ArrayList<String>();
+		MatchBean queryMatch = new MatchBean();
+		queryMatch.setMatchId(contestBean.getMatchId());
+		List<MatchBean> matchBeanList = contestDao.getMatches(queryMatch);
+		if(matchBeanList != null && !matchBeanList.isEmpty()){
+			MatchBean matchBean = matchBeanList.get(0);
+			Integer teamAId = matchBean.getTeamA().getTournamentTeamId();
+			Integer teamBId = matchBean.getTeamB().getTournamentTeamId();
+			appendPlayers(namesList, teamAId);
+			appendPlayers(namesList, teamBId);
+		}
+		return namesList;
+	}
+
+	private void appendPlayers(List<String> namesList, Integer teamAId) throws PTWException {
+		TournamentTeamBean tournTeamBean = new TournamentTeamBean();
+		tournTeamBean.setTournamentTeamId(teamAId);
+		TournTeamPlayerBeanList teamPlayers = tournamentDao.getPlayersForTournamentTeam(tournTeamBean);
+		if(teamPlayers != null && teamPlayers.getTeamPlayerBeanList() != null){
+			for (TeamPlayerBean teamPlayer : teamPlayers.getTeamPlayerBeanList()) {
+				namesList.add(teamPlayer.getPlayerBean().getFirstName() + " " + teamPlayer.getPlayerBean().getLastName());
+			}
+			
+		}
 	}
 	
 }
