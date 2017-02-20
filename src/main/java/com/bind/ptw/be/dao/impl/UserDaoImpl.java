@@ -258,7 +258,9 @@ public class UserDaoImpl implements UserDao{
 				userTournamentHome.persist(userTournamentRegistration);
 				
 				UserScoreBoard userScoreBoard = new UserScoreBoard();
-				userScoreBoard.setUserId(userTournament.getUserId());
+				Users users = new Users();
+				users.setUserId(userTournament.getUserId());
+				userScoreBoard.setUser(users);
 				userScoreBoard.setTournamentId(tournamentId);
 				userScoreBoard.setTotalPoints(0);
 				userScoreBoard.setRank(0);
@@ -292,7 +294,9 @@ public class UserDaoImpl implements UserDao{
 					tournamentBean.setEndDateStr(StringUtil.convertDateTImeToString(tournament.getEndDate()));
 					userTournamentBean.setTournamentBean(tournamentBean);
 					
-					List<UserScoreBoard> scoreBoardList = scoreBoardHome.findByFilter(userTournamentRegistration.getTournament().getTournamentId(), userBean.getUserId());
+					Integer user[] = new Integer[1];
+					user[0] = userBean.getUserId();
+					List<UserScoreBoard> scoreBoardList = scoreBoardHome.findByFilter(userTournamentRegistration.getTournament().getTournamentId(), user , null);
 					if(scoreBoardList != null && scoreBoardList.size() == 1){
 						UserScoreBoard userScores = scoreBoardList.get(0);
 						userTournamentBean.setTotalPoints(userScores.getTotalPoints());

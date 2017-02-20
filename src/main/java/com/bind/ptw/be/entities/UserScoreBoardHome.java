@@ -49,29 +49,31 @@ public class UserScoreBoardHome {
 		}
 	}
 
-	public List<UserScoreBoard> findByFilter( Integer tournamentId, Integer userId ) {
+	public List<UserScoreBoard> findByFilter( Integer tournamentId, Integer[] userIdArr, Integer rankSize ) {
 		
 		Query query = null;
 		
 		try{
 			StringBuilder queryToExecute = new StringBuilder();
 			queryToExecute.append(QueryConstants.RETRIEVE_USER_SCOREBOARD);
-			if(!StringUtil.isEmptyNull(userId)){
-				queryToExecute.append("AND usb.userId =:userId ");
-			}
-			if(!StringUtil.isEmptyNull(tournamentId)){
-				queryToExecute.append("AND usb.tournamentId =:tournamentId ");
+			queryToExecute.append("AND usb.tournamentId =:tournamentId ");
+			if(userIdArr != null){
+				queryToExecute.append("AND usb.user.userId IN (");
+				queryToExecute.append(StringUtil.convertToTokens(userIdArr));
+				queryToExecute.append(")");
 			}
 			
+			queryToExecute.append("AND usb.totalPoints > 0 ");
+			if(!StringUtil.isEmptyNull(rankSize)){
+				queryToExecute.append("AND usb.rank <= ");
+				queryToExecute.append(rankSize);
+				queryToExecute.append(" ");
+			}
+			queryToExecute.append("ORDER BY usb.rank ");
 			query = session.createQuery(queryToExecute.toString());
 			
-			if(!StringUtil.isEmptyNull(userId)){
-				query.setParameter("userId", userId);
-			}
-			if(!StringUtil.isEmptyNull(tournamentId)){
-				query.setParameter("tournamentId", tournamentId);
-			}
-		
+			query.setParameter("tournamentId", tournamentId);
+								
 		}catch(RuntimeException e){
 			throw e;
 		}

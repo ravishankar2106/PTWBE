@@ -15,6 +15,8 @@ import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.AnswerTypeBean;
 import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.LeaderBoardBean;
+import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
@@ -793,7 +795,9 @@ public class ContestDaoImpl implements ContestDao{
 		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
 		try{
 			for (UserScoreBoardBean userScoreBoardBean : userScoreBoardBeanList) {
-				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(userScoreBoardBean.getTournamentId(), userScoreBoardBean.getUserId());
+				Integer user[] = new Integer[1];
+				user[0] = userScoreBoardBean.getUserId();
+				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(userScoreBoardBean.getTournamentId(), user , null);
 				if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
 					UserScoreBoard userScoreBoard = userScoreBoardList.get(0);
 					userScoreBoard.setTotalPoints(userScoreBoardBean.getPointsScored());	
@@ -859,5 +863,36 @@ public class ContestDaoImpl implements ContestDao{
 		return answerTypeBeanList;
 	}
 	
-	
+	@Override
+	public List<LeaderBoardBean> getLeaderBoard(LeaderBoardBeanList leaderBoardBeanList) throws PTWException {
+		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(getSession());
+		List<LeaderBoardBean> leaderBoardList = null; //new ArrayList<LeaderBoardBean>();
+		Integer tournamentId = leaderBoardBeanList.getTournamentId();
+		Integer[] users = null;
+		Integer rankSize = null;
+		try{
+			if(!StringUtil.isEmptyNull(leaderBoardBeanList.getGroupId())){
+				
+			}else{
+				rankSize = 100;
+			}
+			List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(tournamentId, users, rankSize);
+			if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
+				leaderBoardList = new ArrayList<LeaderBoardBean>();
+				for (UserScoreBoard userScoreBoard : userScoreBoardList) {
+					LeaderBoardBean leaderBoard = new LeaderBoardBean();
+					leaderBoard.setUserId(userScoreBoard.getUser().getUserId());
+					leaderBoard.setUserName(userScoreBoard.getUser().getUserName());
+					leaderBoard.setTeamName(userScoreBoard.getUser().getTeamName());
+					leaderBoard.setTotalPoints(userScoreBoard.getTotalPoints());
+					leaderBoard.setRank(userScoreBoard.getRank());
+					leaderBoardList.add(leaderBoard);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return leaderBoardList;
+	}
 }

@@ -5,6 +5,7 @@ import com.bind.ptw.be.dto.AnswerTypeBeanList;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
+import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
@@ -40,6 +41,7 @@ public interface ContestService {
 	BaseBean submitUserAnswer(UserContestAnswer userContestAsnwer);
 	AnswerTypeBeanList getAnswerTypes();
 	PossibleAnswerBean getPossibleAnswers(QuestionBean questionBean);
+	LeaderBoardBeanList getLeaderBoard(LeaderBoardBeanList leaderBoardRequest);
 	
 	
 }

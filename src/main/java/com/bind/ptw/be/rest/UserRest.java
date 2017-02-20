@@ -13,7 +13,9 @@ import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
+import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
+import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
@@ -89,7 +91,7 @@ public class UserRest {
 		return userService.registerUserToTournament(userTournament);
 	}
 	
-	@PostMapping("/getUserRegisteredTournament")
+	@PostMapping("/getRegisteredTournament")
 	public UserTournamentBeanList getUserRegisterTournament(@RequestBody UserBean userBean){
 		return userService.getUserRegisterTournament(userBean);
 	}
@@ -100,9 +102,14 @@ public class UserRest {
 		return contestService.getOngoingContests(contestBean);
 	}
 	
-	@PostMapping("/submitUserAnswer")
+	@PostMapping("/submitAnswer")
 	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
 		return contestService.submitUserAnswer(userContestAsnwer);
+	}
+	
+	@PostMapping("/getTournamentMatches")
+	public MatchBeanList getTournamentMatches(@RequestBody MatchBean matchBean){
+		return contestService.getMatches(matchBean);
 	}
 	
 	@PostMapping("/getMatchQuestion")
@@ -110,8 +117,10 @@ public class UserRest {
 		return contestService.getMatchQuestions(matchBean);
 	}
 	
-	
-	
+	@PostMapping("/getLeaderBoard")
+	public LeaderBoardBeanList getLeaderBoard(@RequestBody LeaderBoardBeanList leaderBoardRequest){
+		return contestService.getLeaderBoard(leaderBoardRequest);
+	}
 
 	
 }
