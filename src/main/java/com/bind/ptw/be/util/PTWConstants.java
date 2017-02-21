@@ -160,6 +160,7 @@ public class PTWConstants {
 	public final static String ERROR_DESC_MATCH_NOT_FOUND = "Match Not Found";
 	
 	public final static String ERROR_CODE_MATCH_STATUS_ID_EMPTY = "206";
+	public final static String ERROR_CODE_MATCH_STATUS_ID_INVALID = "207";
 	
 	public final static int MAX_CONFIRMATION_RETRY_COUNT = 5;
 	

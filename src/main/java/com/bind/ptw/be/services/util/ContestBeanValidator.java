@@ -214,6 +214,10 @@ public class ContestBeanValidator {
 		if(StringUtil.isEmptyNull(statusId)){
 			throw new PTWException(PTWConstants.ERROR_CODE_MATCH_STATUS_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Match Status Id");
 		}
+		if(!(statusId == 1 || statusId == 2 || statusId ==3)){
+			throw new PTWException(PTWConstants.ERROR_CODE_MATCH_STATUS_ID_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Match Status Id");
+			
+		}
 	}
 	
 	public static void validateCreateQuestion(QuestionBean questionBean, TournamentDao tournamentDao, ContestDao contestDao) throws PTWException{
