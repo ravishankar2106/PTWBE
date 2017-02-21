@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService{
 	public BaseBean registerUserToTournament(UserTournmentRegisterBean userTournament) {
 		BaseBean baseBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(userTournament);
+			TournamentBeanValidator.validateRequest(userTournament);
 			UserBeanValidator.validateTournamentRegistration(userTournament);
 			userDao.registerUserToTournament(userTournament);
 		}catch(PTWException exception){
@@ -171,7 +171,7 @@ public class UserServiceImpl implements UserService{
 	public UserTournamentBeanList getUserRegisterTournament(UserBean userBean) {
 		UserTournamentBeanList userTournamentRegisterBean = new UserTournamentBeanList();
 		try{
-			TournamentBeanValidator.vaidateRequest(userBean);
+			TournamentBeanValidator.validateRequest(userBean);
 			UserBeanValidator.validateUserId(userBean.getUserId());
 			
 			userTournamentRegisterBean.setUserId(userBean.getUserId());
@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService{
 	public BaseBean resetPassword(UserBean userBean) {
 		BaseBean baseBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(userBean);
+			TournamentBeanValidator.validateRequest(userBean);
 			UserBeanValidator.validateUserLoginId(userBean.getUserLoginId());
 			List<UserBean> foundUserList = userDao.getUsers(userBean, false);
 			if(foundUserList == null || foundUserList.size() != 1){
@@ -239,7 +239,7 @@ public class UserServiceImpl implements UserService{
 	public BaseBean updatePassword(UserPasswordBean userPasswordBean) {
 		BaseBean baseBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(userPasswordBean);
+			TournamentBeanValidator.validateRequest(userPasswordBean);
 			UserBeanValidator.validateUpdatePassword(userPasswordBean);
 			UserBean userBean = new UserBean();
 			userBean.setUserLoginId(userPasswordBean.getUserLoginId());

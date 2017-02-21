@@ -26,7 +26,7 @@ import com.bind.ptw.be.util.StringUtil;
 
 public class TournamentBeanValidator {
 	
-	public static void vaidateRequest(BaseBean baseBean)throws PTWException{
+	public static void validateRequest(BaseBean baseBean)throws PTWException{
 		if(baseBean == null){
 			throw new PTWException(PTWConstants.ERROR_CODE_INVALID_REQUEST, PTWConstants.ERROR_DESC_INVALID_REQUEST);
 		}

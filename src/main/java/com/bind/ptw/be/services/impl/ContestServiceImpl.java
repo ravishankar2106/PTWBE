@@ -64,7 +64,7 @@ public class ContestServiceImpl implements ContestService{
 	public MatchBean createMatch(MatchBean matchBean) {
 		MatchBean retBean = null;
 		try{
-			TournamentBeanValidator.vaidateRequest(matchBean);
+			TournamentBeanValidator.validateRequest(matchBean);
 			ContestBeanValidator.validateCreateMatch(matchBean, tournamentDao, contestDao);
 			retBean = contestDao.createMatch(matchBean);
 		}catch(PTWException exception){
@@ -94,7 +94,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean updateMatch(MatchBean matchBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(matchBean);
+			TournamentBeanValidator.validateRequest(matchBean);
 			ContestBeanValidator.validateMatchId(matchBean.getMatchId());
 			ContestBeanValidator.validateStatusId(matchBean.getMatchStatusId());
 			contestDao.updateMatchStatus(matchBean);
@@ -109,7 +109,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean deleteMatch(MatchBean matchBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(matchBean);
+			TournamentBeanValidator.validateRequest(matchBean);
 			ContestBeanValidator.validateMatchId(matchBean.getMatchId());
 			contestDao.deleteMatch(matchBean);
 		}catch(PTWException exception){
@@ -123,7 +123,7 @@ public class ContestServiceImpl implements ContestService{
 	public QuestionBeanList getMatchQuestions(MatchBean matchBean){
 		QuestionBeanList retQuestionBeanList = new QuestionBeanList();
 		try{
-			TournamentBeanValidator.vaidateRequest(matchBean);
+			TournamentBeanValidator.validateRequest(matchBean);
 			ContestBeanValidator.validateMatchId(matchBean.getMatchId());
 			List<QuestionBean> questionBeanList = contestDao.getMatchQuestions(matchBean);
 			retQuestionBeanList.setQuestionBeanList(questionBeanList);
@@ -138,7 +138,7 @@ public class ContestServiceImpl implements ContestService{
 	public ContestBean createContest(ContestBean contestBean) {
 		ContestBean retBean = null;
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			ContestBeanValidator.validateCreateContest(contestBean, tournamentDao, contestDao);
 			retBean = contestDao.createContest(contestBean);
 		}catch(PTWException exception){
@@ -153,7 +153,7 @@ public class ContestServiceImpl implements ContestService{
 	public ContestBeanList getContests(ContestBean contestBean) {
 		ContestBeanList resContestBeanList = new ContestBeanList();
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			TournamentBeanValidator.validateTournamentId(contestBean.getTournamentId());
 			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, false);
 			resContestBeanList.setContestBeanList(contestBeanList);
@@ -168,7 +168,7 @@ public class ContestServiceImpl implements ContestService{
 	public ContestBeanList getOngoingContests(ContestBean contestBean) {
 		ContestBeanList retContestBeanList = new ContestBeanList();
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			TournamentBeanValidator.validateTournamentId(contestBean.getTournamentId());
 			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, true);
 			if(contestBeanList != null && !contestBeanList.isEmpty()){
@@ -196,7 +196,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean updateContest(ContestBean contestBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			ContestBeanValidator.validateUpdateContest(contestBean, tournamentDao, contestDao);
 			contestDao.updateContest(contestBean);
 		}catch(PTWException exception){
@@ -210,7 +210,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean updateContestStatus(ContestBean contestBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			ContestBean statusContestBean = ContestBeanValidator.validateUpdateContestStatus(contestBean, tournamentDao, contestDao);
 			contestDao.updateContest(statusContestBean);
 		}catch(PTWException exception){
@@ -224,7 +224,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean deleteContest(ContestBean contestBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			ContestBeanValidator.validateContestId(contestBean.getContestId());
 			contestDao.deleteContest(contestBean);
 		}catch(PTWException exception){
@@ -392,7 +392,7 @@ public class ContestServiceImpl implements ContestService{
 	public QuestionBean createQuestion(QuestionBean questionBean) {
 		QuestionBean retBean = null;
 		try{
-			TournamentBeanValidator.vaidateRequest(questionBean);
+			TournamentBeanValidator.validateRequest(questionBean);
 			ContestBeanValidator.validateCreateQuestion(questionBean, tournamentDao, contestDao);
 			retBean = contestDao.createQuestion(questionBean);
 			
@@ -435,7 +435,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean updateQuestion(QuestionBean questionBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(questionBean);
+			TournamentBeanValidator.validateRequest(questionBean);
 			ContestBeanValidator.validateUpdateQuestion(questionBean, tournamentDao, contestDao);
 			contestDao.updateQuestion(questionBean);
 		}catch(PTWException exception){
@@ -449,7 +449,7 @@ public class ContestServiceImpl implements ContestService{
 	public ContestBean getContestQuestion(ContestBean contestBean) {
 		ContestBean retBean = new ContestBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			ContestBeanValidator.validateContestId(contestBean.getContestId());
 			List<QuestionBean> questionList = contestDao.getQuestion(contestBean);
 			retBean.setContestId(contestBean.getContestId());
@@ -465,7 +465,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean deleteQuestion(ContestBean contestBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(contestBean);
+			TournamentBeanValidator.validateRequest(contestBean);
 			ContestBeanValidator.validateContestId(contestBean.getContestId());
 			List<QuestionBean> questionList = contestDao.getQuestion(contestBean);
 			if(questionList != null && !questionList.isEmpty()){
@@ -485,7 +485,7 @@ public class ContestServiceImpl implements ContestService{
 	public BaseBean createAnswerOptions(QuestionBean questionBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(questionBean);
+			TournamentBeanValidator.validateRequest(questionBean);
 			ContestBeanValidator.validateQuestionId(questionBean.getQuestionId());
 			ContestBeanValidator.validateAnswerOption(questionBean.getAnswerOptionList());
 			contestDao.createAnswerOptions(questionBean);
@@ -518,7 +518,7 @@ public class ContestServiceImpl implements ContestService{
 	public QuestionBean getAnswersForQuestion(QuestionBean questionBean) {
 		QuestionBean retBean = new QuestionBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(questionBean);
+			TournamentBeanValidator.validateRequest(questionBean);
 			ContestBeanValidator.validateQuestionId(questionBean.getQuestionId());
 			List<AnswerOptionBean> answers = contestDao.getAnswersForQuestion(questionBean);
 			retBean.setQuestionId(questionBean.getQuestionId());
@@ -578,7 +578,7 @@ public class ContestServiceImpl implements ContestService{
 	public PossibleAnswerBean getPossibleAnswers(QuestionBean questionBean) {
 		PossibleAnswerBean possibleAnswerBean = new PossibleAnswerBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(questionBean);
+			TournamentBeanValidator.validateRequest(questionBean);
 			ContestBeanValidator.validateQuestionId(questionBean.getQuestionId());
 			QuestionBean question = contestDao.getQuestion(questionBean);
 			if(question == null){
@@ -643,7 +643,7 @@ public class ContestServiceImpl implements ContestService{
 	public LeaderBoardBeanList getLeaderBoard(LeaderBoardBeanList leaderBoardRequest) {
 		LeaderBoardBeanList retLeaderBoard = new LeaderBoardBeanList();
 		try{
-			TournamentBeanValidator.vaidateRequest(leaderBoardRequest);
+			TournamentBeanValidator.validateRequest(leaderBoardRequest);
 			TournamentBeanValidator.validateTournamentId(leaderBoardRequest.getTournamentId());
 			List<LeaderBoardBean> leadersList = contestDao.getLeaderBoard(leaderBoardRequest);
 			retLeaderBoard.setLeaders(leadersList);
@@ -652,6 +652,45 @@ public class ContestServiceImpl implements ContestService{
 			retLeaderBoard.setResultDescription(exception.getDescription());
 		}
 		return retLeaderBoard;
+	}
+
+	@Override
+	public UserContestAnswer getUserAnswer(UserContestAnswer userContestBean) {
+		UserContestAnswer userContestAnswer = null;
+		try{
+			TournamentBeanValidator.validateRequest(userContestBean);
+			ContestBeanValidator.validateContestId(userContestBean.getContestId());
+			userContestAnswer = contestDao.getUserAnswer(userContestBean);
+			
+		}catch(PTWException exception){
+			userContestAnswer = new UserContestAnswer();
+			userContestAnswer.setResultCode(exception.getCode());
+			userContestAnswer.setResultDescription(exception.getDescription());
+		}
+		return userContestAnswer;
+	}
+
+	@Override
+	public ContestBeanList getMatchContest(MatchBean matchBean) {
+		ContestBeanList contestBeanList = new ContestBeanList();
+		try{
+			TournamentBeanValidator.validateRequest(matchBean);
+			ContestBeanValidator.validateMatchId(matchBean.getMatchId());
+			ContestBean contest = new ContestBean();
+			contest.setMatchId(matchBean.getMatchId());
+			List<ContestBean> contestList = contestDao.getContestList(contest);
+			if(contestList != null && !contestList.isEmpty()){
+				for (ContestBean contestBean : contestList) {
+					List<QuestionBean> questions = contestDao.getQuestionAndAnswer(contestBean);
+					contestBean.setQuestionList(questions);
+				}
+			}
+			contestBeanList.setContestBeanList(contestList);
+		}catch(PTWException exception){
+			contestBeanList.setResultCode(exception.getCode());
+			contestBeanList.setResultDescription(exception.getDescription());
+		}
+		return contestBeanList;
 	}
 	
 }

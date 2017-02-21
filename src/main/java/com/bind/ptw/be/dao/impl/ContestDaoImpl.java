@@ -43,6 +43,8 @@ import com.bind.ptw.be.entities.TournamentTeam;
 import com.bind.ptw.be.entities.TournamentTeamHome;
 import com.bind.ptw.be.entities.UserAnswer;
 import com.bind.ptw.be.entities.UserAnswerHome;
+import com.bind.ptw.be.entities.UserBonusPoint;
+import com.bind.ptw.be.entities.UserBonusPointHome;
 import com.bind.ptw.be.entities.UserScoreBoard;
 import com.bind.ptw.be.entities.UserScoreBoardHome;
 import com.bind.ptw.be.util.PTWConstants;
@@ -738,9 +740,57 @@ public class ContestDaoImpl implements ContestDao{
 	}
 
 	@Override
-	public UserContestAnswer getUserAnswer(ContestBean contestBean) throws PTWException {
-		// TODO Auto-generated method stub
-		return null;
+	public UserContestAnswer getUserAnswer(UserContestAnswer userContestBean) throws PTWException {
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		Integer userId = userContestBean.getUserId();
+		Integer contestId = userContestBean.getContestId();
+		UserContestAnswer retContestAnswer = new UserContestAnswer();
+		retContestAnswer.setContestId(contestId);
+		retContestAnswer.setUserId(userId);
+		try{
+			ContestBean contestBean = new ContestBean();
+			contestBean.setContestId(contestId);
+			List<Question> dbQuestionList = questionHome.findQuestionByFilter(contestBean);
+			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
+				List<UserAnswerBean> userAnswers = null; 
+				for (Question question : dbQuestionList) {
+					UserAnswerBean userAnswerBean = new UserAnswerBean();
+					userAnswerBean.setQuestionId(question.getQuestionId());
+					List<UserAnswer> dbAnswers = answerHome.getUserAnswer(userId, question.getQuestionId());
+					int totalPoints = 0;
+					if(dbAnswers != null && !dbAnswers.isEmpty()){
+						userAnswers = new ArrayList<UserAnswerBean>();
+						List<AnswerBean> answerBeanList = new ArrayList<AnswerBean>();
+						for (UserAnswer userAnswer : dbAnswers) {
+							AnswerBean answerBean = new AnswerBean();
+							answerBean.setAnswerId(userAnswer.getUserAnswerId());
+							answerBean.setAnswerOptionId(userAnswer.getAnswerOption().getAnswerOptionId());
+							answerBean.setPointsScored(userAnswer.getPointsScored());
+							if(!StringUtil.isEmptyNull(userAnswer.getPointsScored())){
+								totalPoints += userAnswer.getPointsScored();
+							}
+							answerBeanList.add(answerBean);
+						}
+						userAnswerBean.setSelectedAnswerList(answerBeanList);
+						userAnswerBean.setPointsScored(totalPoints);
+					}
+					
+					userAnswers.add(userAnswerBean);
+				}
+				UserBonusPointHome userBonusPointHome = new UserBonusPointHome(this.getSession());
+				List<UserBonusPoint> userBonusPoints = userBonusPointHome.findByFilter(userId, contestId);
+				if(userBonusPoints != null && !userBonusPoints.isEmpty()){
+					UserBonusPoint userBonusPoint = userBonusPoints.get(0);
+					retContestAnswer.setBonusPoints(userBonusPoint.getPoints());
+				}
+				retContestAnswer.setUserAnswerList(userAnswers);
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retContestAnswer;
 	}
 
 	@Override
@@ -895,4 +945,5 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		return leaderBoardList;
 	}
+	
 }

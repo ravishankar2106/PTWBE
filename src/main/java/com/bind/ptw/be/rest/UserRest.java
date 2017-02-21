@@ -107,9 +107,19 @@ public class UserRest {
 		return contestService.submitUserAnswer(userContestAsnwer);
 	}
 	
+	@PostMapping("/getSubmittedAnswer")
+	public UserContestAnswer getUserAnswer(@RequestBody UserContestAnswer userContestBean){
+		return contestService.getUserAnswer(userContestBean);
+	}
+	
 	@PostMapping("/getTournamentMatches")
 	public MatchBeanList getTournamentMatches(@RequestBody MatchBean matchBean){
 		return contestService.getMatches(matchBean);
+	}
+	
+	@PostMapping("/getMatchContest")
+	public ContestBeanList getMatchContest(@RequestBody MatchBean matchBean){
+		return contestService.getMatchContest(matchBean);
 	}
 	
 	@PostMapping("/getMatchQuestion")

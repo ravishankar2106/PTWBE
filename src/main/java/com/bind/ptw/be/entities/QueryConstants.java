@@ -13,6 +13,7 @@ public class QueryConstants {
 	public static final String DELETE_QUESTION_ANSWERS = "delete from AnswerOption ao where ao.question.questionId = :questionId ";
 	public static final String RETRIEVE_QUESTIONS = "from Question q where 1=1 ";
 	public static final String RETRIEVE_USER_ANSWER = "from UserAnswer ua where 1=1 ";
+	public static final String RETRIEVE_USER_BONUS_POINTS = "from UserBonusPoint ubp where 1=1 ";
 	public static final String RETRIEVE_TOTAL_SCORE = "select new list( SUM(us.pointsScored) AS TOTAL_POINTS, us.userId) FROM UserAnswer us "
 				+ "WHERE us.questionId IN (:questionIDList) ";
 	public static final String RETRIEVE_TOTAL_SCORE_FROM_BKP = "select new list( SUM(us.pointsScored) AS TOTAL_POINTS, us.userId) FROM UserAnswerBkp us "

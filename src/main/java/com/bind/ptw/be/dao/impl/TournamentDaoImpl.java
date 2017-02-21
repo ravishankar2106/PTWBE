@@ -118,6 +118,7 @@ public class TournamentDaoImpl implements TournamentDao{
 		dbTournament.setTournamentVenue(tournamentBean.getTournamentVenue());
 		dbTournament.setStartDate(tournamentBean.getStartDate());
 		dbTournament.setEndDate(tournamentBean.getEndDate());
+		dbTournament.setPublishDate(tournamentBean.getPublishDate());
 		tournamentHome.merge(dbTournament);
 	}
 	

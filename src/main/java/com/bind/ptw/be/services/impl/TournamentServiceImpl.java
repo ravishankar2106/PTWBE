@@ -44,7 +44,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public TournamentBean createTournament(TournamentBean inputTournamentBean){
 		TournamentBean tournamentBeanResponse;
 		try{
-			TournamentBeanValidator.vaidateRequest(inputTournamentBean);
+			TournamentBeanValidator.validateRequest(inputTournamentBean);
 			TournamentBeanValidator.validateCreateTournament(inputTournamentBean, tournamentDao);
 			tournamentBeanResponse = tournamentDao.createTournament(inputTournamentBean);
 		}catch(PTWException exception){
@@ -60,7 +60,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean deleteTournament(TournamentBean tournamentBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournamentBean);
+			TournamentBeanValidator.validateRequest(tournamentBean);
 			TournamentBeanValidator.validateTournamentId(tournamentBean.getTournamentId());
 			tournamentDao.deleteTournament(tournamentBean);
 		}catch(PTWException exception){
@@ -90,7 +90,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean updateTournament(TournamentBean tournamentBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournamentBean);
+			TournamentBeanValidator.validateRequest(tournamentBean);
 			TournamentBeanValidator.validateUpdateTournament(tournamentBean, tournamentDao);
 			tournamentDao.updateTournament(tournamentBean);
 		}catch(PTWException exception){
@@ -104,7 +104,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean archieveTournament(TournamentBean tournamentBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournamentBean);
+			TournamentBeanValidator.validateRequest(tournamentBean);
 			TournamentBeanValidator.validateTournamentId(tournamentBean.getTournamentId());
 			tournamentDao.archieveTournament(tournamentBean);
 		}catch(PTWException exception){
@@ -134,7 +134,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public CountryBean createCountry(CountryBean countryBean) {
 		CountryBean returnBean;
 		try{
-			TournamentBeanValidator.vaidateRequest(countryBean);
+			TournamentBeanValidator.validateRequest(countryBean);
 			TournamentBeanValidator.validateCreateCountryBean(countryBean);
 			returnBean = tournamentDao.createCountry(countryBean); 
 		}catch(PTWException exception){
@@ -162,7 +162,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean updateCountry(CountryBean countryBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(countryBean);
+			TournamentBeanValidator.validateRequest(countryBean);
 			TournamentBeanValidator.validateUpdateCountryBean(countryBean);
 			tournamentDao.updateCountry(countryBean); 
 		}catch(PTWException exception){
@@ -176,7 +176,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean deleteCountry(CountryBean countryBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(countryBean);
+			TournamentBeanValidator.validateRequest(countryBean);
 			TournamentBeanValidator.validateCountryId(countryBean.getCountryId());
 			tournamentDao.deleteCountry(countryBean); 
 		}catch(PTWException exception){
@@ -190,7 +190,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public TeamBean createTeam(TeamBean teamBean) {
 		TeamBean returnBean;
 		try{
-			TournamentBeanValidator.vaidateRequest(teamBean);
+			TournamentBeanValidator.validateRequest(teamBean);
 			TournamentBeanValidator.validateCreateTeamBean(teamBean, tournamentDao);
 			returnBean = tournamentDao.createTeam(teamBean); 
 		}catch(PTWException exception){
@@ -218,7 +218,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean updateTeam(TeamBean teamBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(teamBean);
+			TournamentBeanValidator.validateRequest(teamBean);
 			TournamentBeanValidator.validateUpdateTeamBean(teamBean, tournamentDao);
 			tournamentDao.updateTeam(teamBean); 
 		}catch(PTWException exception){
@@ -232,7 +232,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean deleteTeam(TeamBean teamBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(teamBean);
+			TournamentBeanValidator.validateRequest(teamBean);
 			TournamentBeanValidator.validateTeamId(teamBean.getTeamId());
 			tournamentDao.deleteTeam(teamBean); 
 		}catch(PTWException exception){
@@ -246,7 +246,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public PlayerBean createPlayer(PlayerBean playerBean) {
 		PlayerBean returnBean;
 		try{
-			TournamentBeanValidator.vaidateRequest(playerBean);
+			TournamentBeanValidator.validateRequest(playerBean);
 			TournamentBeanValidator.validateCreatePlayerBean(playerBean, tournamentDao);
 			returnBean = tournamentDao.createPlayer(playerBean); 
 		}catch(PTWException exception){
@@ -274,7 +274,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean updatePlayer(PlayerBean playerBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(playerBean);
+			TournamentBeanValidator.validateRequest(playerBean);
 			TournamentBeanValidator.validateUpdatePlayerBean(playerBean, tournamentDao);
 			tournamentDao.updatePlayer(playerBean); 
 		}catch(PTWException exception){
@@ -288,7 +288,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean deletePlayer(PlayerBean playerBean) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(playerBean);
+			TournamentBeanValidator.validateRequest(playerBean);
 			TournamentBeanValidator.validatePlayerId(playerBean.getPlayerId());
 			tournamentDao.deletePlayer(playerBean); 
 		}catch(PTWException exception){
@@ -302,7 +302,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean addCountriesToSportType(SportTypeCountryList sportTypeCountryList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(sportTypeCountryList);
+			TournamentBeanValidator.validateRequest(sportTypeCountryList);
 			TournamentBeanValidator.validateCountriesToSportMapping(sportTypeCountryList, tournamentDao);
 			tournamentDao.addCountryToSport(sportTypeCountryList);
 		}catch(PTWException exception){
@@ -316,7 +316,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public SportTypeCountryList getCountriesForSportType(SportTypeCountryList sportTypeCountryList) {
 		SportTypeCountryList returnBean = new SportTypeCountryList();
 		try{
-			TournamentBeanValidator.vaidateRequest(sportTypeCountryList);
+			TournamentBeanValidator.validateRequest(sportTypeCountryList);
 			TournamentBeanValidator.validateCountriesForSportMapping(sportTypeCountryList, tournamentDao);
 			returnBean = tournamentDao.getCountriesForSport(sportTypeCountryList);
 		}catch(PTWException exception){
@@ -330,7 +330,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean removeCountriesFromSportType(SportTypeCountryList sportTypeCountryList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(sportTypeCountryList);
+			TournamentBeanValidator.validateRequest(sportTypeCountryList);
 			TournamentBeanValidator.validateCountriesToSportMapping(sportTypeCountryList, tournamentDao);
 			tournamentDao.removeCountryFromSport(sportTypeCountryList);
 		}catch(PTWException exception){
@@ -344,7 +344,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean addPlayersToTeam(TeamPlayerList teamPlayerList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(teamPlayerList);
+			TournamentBeanValidator.validateRequest(teamPlayerList);
 			TournamentBeanValidator.validatePlayersToTeam(teamPlayerList, tournamentDao);
 			tournamentDao.addPlayerToTeam(teamPlayerList);
 		}catch(PTWException exception){
@@ -358,7 +358,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public TeamPlayerList getPlayersForTeam(TeamPlayerList teamPlayerList) {
 		TeamPlayerList returnBean = new TeamPlayerList();
 		try{
-			TournamentBeanValidator.vaidateRequest(teamPlayerList);
+			TournamentBeanValidator.validateRequest(teamPlayerList);
 			TournamentBeanValidator.validatePlayersForTeam(teamPlayerList, tournamentDao);
 			returnBean = tournamentDao.getPlayersForTeam(teamPlayerList);
 		}catch(PTWException exception){
@@ -372,7 +372,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean removePlayersFromTeam(TeamPlayerList teamPlayerList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(teamPlayerList);
+			TournamentBeanValidator.validateRequest(teamPlayerList);
 			TournamentBeanValidator.validatePlayersToTeam(teamPlayerList, tournamentDao);
 			tournamentDao.removePlayerFromTeam(teamPlayerList);
 		}catch(PTWException exception){
@@ -386,7 +386,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean addTeamsToTournament(TournamentTeamBeanList tournamentTeamBeanList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournamentTeamBeanList);
+			TournamentBeanValidator.validateRequest(tournamentTeamBeanList);
 			TournamentBeanValidator.validateTeamsToTournament(tournamentTeamBeanList, tournamentDao);
 			tournamentDao.addTeamToTournament(tournamentTeamBeanList);
 		}catch(PTWException exception){
@@ -400,7 +400,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public TournamentTeamBeanList getTeamsForTournament(TournamentBean tournamentBean) {
 		TournamentTeamBeanList returnBean = new TournamentTeamBeanList();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournamentBean);
+			TournamentBeanValidator.validateRequest(tournamentBean);
 			TournamentBeanValidator.validateTournamentId(tournamentBean.getTournamentId());
 			TournamentBeanValidator.validateTournament(tournamentBean.getTournamentId(), tournamentDao);
 			returnBean = tournamentDao.getTeamsForTournament(tournamentBean);
@@ -415,7 +415,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean removeTeamsFromTournament(TournamentTeamBeanList tournamentTeamBeanList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournamentTeamBeanList);
+			TournamentBeanValidator.validateRequest(tournamentTeamBeanList);
 			TournamentBeanValidator.validateTournamentTeamId(tournamentTeamBeanList);
 			tournamentDao.removeTeamFromTournament(tournamentTeamBeanList);
 		}catch(PTWException exception){
@@ -429,7 +429,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean addPlayersToTournamentTeam(TournTeamPlayerBeanList tournTeamPlayerBeanList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournTeamPlayerBeanList);
+			TournamentBeanValidator.validateRequest(tournTeamPlayerBeanList);
 			TournamentBeanValidator.validatePlayerToTournTeam(tournTeamPlayerBeanList, tournamentDao);
 			tournamentDao.addPlayerToTournamentTeam(tournTeamPlayerBeanList);
 		}catch(PTWException exception){
@@ -443,7 +443,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public TournTeamPlayerBeanList getPlayersForTournamentTeam(TournamentTeamBean tournamentTeamBean) {
 		TournTeamPlayerBeanList returnBean = new TournTeamPlayerBeanList();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournamentTeamBean);
+			TournamentBeanValidator.validateRequest(tournamentTeamBean);
 			TournamentBeanValidator.validateTeamId(tournamentTeamBean.getTournamentTeamId());
 			returnBean = tournamentDao.getPlayersForTournamentTeam(tournamentTeamBean);
 		}catch(PTWException exception){
@@ -457,7 +457,7 @@ public class TournamentServiceImpl implements TournamentService{
 	public BaseBean removePlayersFromTournament(TournTeamPlayerBeanList tournTeamPlayerBeanList) {
 		BaseBean returnBean = new BaseBean();
 		try{
-			TournamentBeanValidator.vaidateRequest(tournTeamPlayerBeanList);
+			TournamentBeanValidator.validateRequest(tournTeamPlayerBeanList);
 			TournamentBeanValidator.validateTeamId(tournTeamPlayerBeanList.getTournamentTeamId());
 			tournamentDao.removePlayerFromTournamentTeam(tournTeamPlayerBeanList);
 		}catch(PTWException exception){

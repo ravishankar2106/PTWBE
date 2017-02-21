@@ -12,6 +12,7 @@ public class UserContestAnswer extends BaseBean implements Serializable{
 	
 	private Integer userId;
 	private Integer contestId;
+	private Integer bonusPoints;
 	private List<UserAnswerBean> userAnswerList;
 	
 	public Integer getUserId() {
@@ -25,6 +26,12 @@ public class UserContestAnswer extends BaseBean implements Serializable{
 	}
 	public void setContestId(Integer contestId) {
 		this.contestId = contestId;
+	}
+	public Integer getBonusPoints() {
+		return bonusPoints;
+	}
+	public void setBonusPoints(Integer bonusPoints) {
+		this.bonusPoints = bonusPoints;
 	}
 	public List<UserAnswerBean> getUserAnswerList() {
 		return userAnswerList;

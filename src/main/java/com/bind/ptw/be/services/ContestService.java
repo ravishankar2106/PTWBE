@@ -42,6 +42,8 @@ public interface ContestService {
 	AnswerTypeBeanList getAnswerTypes();
 	PossibleAnswerBean getPossibleAnswers(QuestionBean questionBean);
 	LeaderBoardBeanList getLeaderBoard(LeaderBoardBeanList leaderBoardRequest);
+	UserContestAnswer getUserAnswer(UserContestAnswer userContestBean);
+	ContestBeanList getMatchContest(MatchBean matchBean);
 	
 	
 }
