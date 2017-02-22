@@ -98,8 +98,8 @@ public class ContestRest {
 	}
 	
 	@PostMapping("/deleteQuestion")
-	public BaseBean deleteQuestion(@RequestBody ContestBean contestBean){
-		return contestService.deleteQuestion(contestBean);
+	public BaseBean deleteQuestion(@RequestBody QuestionBean questionBean){
+		return contestService.deleteQuestion(questionBean);
 	}
 	
 	@PostMapping("/getPossibleAnswers")

@@ -462,17 +462,17 @@ public class ContestServiceImpl implements ContestService{
 	}
 
 	@Override
-	public BaseBean deleteQuestion(ContestBean contestBean) {
+	public BaseBean deleteQuestion(QuestionBean questionBean) {
 		BaseBean retBean = new BaseBean();
 		try{
-			TournamentBeanValidator.validateRequest(contestBean);
-			ContestBeanValidator.validateContestId(contestBean.getContestId());
-			List<QuestionBean> questionList = contestDao.getQuestion(contestBean);
+			TournamentBeanValidator.validateRequest(questionBean);
+			ContestBeanValidator.validateQuestionId(questionBean.getQuestionId());
+			/*List<QuestionBean> questionList = contestDao.getQuestion(contestBean);
 			if(questionList != null && !questionList.isEmpty()){
-				for (QuestionBean questionBean : questionList) {
+				for (QuestionBean questionBean : questionList) {*/
 					contestDao.deleteQuestion(questionBean);
-				}
-			}
+				/*}
+			}*/
 			
 		}catch(PTWException exception){
 			retBean.setResultCode(exception.getCode());

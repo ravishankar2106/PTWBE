@@ -31,7 +31,7 @@ public interface ContestService {
 	QuestionBean createQuestion(QuestionBean questionBean);
 	BaseBean updateQuestion(QuestionBean questionBean);
 	ContestBean getContestQuestion(ContestBean contestBean);
-	BaseBean deleteQuestion(ContestBean contestBean);
+	BaseBean deleteQuestion(QuestionBean questionBean);
 	
 	BaseBean createAnswerOptions(QuestionBean questionBean);
 	BaseBean updateAnswerOption(AnswerOptionBean answerOptionBean);
