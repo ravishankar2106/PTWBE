@@ -579,11 +579,17 @@ public class ContestDaoImpl implements ContestDao{
 			if(dbQuestion == null){
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_CONTEST, PTWConstants.ERROR_DESC_INVALID_CONTEST);
 			}
-			anwerHome.deleteAnswerForQuestion(questionBean);
+			List<AnswerOption> answers = anwerHome.findAnswerOptionByFilter(questionBean);
+			if(answers != null && !answers.isEmpty()){
+				for (AnswerOption answerOption : answers) {
+					anwerHome.remove(answerOption);
+				}
+			}
 			questionHome.remove(dbQuestion);
 		}catch(PTWException exception){
 			throw exception;
 		}catch(Exception exception){
+			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 	}
