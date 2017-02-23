@@ -12,9 +12,11 @@ import javax.persistence.Table;
 @Table(name = "USER_GROUPS")
 public class UserGroup {
 	private Integer userGroupId;
+	private Integer tournamentId;
 	private Integer ownerUserId;
 	private String userGroupName;
 	private Integer userGroupCode;
+	private Boolean prizeIncludedFlag;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -24,6 +26,14 @@ public class UserGroup {
 	}
 	public void setUserGroupId(Integer userGroupId) {
 		this.userGroupId = userGroupId;
+	}
+	
+	@Column(name = "TOURNAMENT_ID")
+	public Integer getTournamentId() {
+		return tournamentId;
+	}
+	public void setTournamentId(Integer tournamentId) {
+		this.tournamentId = tournamentId;
 	}
 	
 	@Column(name = "USER_GROUP_NAME")
@@ -48,6 +58,14 @@ public class UserGroup {
 	}
 	public void setUserGroupCode(Integer userGroupCode) {
 		this.userGroupCode = userGroupCode;
+	}
+	
+	@Column(name = "PRIZE_INCLUDED_FLAG")
+	public Boolean getPrizeIncludedFlag() {
+		return prizeIncludedFlag;
+	}
+	public void setPrizeIncludedFlag(Boolean prizeIncludedFlag) {
+		this.prizeIncludedFlag = prizeIncludedFlag;
 	}
 	
 	

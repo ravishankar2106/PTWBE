@@ -14,6 +14,8 @@ import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupBeanList;
 
 public interface ContestService {
 	MatchBean createMatch(MatchBean matchBean);
@@ -29,6 +31,7 @@ public interface ContestService {
 	BaseBean deleteContest(ContestBean contestBean);
 	ContestBeanList getOngoingContests(ContestBean contestBean);
 	BaseBean processContests(ContestBean contestBean);
+	ContestBeanList getProcessingContests();
 	
 	QuestionBean createQuestion(QuestionBean questionBean);
 	BaseBean updateQuestion(QuestionBean questionBean);
@@ -50,5 +53,7 @@ public interface ContestService {
 	BaseBean updatePrizeContest(PrizeContestBean prizeContestBean);
 	PrizeContestBeanList getPrizeContests(PrizeContestBean prizeContestBean);
 	BaseBean deletePrizeContest(PrizeContestBean prizeContestBean);
+	UserGroupBeanList getPrizeGroups(UserGroupBean userGroupBean);
+	
 	
 }

@@ -15,6 +15,7 @@ import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.util.PTWException;
@@ -61,6 +62,8 @@ public interface ContestDao {
 	void updatePrizeContest(PrizeContestBean prizeContestBean) throws PTWException;
 	List<PrizeContestBean> getPrizeContest(PrizeContestBean prizeContestBean) throws PTWException;
 	void deletePrizeContest(PrizeContestBean prizeContestBean) throws PTWException;
+	List<UserGroupBean> getUserGroups(UserGroupBean userGroupBean) throws PTWException;
+	List<ContestBean> getRunningContests() throws PTWException;
 	
 	
 }

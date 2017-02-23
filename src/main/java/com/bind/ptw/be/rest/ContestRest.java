@@ -19,6 +19,8 @@ import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
+import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.services.ContestService;
 
 @EnableAutoConfiguration
@@ -147,6 +149,16 @@ public class ContestRest {
 	@PostMapping("/deletePrizeContest")
 	public BaseBean deletePrizeContest(@RequestBody PrizeContestBean prizeContestBean){
 		return contestService.deletePrizeContest(prizeContestBean);
+	}
+	
+	@PostMapping("/getPrizeGroups")
+	public UserGroupBeanList getPrizeGroups(@RequestBody UserGroupBean userGroupBean){
+		return contestService.getPrizeGroups(userGroupBean);
+	}
+	
+	@GetMapping("/getOngoingContest")
+	public ContestBeanList getOngoingContest(){
+		return contestService.getProcessingContests();
 	}
 	
 }

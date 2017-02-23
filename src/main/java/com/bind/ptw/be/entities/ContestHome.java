@@ -97,6 +97,21 @@ public class ContestHome {
 		return query.list();
 	}
 	
+	public List<Contest> findRunningContest(){
+		Query query = null;
+		
+		try{
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append(QueryConstants.RETRIEVE_TOURNAMENT_CONTEST);
+			queryToExecute.append("AND NOW() > c.publishStartDateTime ");
+			queryToExecute.append("AND c.contestStatus.contestStatusId IN (1,2)");
+			query = session.createQuery(queryToExecute.toString());
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+	}
 	public List<Long> getMatchContests(MatchBean matchBean){
 		Query query = null;
 		

@@ -24,6 +24,7 @@ import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserAnswerBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.entities.AnswerOption;
@@ -48,6 +49,8 @@ import com.bind.ptw.be.entities.UserAnswer;
 import com.bind.ptw.be.entities.UserAnswerHome;
 import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
+import com.bind.ptw.be.entities.UserGroup;
+import com.bind.ptw.be.entities.UserGroupHome;
 import com.bind.ptw.be.entities.UserScoreBoard;
 import com.bind.ptw.be.entities.UserScoreBoardHome;
 import com.bind.ptw.be.util.PTWConstants;
@@ -1044,6 +1047,53 @@ public class ContestDaoImpl implements ContestDao{
 			e.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
+	}
+
+	@Override
+	public List<UserGroupBean> getUserGroups(UserGroupBean userGroupBean) throws PTWException{
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		List<UserGroupBean> retUserGroups = null;
+		try{
+			List<UserGroup> userGroups = userGroupHome.findByFilter(userGroupBean);
+			if(userGroups != null && !userGroups.isEmpty()){
+				retUserGroups = new ArrayList<UserGroupBean>();
+				for (UserGroup userGroup : userGroups) {
+					UserGroupBean retUserGroupBean = new UserGroupBean();
+					retUserGroupBean.setGroupId(userGroup.getUserGroupId());
+					retUserGroupBean.setGroupName(userGroup.getUserGroupName());
+					retUserGroupBean.setTournamentId(userGroup.getTournamentId());
+					retUserGroupBean.setOwnerId(userGroup.getOwnerUserId());
+					retUserGroupBean.setGroupCode(userGroup.getUserGroupCode());
+					retUserGroupBean.setPrizeGroupFlag(userGroup.getPrizeIncludedFlag());
+					retUserGroups.add(retUserGroupBean);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retUserGroups;
+	}
+
+	@Override
+	public List<ContestBean> getRunningContests() throws PTWException {
+		ContestHome contestHome = new ContestHome(this.getSession());
+		List<ContestBean> retContestBeanList = null;
+		try{
+			List<Contest> contestList = contestHome.findRunningContest();
+			if(contestList != null && !contestList.isEmpty()){
+				retContestBeanList = new ArrayList<ContestBean>();
+				for (Contest contest : contestList) {
+					ContestBean dbContestBean = createContestBean(contest);
+					retContestBeanList.add(dbContestBean);
+				}
+				
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retContestBeanList;
 	}
 	
 	

@@ -37,6 +37,8 @@ import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.services.ContestService;
@@ -234,6 +236,19 @@ public class ContestServiceImpl implements ContestService{
 			retBean.setResultDescription(exception.getDescription());
 		}
 		return retBean;
+	}
+	
+	@Override
+	public ContestBeanList getProcessingContests() {
+		ContestBeanList retContestBeanList = new ContestBeanList();
+		try{
+			List<ContestBean> contestBeanList = contestDao.getRunningContests();
+			retContestBeanList.setContestBeanList(contestBeanList);
+		}catch(PTWException exception){
+			retContestBeanList.setResultCode(exception.getCode());
+			retContestBeanList.setResultDescription(exception.getDescription());
+		}
+		return retContestBeanList;
 	}
 	
 	@Override
@@ -749,5 +764,22 @@ public class ContestServiceImpl implements ContestService{
 		}
 		return baseBean;
 	}
+
+	@Override
+	public UserGroupBeanList getPrizeGroups(UserGroupBean userGroupBean) {
+		UserGroupBeanList userGroupBeanList = new UserGroupBeanList();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			userGroupBean.setPrizeGroupFlag(true);
+			List<UserGroupBean> userGroups = contestDao.getUserGroups(userGroupBean);
+			userGroupBeanList.setUserGroupBean(userGroups);
+		}catch(PTWException exception){
+			userGroupBeanList.setResultCode(exception.getCode());
+			userGroupBeanList.setResultDescription(exception.getDescription());
+		}
+		return userGroupBeanList;
+	}
+
 	
 }
