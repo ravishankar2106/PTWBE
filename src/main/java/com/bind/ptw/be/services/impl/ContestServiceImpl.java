@@ -27,6 +27,8 @@ import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
+import com.bind.ptw.be.dto.PrizeContestBean;
+import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
@@ -691,6 +693,61 @@ public class ContestServiceImpl implements ContestService{
 			contestBeanList.setResultDescription(exception.getDescription());
 		}
 		return contestBeanList;
+	}
+
+	@Override
+	public BaseBean createPrizeContest(PrizeContestBean prizeContestBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(prizeContestBean);
+			ContestBeanValidator.validateCreatePrizeContest(prizeContestBean);
+			contestDao.createPrizeContest(prizeContestBean);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
+	
+	@Override
+	public BaseBean updatePrizeContest(PrizeContestBean prizeContestBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(prizeContestBean);
+			ContestBeanValidator.validateUpdatePrizeContest(prizeContestBean);
+			contestDao.updatePrizeContest(prizeContestBean);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
+	
+	@Override
+	public PrizeContestBeanList getPrizeContests(PrizeContestBean prizeContestBean){
+		PrizeContestBeanList retBeanList = new PrizeContestBeanList();
+		try{
+			List<PrizeContestBean> prizeContests = contestDao.getPrizeContest(prizeContestBean);
+			retBeanList.setPrizeContestBeanList(prizeContests);
+		}catch(PTWException exception){
+			retBeanList.setResultCode(exception.getCode());
+			retBeanList.setResultDescription(exception.getDescription());
+		}
+		return retBeanList;
+	}
+
+	@Override
+	public BaseBean deletePrizeContest(PrizeContestBean prizeContestBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(prizeContestBean);
+			ContestBeanValidator.validatePrizeContestId(prizeContestBean.getPrizeContestId());
+			contestDao.deletePrizeContest(prizeContestBean);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
 	}
 	
 }

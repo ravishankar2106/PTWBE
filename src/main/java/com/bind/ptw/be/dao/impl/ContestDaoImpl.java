@@ -18,6 +18,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.LeaderBoardBean;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
+import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
@@ -35,6 +36,8 @@ import com.bind.ptw.be.entities.ContestType;
 import com.bind.ptw.be.entities.Match;
 import com.bind.ptw.be.entities.MatchHome;
 import com.bind.ptw.be.entities.MatchStatus;
+import com.bind.ptw.be.entities.PrizeContest;
+import com.bind.ptw.be.entities.PrizeContestHome;
 import com.bind.ptw.be.entities.Question;
 import com.bind.ptw.be.entities.QuestionHome;
 import com.bind.ptw.be.entities.Tournament;
@@ -951,5 +954,97 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		return leaderBoardList;
 	}
+
+	@Override
+	public void createPrizeContest(PrizeContestBean prizeContestBean) throws PTWException{
+		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
+		try{
+			PrizeContest prizeContest = new PrizeContest();
+			prizeContest.setPrizeContestName(prizeContestBean.getPrizeContestName());
+			prizeContest.setStartDate(prizeContestBean.getStartDate());
+			prizeContest.setEndDate(prizeContestBean.getEndDate());
+			prizeContest.setTournamentId(prizeContestBean.getTournamentId());
+			prizeContest.setWinnerSize(prizeContestBean.getWinnerSize());
+			prizeContest.setGroupId(prizeContestBean.getGroupId());
+			prizeContest.setProcessedFlag(false);
+			prizeContestHome.persist(prizeContest);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public void updatePrizeContest(PrizeContestBean prizeContestBean) throws PTWException{
+		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
+		try{
+			PrizeContest dbContest = prizeContestHome.findById(prizeContestBean.getPrizeContestId());
+			if(dbContest == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_PRIZE_CONTEST_NOT_FOUND, PTWConstants.ERROR_DESC_PRIZE_CONTEST_NOT_FOUND);
+			}
+			dbContest.setPrizeContestName(prizeContestBean.getPrizeContestName());
+			dbContest.setStartDate(prizeContestBean.getStartDate());
+			dbContest.setEndDate(prizeContestBean.getEndDate());
+			dbContest.setTournamentId(prizeContestBean.getTournamentId());
+			dbContest.setWinnerSize(prizeContestBean.getWinnerSize());
+			dbContest.setGroupId(prizeContestBean.getGroupId());
+			prizeContestHome.merge(dbContest);
+		}catch(PTWException e){
+			throw e;
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
+	@Override
+	public List<PrizeContestBean> getPrizeContest(PrizeContestBean prizeContestBean) throws PTWException{
+		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
+		List<PrizeContestBean> contests = null;
+		try{
+			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean);
+			if(dbContests != null && !dbContests.isEmpty()){
+				contests = new ArrayList<PrizeContestBean>();
+				for (PrizeContest prizeContest : dbContests) {
+					PrizeContestBean retPrizeContest = new PrizeContestBean();
+					retPrizeContest.setPrizeContestId(prizeContest.getPrizeContestId());
+					retPrizeContest.setPrizeContestName(prizeContest.getprizeContestName());
+					retPrizeContest.setTournamentId(prizeContest.getTournamentId());
+					retPrizeContest.setGroupId(prizeContest.getGroupId());
+					retPrizeContest.setStartDate(prizeContest.getStartDate());
+					retPrizeContest.setStartDateStr(StringUtil.convertDateToString(prizeContest.getStartDate()));
+					retPrizeContest.setEndDate(prizeContest.getEndDate());
+					retPrizeContest.setEndDateStr(StringUtil.convertDateToString(prizeContest.getEndDate()));
+					retPrizeContest.setWinnerSize(prizeContest.getWinnerSize());
+					retPrizeContest.setArchieved(prizeContest.getProcessedFlag());
+					contests.add(retPrizeContest);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return contests;
+	}
+	
+	@Override
+	public void deletePrizeContest(PrizeContestBean prizeContestBean) throws PTWException{
+		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
+		try{
+			PrizeContest dbContest = prizeContestHome.findById(prizeContestBean.getPrizeContestId());
+			if(dbContest == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_PRIZE_CONTEST_NOT_FOUND, PTWConstants.ERROR_DESC_PRIZE_CONTEST_NOT_FOUND);
+			}
+			prizeContestHome.remove(dbContest);
+		}catch(PTWException e){
+			throw e;
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+	
 	
 }

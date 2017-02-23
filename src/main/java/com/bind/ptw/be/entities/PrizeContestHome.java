@@ -59,13 +59,13 @@ public class PrizeContestHome {
 			queryToExecute.append(QueryConstants.RETRIEVE_PRIZE_CONTEST);
 			if( prizeContestBean != null ) {
 				if(!StringUtils.isEmpty(prizeContestBean.getPrizeContestId())){
-					queryToExecute.append("AND pc.prizeContestId =:prizeContestId");
+					queryToExecute.append("AND pc.prizeContestId =:prizeContestId ");
 				}
 				if(!StringUtil.isEmptyNull(prizeContestBean.getTournamentId())){
 					queryToExecute.append("AND pc.tournamentId =:tournamentId ");
 				}
 				if(!StringUtil.isEmptyNull(prizeContestBean.getGroupId())){
-					queryToExecute.append("AND pc.groupId =:groupId");
+					queryToExecute.append("AND pc.groupId =:groupId ");
 				}
 			}
 			query = session.createQuery(queryToExecute.toString());

@@ -16,6 +16,8 @@ import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
+import com.bind.ptw.be.dto.PrizeContestBean;
+import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.services.ContestService;
 
@@ -127,5 +129,24 @@ public class ContestRest {
 		return contestService.deleteAnswerOption(answerOptionBean);
 	}
 	
+	@PostMapping("/createPrizeContest")
+	public BaseBean createPrizeContest(@RequestBody PrizeContestBean prizeContestBean){
+		return contestService.createPrizeContest(prizeContestBean);
+	}
+	
+	@PostMapping("/updatePrizeContest")
+	public BaseBean UpdatePrizeContest(@RequestBody PrizeContestBean prizeContestBean){
+		return contestService.updatePrizeContest(prizeContestBean);
+	}
+	
+	@PostMapping("/getPrizeContest")
+	public PrizeContestBeanList getPrizeContest(@RequestBody PrizeContestBean prizeContestBean){
+		return contestService.getPrizeContests(prizeContestBean);
+	}
+	
+	@PostMapping("/deletePrizeContest")
+	public BaseBean deletePrizeContest(@RequestBody PrizeContestBean prizeContestBean){
+		return contestService.deletePrizeContest(prizeContestBean);
+	}
 	
 }

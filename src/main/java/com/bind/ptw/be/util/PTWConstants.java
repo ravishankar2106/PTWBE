@@ -188,6 +188,9 @@ public class PTWConstants {
 	public final static String ERROR_DESC_CONTEST_INCOMPLETE_ANSWER = "Incomplete Answer for the Question";
 	public final static String ERROR_CODE_QUESTION_NOT_FOUND = "254";
 	public final static String ERROR_DESC_QUESTION_NOT_FOUND = "Question Not Found";
+	public final static String ERROR_CODE_PRIZE_WINNERS_INVALID = "255";
+	public final static String ERROR_CODE_PRIZE_CONTEST_NOT_FOUND = "256";
+	public final static String ERROR_DESC_PRIZE_CONTEST_NOT_FOUND = "Prize Contest Not Found";
 	
 	public final static String ERROR_CODE_CONTEST_PROCESS_NO_RECORD = "300";
 	public final static String ERROR_DESC_CONTEST_PROCESS_NO_RECORD = "No Contests to be processed";

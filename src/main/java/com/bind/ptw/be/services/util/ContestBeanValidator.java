@@ -12,6 +12,7 @@ import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
+import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserAnswerBean;
@@ -363,6 +364,61 @@ public class ContestBeanValidator {
 				
 		}
 		
+	}
+
+	public static void validateCreatePrizeContest(PrizeContestBean prizeContestBean) throws PTWException {
+		TournamentBeanValidator.validateTournamentId(prizeContestBean.getTournamentId());
+		if(StringUtil.isEmptyNull(prizeContestBean.getPrizeContestName())){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Contest Name");
+		}
+		
+		String contestStartDateStr = prizeContestBean.getStartDateStr();
+		if(StringUtil.isEmptyNull(contestStartDateStr)){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_START_DATE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Start Date");
+		}
+		
+		try{
+			Date contestStartDate = StringUtil.convertStringToDate(contestStartDateStr);
+			prizeContestBean.setStartDate(contestStartDate);
+		}catch(ParseException exception){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_DATE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Start Date");
+		}
+		
+		String contestEndDateStr = prizeContestBean.getEndDateStr();
+		if(StringUtil.isEmptyNull(contestEndDateStr)){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_END_DATE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "End Date");
+		}
+		
+		try{
+			Date contestEndDate = StringUtil.convertStringToDate(contestEndDateStr);
+			prizeContestBean.setEndDate(contestEndDate);
+		}catch(ParseException exception){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_DATE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "End Date");
+		}
+		
+		if(prizeContestBean.getStartDate().after(prizeContestBean.getEndDate())){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_END_DATE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "End Date");
+		}
+		
+		if(StringUtil.isEmptyNull(prizeContestBean.getWinnerSize())){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Winners Size");
+		}
+		
+		if(prizeContestBean.getWinnerSize() > 100){
+			throw new PTWException(PTWConstants.ERROR_CODE_PRIZE_WINNERS_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Winners Size");
+		}
+		
+	}
+	
+	public static void validatePrizeContestId(Integer prizeContestId) throws PTWException{
+		if(StringUtil.isEmptyNull(prizeContestId)){
+			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Prize Contest Id");
+		}
+	}
+
+	public static void validateUpdatePrizeContest(PrizeContestBean prizeContestBean) throws PTWException{
+		validatePrizeContestId(prizeContestBean.getPrizeContestId());
+		validateCreatePrizeContest(prizeContestBean);
 	}
 	
 }

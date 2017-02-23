@@ -9,6 +9,8 @@ import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
+import com.bind.ptw.be.dto.PrizeContestBean;
+import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.UserContestAnswer;
@@ -44,6 +46,9 @@ public interface ContestService {
 	LeaderBoardBeanList getLeaderBoard(LeaderBoardBeanList leaderBoardRequest);
 	UserContestAnswer getUserAnswer(UserContestAnswer userContestBean);
 	ContestBeanList getMatchContest(MatchBean matchBean);
-	
+	BaseBean createPrizeContest(PrizeContestBean prizeContestBean);
+	BaseBean updatePrizeContest(PrizeContestBean prizeContestBean);
+	PrizeContestBeanList getPrizeContests(PrizeContestBean prizeContestBean);
+	BaseBean deletePrizeContest(PrizeContestBean prizeContestBean);
 	
 }

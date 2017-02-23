@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class PrizeContestBean implements Serializable{
+public class PrizeContestBean extends BaseBean implements Serializable{
 	
 	/**
 	 * 
