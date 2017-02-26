@@ -57,7 +57,7 @@ public class UserTournamentRegistrationHome {
 			StringBuilder queryToExecute = new StringBuilder();
 			queryToExecute.append(QueryConstants.RETRIEVE_TOURNAMENT_USERS);
 			if(!StringUtil.isEmptyNull(tournamentId)){
-				queryToExecute.append("AND utr.tournamentId =:tournamentId ");
+				queryToExecute.append("AND utr.tournament.tournamentId =:tournamentId ");
 			}
 			if(!StringUtil.isEmptyNull(userId)){
 				queryToExecute.append("AND utr.userId =:userId ");

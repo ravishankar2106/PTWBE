@@ -33,7 +33,7 @@ public class TournTeamPlayerHome {
 	public List<TournTeamPlayer> getTournTeamPlayers(Integer tournamentTeamId){
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();
-		queryToExecute.append(QueryConstants.RETRIEVE_PLAYERS_FOR__TOURN_TEAM);
+		queryToExecute.append(QueryConstants.RETRIEVE_PLAYERS_FOR_TOURN_TEAM);
 		queryToExecute.append("AND trpMapping.tournamentTeam.tournamentTeamId = ");
 		queryToExecute.append(tournamentTeamId);
 		query = session.createQuery(queryToExecute.toString());

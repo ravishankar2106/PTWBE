@@ -35,6 +35,8 @@ public class QueryConstants {
 	public static final String RETRIEVE_COUNTRIES_FOR_SPORT = "select csMapping from CountrySportTypeMapping csMapping where 1=1 ";
 	public static final String RETRIEVE_PLAYERS_FOR_TEAM = "select tpMapping from TeamPlayerMapping tpMapping where 1=1 ";
 	public static final String RETRIEVE_TOURNAMENT_TEAMS = "from TournamentTeam tourTeam where 1=1 ";
-	public static final String RETRIEVE_PLAYERS_FOR__TOURN_TEAM = "select trpMapping from TournTeamPlayer trpMapping where 1=1 ";
+	public static final String RETRIEVE_PLAYERS_FOR_TOURN_TEAM = "select trpMapping from TournTeamPlayer trpMapping where 1=1 ";
+	public static final String RETRIEVE_USER_INVIATION = "from UserGroupInvitation ugi where 1=1 ";
+	public static final String RETRIEVE_User_GROUP_MAPPING = "from UserGroupMapping ugm where 1=1 ";
 	
 }

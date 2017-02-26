@@ -16,6 +16,7 @@ import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
@@ -253,6 +254,38 @@ public class UserServiceImpl implements UserService{
 			String encryptedNewPwd = org.apache.commons.codec.digest.DigestUtils.sha256Hex(userPasswordBean.getPassword());
 			foundUser.setPassword(encryptedNewPwd);
 			userDao.updateUser(foundUser);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
+
+	@Override
+	public UserGroupBean createUserGroup(UserGroupBean userGroupBean) {
+		UserGroupBean retUserGroupBean;
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			UserBeanValidator.validateCreateUserGroup(userGroupBean);
+			userGroupBean.setPrizeGroupFlag(false);
+			int randomGroupCode = StringUtil.createRandomNum(11111, 99998 + 1);
+			userGroupBean.setGroupCode(randomGroupCode);
+			retUserGroupBean = userDao.createUserGroup(userGroupBean);
+		}catch(PTWException exception){
+			retUserGroupBean = new UserGroupBean();
+			retUserGroupBean.setResultCode(exception.getCode());
+			retUserGroupBean.setResultDescription(exception.getDescription());
+		}
+		return retUserGroupBean;
+	}
+
+	@Override
+	public BaseBean updateUserGroup(UserGroupBean userGroupBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			UserBeanValidator.validateUpdateUserGroup(userGroupBean);
+			userDao.updateUserGroup(userGroupBean);
 		}catch(PTWException exception){
 			baseBean.setResultCode(exception.getCode());
 			baseBean.setResultDescription(exception.getDescription());

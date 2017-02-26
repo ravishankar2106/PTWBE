@@ -196,4 +196,11 @@ public class PTWConstants {
 	public final static String ERROR_DESC_CONTEST_PROCESS_NO_RECORD = "No Contests to be processed";
 	public final static String ERROR_CODE_INVALID_PROCESS_REQUEST = "301";
 	
+	public final static String ERROR_CODE_GROUP_ID_EMPTY = "261";
+	public final static String ERROR_CODE_GROUP_NAME_EMPTY = "262";
+	
+	public final static String ERROR_CODE_INVALID_GROUP = "263";
+	public final static String ERROR_DESC_INVALID_GROUP = "Group does not exists any more";
+	
+	
 }

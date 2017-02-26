@@ -10,16 +10,22 @@ public class UserGroupInvitationBean extends BaseBean implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Integer invitationOwnerId ;
+	private Integer userGroupInvitationId;
 	private Integer groupId;
+	private Integer groupOwnerId ;
+	private String groupOwnerName;
 	private String groupName;
-	private List<UserBean> userBeanList;
+	private Integer inviteeUserId;
+	private String phone;
+	private String emailId;
+	private Integer invitationStatusId;
+	private Integer invitationStatusName;
 	
-	public Integer getInvitationOwnerId() {
-		return invitationOwnerId;
+	public Integer getUserGroupInvitationId() {
+		return userGroupInvitationId;
 	}
-	public void setInvitationOwnerId(Integer invitationOwnerId) {
-		this.invitationOwnerId = invitationOwnerId;
+	public void setUserGroupInvitationId(Integer userGroupInvitationId) {
+		this.userGroupInvitationId = userGroupInvitationId;
 	}
 	public Integer getGroupId() {
 		return groupId;
@@ -33,11 +39,48 @@ public class UserGroupInvitationBean extends BaseBean implements Serializable{
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
-	public List<UserBean> getUserBeanList() {
-		return userBeanList;
+	public Integer getGroupOwnerId() {
+		return groupOwnerId;
 	}
-	public void setUserBeanList(List<UserBean> userBeanList) {
-		this.userBeanList = userBeanList;
+	public void setGroupOwnerId(Integer groupOwnerId) {
+		this.groupOwnerId = groupOwnerId;
 	}
+	public String getGroupOwnerName() {
+		return groupOwnerName;
+	}
+	public void setGroupOwnerName(String groupOwnerName) {
+		this.groupOwnerName = groupOwnerName;
+	}
+	public Integer getInviteeUserId() {
+		return inviteeUserId;
+	}
+	public void setInviteeUserId(Integer inviteeUserId) {
+		this.inviteeUserId = inviteeUserId;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getEmailId() {
+		return emailId;
+	}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+	public Integer getInvitationStatusId() {
+		return invitationStatusId;
+	}
+	public void setInvitationStatusId(Integer invitationStatusId) {
+		this.invitationStatusId = invitationStatusId;
+	}
+	public Integer getInvitationStatusName() {
+		return invitationStatusName;
+	}
+	public void setInvitationStatusName(Integer invitationStatusName) {
+		this.invitationStatusName = invitationStatusName;
+	}
+	
 
 }

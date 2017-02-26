@@ -8,6 +8,7 @@ import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.util.PTWConstants;
@@ -208,6 +209,28 @@ public class UserBeanValidator {
 		validateUserLoginId(userPasswordBean.getUserLoginId());
 		validateUserPassword(userPasswordBean.getOldPassword());
 		validateUserPassword(userPasswordBean.getPassword());
+	}
+
+	public static void validateGroupId(Integer groupId) throws PTWException{
+		if(StringUtil.isEmptyNull(groupId)){
+			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_ID_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Id");
+		}
+	}
+	
+	public static void validateCreateUserGroup(UserGroupBean userGroupBean) throws PTWException {
+		validateUserId(userGroupBean.getOwnerId());
+		TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+		if(StringUtil.isEmptyNull(userGroupBean.getGroupName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Name");
+		}
+	}
+	
+	public static void validateUpdateUserGroup(UserGroupBean userGroupBean) throws PTWException {
+		validateUserId(userGroupBean.getOwnerId());
+		validateGroupId(userGroupBean.getGroupId());
+		if(StringUtil.isEmptyNull(userGroupBean.getGroupName())){
+			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Name");
+		}
 	}
 
 	

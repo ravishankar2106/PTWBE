@@ -22,6 +22,7 @@ import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
@@ -130,6 +131,16 @@ public class UserRest {
 	@PostMapping("/getLeaderBoard")
 	public LeaderBoardBeanList getLeaderBoard(@RequestBody LeaderBoardBeanList leaderBoardRequest){
 		return contestService.getLeaderBoard(leaderBoardRequest);
+	}
+	
+	@PostMapping("/createUserLeague")
+	public UserGroupBean createUserGroup(@RequestBody UserGroupBean userGroupBean){
+		return userService.createUserGroup(userGroupBean);
+	}
+	
+	@PostMapping("/updateUserLeague")
+	public BaseBean updateUserGroup(@RequestBody UserGroupBean userGroupBean){
+		return userService.updateUserGroup(userGroupBean);
 	}
 
 	

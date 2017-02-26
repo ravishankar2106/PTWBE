@@ -15,6 +15,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.entities.City;
@@ -23,6 +24,11 @@ import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
 import com.bind.ptw.be.entities.UserConfirmation;
 import com.bind.ptw.be.entities.UserConfirmationHome;
+import com.bind.ptw.be.entities.UserGroup;
+import com.bind.ptw.be.entities.UserGroupHome;
+import com.bind.ptw.be.entities.UserGroupMapping;
+import com.bind.ptw.be.entities.UserGroupMappingHome;
+import com.bind.ptw.be.entities.UserGroupMappingKey;
 import com.bind.ptw.be.entities.UserHome;
 import com.bind.ptw.be.entities.UserScoreBoard;
 import com.bind.ptw.be.entities.UserScoreBoardHome;
@@ -250,21 +256,24 @@ public class UserDaoImpl implements UserDao{
 		try{
 			List<Integer> tournamentIds = userTournament.getTournamentList();
 			for (Integer tournamentId : tournamentIds) {
-				UserTournamentRegistration userTournamentRegistration = new UserTournamentRegistration();
-				userTournamentRegistration.setUserId(userTournament.getUserId());
-				Tournament tournament = new Tournament();
-				tournament.setTournamentId(tournamentId);
-				userTournamentRegistration.setTournament(tournament);
-				userTournamentHome.persist(userTournamentRegistration);
-				
-				UserScoreBoard userScoreBoard = new UserScoreBoard();
-				Users users = new Users();
-				users.setUserId(userTournament.getUserId());
-				userScoreBoard.setUser(users);
-				userScoreBoard.setTournamentId(tournamentId);
-				userScoreBoard.setTotalPoints(0);
-				userScoreBoard.setRank(0);
-				userScoreBoardHome.persist(userScoreBoard);
+				List<UserTournamentRegistration> existingUserTournament = userTournamentHome.findByFilter(tournamentId, userTournament.getUserId());
+				if(existingUserTournament == null || existingUserTournament.isEmpty()){
+					UserTournamentRegistration userTournamentRegistration = new UserTournamentRegistration();
+					userTournamentRegistration.setUserId(userTournament.getUserId());
+					Tournament tournament = new Tournament();
+					tournament.setTournamentId(tournamentId);
+					userTournamentRegistration.setTournament(tournament);
+					userTournamentHome.persist(userTournamentRegistration);
+					
+					UserScoreBoard userScoreBoard = new UserScoreBoard();
+					Users users = new Users();
+					users.setUserId(userTournament.getUserId());
+					userScoreBoard.setUser(users);
+					userScoreBoard.setTournamentId(tournamentId);
+					userScoreBoard.setTotalPoints(0);
+					userScoreBoard.setRank(0);
+					userScoreBoardHome.persist(userScoreBoard);
+				}
 			}
 		}catch(Exception exception){
 			exception.printStackTrace();
@@ -310,5 +319,56 @@ public class UserDaoImpl implements UserDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		return userTournamentList;
+	}
+
+	@Override
+	public UserGroupBean createUserGroup(UserGroupBean userGroupBean) throws PTWException {
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
+		try{
+			UserGroup userGroup = new UserGroup();
+			userGroup.setOwnerUserId(userGroupBean.getOwnerId());
+			userGroup.setTournamentId(userGroupBean.getTournamentId());
+			userGroup.setUserGroupCode(userGroupBean.getGroupCode());
+			userGroup.setPrizeIncludedFlag(userGroupBean.getPrizeGroupFlag());
+			userGroup.setUserGroupName(userGroupBean.getGroupName());
+			userGroupHome.persist(userGroup);
+			userGroupBean.setGroupId(userGroup.getUserGroupId());
+			createUserGroupMapping(userGroupBean.getOwnerId(), userGroupMappingHome, userGroup.getUserGroupId());
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return userGroupBean;
+	}
+
+	private void createUserGroupMapping(Integer userId, UserGroupMappingHome userGroupMappingHome,
+			Integer groupId) {
+		UserGroupMapping userGroupMapping = new UserGroupMapping();
+		UserGroupMappingKey userGroupMappingKey = new UserGroupMappingKey();
+		userGroupMappingKey.setUserGroupId(groupId);
+		userGroupMappingKey.setUserId(userId);
+		userGroupMapping.setUserGroupMappingKey(userGroupMappingKey);
+		userGroupMappingHome.persist(userGroupMapping);
+	}
+
+	@Override
+	public void updateUserGroup(UserGroupBean userGroupBean) throws PTWException {
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		try{
+			UserGroup userGroup = userGroupHome.findById(userGroupBean.getGroupId());
+			if(userGroup == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_GROUP, PTWConstants.ERROR_DESC_INVALID_GROUP);
+			}
+			userGroup.setUserGroupName(userGroupBean.getGroupName());
+			if(userGroupBean.getPrizeGroupFlag() != null && userGroupBean.getPrizeGroupFlag()){
+				userGroup.setPrizeIncludedFlag(userGroupBean.getPrizeGroupFlag());
+			}
+			userGroupHome.merge(userGroup);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
 	}
 }

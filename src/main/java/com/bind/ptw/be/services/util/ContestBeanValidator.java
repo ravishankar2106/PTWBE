@@ -103,12 +103,12 @@ public class ContestBeanValidator {
 			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_DATE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Cutoff Date");
 		}
 		
-		if(contestBean.getCutoffDate().before(contestBean.getPublishEndDate())){
-			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_END_DATE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Cutoff Date");
+		if(contestBean.getCutoffDate().before(contestBean.getPublishStartDate())){
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_DATE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Cutoff Date");
 		}
 		
 		if(contestBean.getCutoffDate().before(currentDate)){
-			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_END_DATE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Cutoff Date");
+			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_DATE_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Cutoff Date");
 		}
 		
 		Integer contestTypeId = contestBean.getContestTypeId();
