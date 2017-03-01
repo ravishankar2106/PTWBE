@@ -11,19 +11,21 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailUtil {
 
-	public static final String FROM_ADDRESS = "ravishankar2106@gmail.com";
+	/*public static final String FROM_ADDRESS = "ravishankar2106@gmail.com";
 	public static final String SMTP_USERNAME = "AKIAJUIM6EUWQ2PNBFKQ";
 	public static final String SMTP_PASSWORD = "AhsTBBggJN2wcx72bAQJjC7uA20WrC8U48X6+YJ/ZD9L";
 	public static final String HOST = "email-smtp.us-west-2.amazonaws.com";
-	public static final int PORT = 587;
+	public static final int PORT = 587;*/
+	
+	
 
-	public static void sendEmail(EmailContent emailContest) throws PTWException {
+	public static void sendEmail(EmailContent emailContest, MailConfiguration mailConfig) throws Exception {
 
 		// Create a Properties object to contain connection configuration
 		// information.
 		Properties props = System.getProperties();
 		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.port", PORT);
+		props.put("mail.smtp.port", mailConfig.getPort());
 		Transport transport = null;
 		// Send the message.
 		try {
@@ -44,7 +46,7 @@ public class EmailUtil {
 
 			// Create a message with the specified information.
 			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(FROM_ADDRESS));
+			msg.setFrom(new InternetAddress(mailConfig.getFromAddress()));
 			msg.setRecipient(Message.RecipientType.TO, new InternetAddress(
 					emailContest.getToAddress()));
 			msg.setSubject(emailContest.getEmailSubject());
@@ -55,13 +57,10 @@ public class EmailUtil {
 
 			// Connect to Amazon SES using the SMTP username and password you
 			// specified above.
-			transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);
+			transport.connect(mailConfig.getHost(), mailConfig.getSmtpUserName(), mailConfig.getSmtpPassword());
 
 			// Send the email.
 			transport.sendMessage(msg, msg.getAllRecipients());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_EMAIL_DEL_FAILURE);
 		} finally {
 			// Close and terminate the connection.
 			try {
@@ -69,7 +68,6 @@ public class EmailUtil {
 					transport.close();
 				}
 			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -371,4 +371,55 @@ public class UserDaoImpl implements UserDao{
 		}
 		
 	}
+
+	@Override
+	public List<UserGroupBean> getUserCreatedGroups(UserBean userBean) throws PTWException {
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		List<UserGroupBean> userGroupBeanList= null;
+		try{
+			UserGroupBean queryBean = new UserGroupBean();
+			queryBean.setOwnerId(userBean.getUserId());
+			List<UserGroup> userGroupLst = userGroupHome.findByFilter(queryBean);
+			if(userGroupLst != null && !userGroupLst.isEmpty()){
+				userGroupBeanList = new ArrayList<UserGroupBean>();
+				for (UserGroup userGroup : userGroupLst) {
+					UserGroupBean userGroupBean = new UserGroupBean();
+					userGroupBean.setGroupId(userGroup.getUserGroupId());
+					userGroupBean.setTournamentId(userGroup.getTournamentId());
+					userGroupBean.setGroupCode(userGroup.getUserGroupCode());
+					userGroupBean.setOwnerId(userGroup.getOwnerUserId());
+					userGroupBean.setGroupName(userGroup.getUserGroupName());
+					userGroupBean.setPrizeGroupFlag(userGroup.getPrizeIncludedFlag());
+					userGroupBeanList.add(userGroupBean);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}		
+		return userGroupBeanList;
+	}
+	
+	@Override
+	public void deleteUserGroup(UserGroupBean userGroupBean)  throws PTWException{
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
+		try{
+			List<UserGroup> userGroupList = userGroupHome.findByFilter(userGroupBean);
+			if(userGroupList == null || userGroupList.size() != 1){
+				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_GROUP, PTWConstants.ERROR_DESC_INVALID_GROUP);
+			}
+			List<UserGroupMapping> userGroups = userGroupMappingHome.findUserGroup(null, userGroupBean.getGroupId());
+			if(userGroups == null || userGroups.size() != 1){
+				throw new PTWException(PTWConstants.ERROR_CODE_GROUP_DELETE_NOT_ALLOWED, PTWConstants.ERROR_DESC_GROUP_DELETE_NOT_ALLOWED);
+			}
+			UserGroupMapping userGroupMapping = userGroups.get(0);
+			userGroupMappingHome.remove(userGroupMapping);
+			UserGroup userGroup = userGroupList.get(0);
+			userGroupHome.remove(userGroup);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
 }

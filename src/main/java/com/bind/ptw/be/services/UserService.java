@@ -5,6 +5,7 @@ import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
@@ -20,4 +21,6 @@ public interface UserService {
 	BaseBean updatePassword(UserPasswordBean userPasswordBean);
 	UserGroupBean createUserGroup(UserGroupBean userGroupBean);
 	BaseBean updateUserGroup(UserGroupBean userGroupBean);
+	UserGroupBeanList getUserOwnedLeague(UserBean userBean);
+	BaseBean deleteUserOwnerGroup(UserGroupBean userGroupBean);
 }

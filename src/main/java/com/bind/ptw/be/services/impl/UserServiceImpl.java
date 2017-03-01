@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,7 @@ import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
@@ -27,15 +30,20 @@ import com.bind.ptw.be.services.util.UserBeanValidator;
 import com.bind.ptw.be.util.DBConstants;
 import com.bind.ptw.be.util.EmailContent;
 import com.bind.ptw.be.util.EmailUtil;
+import com.bind.ptw.be.util.MailConfiguration;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
 
 @Service("userService")
+@PropertySource("file:${prop.path}/app.properties")
 @Transactional
 public class UserServiceImpl implements UserService{
 
 	private static final Logger logger = Logger.getLogger(UserServiceImpl.class);
+	
+	@Autowired
+	private Environment env;
 	
 	@Autowired
 	UserDao userDao;
@@ -93,12 +101,41 @@ public class UserServiceImpl implements UserService{
 	    
 	    String subj = "Predict To Win: Confirmation Code";
 	    emailContent.setEmailSubject(subj);
-		EmailUtil.sendEmail(emailContent);
+	    try{
+	    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
+	    }catch (Exception ex) {
+			ex.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
+		} 
 	}
-
+	
+	private MailConfiguration getMailConfiguration(){
+		MailConfiguration config = new MailConfiguration();
+		String senderAddress = env.getProperty(DBConstants.FROM_ADDRESS_KEY);
+		String smtpUserName = env.getProperty(DBConstants.SMTP_USERNAME_KEY);
+		String smtpPassword = env.getProperty(DBConstants.SMTP_PASSWORD_KEY);
+		String smtpHost = env.getProperty(DBConstants.SMTP_HOST_KEY);
+		String smtpPort = env.getProperty(DBConstants.PORT_KEY);
+		
+		config.setFromAddress(senderAddress);
+		config.setSmtpUserName(smtpUserName);
+		config.setSmtpPassword(smtpPassword);
+		config.setHost(smtpHost);
+		try{
+			config.setPort(Integer.parseInt(smtpPort));
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return config;
+		
+	}
+	
 	public UserBean authenticateUser(UserBean authUser, Boolean adminFlag){
 		UserBean userResponse;
 		try{
+			MailConfiguration config = getMailConfiguration();
+			System.out.println(config.getFromAddress());
 			UserBeanValidator.validateAuthenticateUser(authUser);
 			List<UserBean> retrievedUsers = userDao.getUsers(authUser, adminFlag);
 			if(retrievedUsers == null || retrievedUsers.isEmpty()){
@@ -216,7 +253,12 @@ public class UserServiceImpl implements UserService{
 		    
 		    String subj = "Predict To Win: New Password";
 		    emailContent.setEmailSubject(subj);
-			EmailUtil.sendEmail(emailContent);
+		    try{
+		    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
+		    }catch (Exception ex) {
+				ex.printStackTrace();
+				throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_RESET_PWD_EMAIL_DEL_FAILURE);
+			}
 		}catch(PTWException exception){
 			baseBean.setResultCode(exception.getCode());
 			baseBean.setResultDescription(exception.getDescription());
@@ -293,4 +335,33 @@ public class UserServiceImpl implements UserService{
 		return baseBean;
 	}
 
+	@Override
+	public UserGroupBeanList getUserOwnedLeague(UserBean userBean) {
+		UserGroupBeanList retGroupBeanList = new UserGroupBeanList();
+		try{
+			TournamentBeanValidator.validateRequest(userBean);
+			UserBeanValidator.validateUserId(userBean.getUserId());
+			List<UserGroupBean> userGroups = userDao.getUserCreatedGroups(userBean);
+			retGroupBeanList.setUserGroupBean(userGroups);
+		}catch(PTWException exception){
+			retGroupBeanList.setResultCode(exception.getCode());
+			retGroupBeanList.setResultDescription(exception.getDescription());
+		}
+		return retGroupBeanList;
+	}
+
+	@Override
+	public BaseBean deleteUserOwnerGroup(UserGroupBean userGroupBean){
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			UserBeanValidator.validateGroupId(userGroupBean.getGroupId());
+			UserBeanValidator.validateUserId(userGroupBean.getOwnerId());
+			userDao.deleteUserGroup(userGroupBean);
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
 }

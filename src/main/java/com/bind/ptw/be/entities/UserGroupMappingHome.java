@@ -33,7 +33,7 @@ public class UserGroupMappingHome {
 		}
 	}
 	
-	public List<TeamType> findTeamType( Integer userId, Integer groupId) {
+	public List<UserGroupMapping> findUserGroup( Integer userId, Integer groupId) {
 		Query query = null;
 		try{
 			StringBuilder queryToExecuteBuilder = new StringBuilder();

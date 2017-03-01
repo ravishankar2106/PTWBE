@@ -29,4 +29,6 @@ public interface UserDao {
 	List<UserTournamentBean> getUserRegisteredTournament(UserBean userBean) throws PTWException;
 	UserGroupBean createUserGroup(UserGroupBean userGroupBean) throws PTWException;
 	void updateUserGroup(UserGroupBean userGroupBean) throws PTWException;
+	List<UserGroupBean> getUserCreatedGroups(UserBean userBean) throws PTWException;
+	void deleteUserGroup(UserGroupBean userGroungBean) throws PTWException;
 }

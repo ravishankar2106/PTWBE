@@ -91,7 +91,8 @@ public class PTWConstants {
 	public final static String ERROR_DESC_ANSWER_ALREADY_SUBMITTED = "Answer is already submitted for this contest";
 	
 	public final static String ERROR_CODE_EMAIL_DEL_FAILURE = "121";
-	public final static String ERROR_DESC_EMAIL_DEL_FAILURE = "Password is reset but failed to send email. Contact Administrator";
+	public final static String ERROR_DESC_RESET_PWD_EMAIL_DEL_FAILURE = "Password is reset but failed to send email. Contact Administrator.";
+	public final static String ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE = "User Has been created. Failure in sending email with confirmation code, Contact Administrator.";
 	
 	public final static String ERROR_CODE_TOURNAMENT_NAME_EMPTY = "171";
 	
@@ -202,5 +203,7 @@ public class PTWConstants {
 	public final static String ERROR_CODE_INVALID_GROUP = "263";
 	public final static String ERROR_DESC_INVALID_GROUP = "Group does not exists any more";
 	
+	public final static String ERROR_CODE_GROUP_DELETE_NOT_ALLOWED = "264";
+	public final static String ERROR_DESC_GROUP_DELETE_NOT_ALLOWED = "Group cannot be Deleted as there are registered users.";
 	
 }

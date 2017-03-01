@@ -23,6 +23,7 @@ import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
@@ -141,6 +142,11 @@ public class UserRest {
 	@PostMapping("/updateUserLeague")
 	public BaseBean updateUserGroup(@RequestBody UserGroupBean userGroupBean){
 		return userService.updateUserGroup(userGroupBean);
+	}
+	
+	@PostMapping("/getUserOwnedLeague")
+	public UserGroupBeanList getUserOwnedLeague(@RequestBody UserBean userBean){
+		return userService.getUserOwnedLeague(userBean);
 	}
 
 	
