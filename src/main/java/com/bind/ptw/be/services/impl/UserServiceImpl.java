@@ -20,6 +20,8 @@ import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserGroupBeanList;
+import com.bind.ptw.be.dto.UserGroupInvitationBean;
+import com.bind.ptw.be.dto.UserGroupInvitationBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
@@ -70,6 +72,10 @@ public class UserServiceImpl implements UserService{
 		return userResponse;
 	}
 
+	private void updateInvitations(UserBean registerUser) throws PTWException{
+		userDao.updateUserIdForInvitation(registerUser);
+	}
+
 	private void createUserToken(UserBean userResponse) throws PTWException {
 		Date currDate = new Date();
 		Long currTimeStamp = currDate.getTime();
@@ -88,7 +94,7 @@ public class UserServiceImpl implements UserService{
 		EmailContent emailContent = new EmailContent();
 		emailContent.setToAddress(userResponse.getEmail());
 	    StringBuilder bodyBuilder = new StringBuilder();
-	    bodyBuilder.append("Thanks for registering for Predict And Win. Your confirmation Code is ");
+	    bodyBuilder.append("Thanks for registering for Predict 2 Win. Your confirmation Code is ");
 	    bodyBuilder.append(String.valueOf(randomNum));
 	    bodyBuilder.append("\r\n");
 	    bodyBuilder.append("Complete registration by providing this confirmation code & start Predicting...");
@@ -99,14 +105,14 @@ public class UserServiceImpl implements UserService{
 	    bodyBuilder.append("This is auto generated Mail.");
 	    emailContent.setEmailBody(bodyBuilder.toString());
 	    
-	    String subj = "Predict To Win: Confirmation Code";
+	    String subj = "Predict 2 Win: Confirmation Code";
 	    emailContent.setEmailSubject(subj);
 	    try{
 	    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
 	    }catch (Exception ex) {
 			ex.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
-		} 
+		}
 	}
 	
 	private MailConfiguration getMailConfiguration(){
@@ -135,7 +141,6 @@ public class UserServiceImpl implements UserService{
 		UserBean userResponse;
 		try{
 			MailConfiguration config = getMailConfiguration();
-			System.out.println(config.getFromAddress());
 			UserBeanValidator.validateAuthenticateUser(authUser);
 			List<UserBean> retrievedUsers = userDao.getUsers(authUser, adminFlag);
 			if(retrievedUsers == null || retrievedUsers.isEmpty()){
@@ -174,6 +179,10 @@ public class UserServiceImpl implements UserService{
 				userBean.setUserStatusId(DBConstants.USER_STATUS_ACTIVE);
 				userDao.updateUserStatus(userBean);
 				userDao.deleteConfirmationCode(dbResultBean);
+				
+				List<UserBean> userDetailList = userDao.getUsers(userBean, false);
+				
+				this.updateInvitations(userDetailList.get(0));
 			}
 			
 		}catch(PTWException exception){
@@ -229,7 +238,9 @@ public class UserServiceImpl implements UserService{
 		try{
 			TournamentBeanValidator.validateRequest(userBean);
 			UserBeanValidator.validateUserLoginId(userBean.getUserLoginId());
-			List<UserBean> foundUserList = userDao.getUsers(userBean, false);
+			UserBean newUser = new UserBean();
+			newUser.setUserLoginId(userBean.getUserLoginId());
+			List<UserBean> foundUserList = userDao.getUsers(newUser, false);
 			if(foundUserList == null || foundUserList.size() != 1){
 				throw new PTWException(PTWConstants.ERROR_CODE_USER_INVALID, PTWConstants.ERROR_DESC_USER_INVALID);
 			}
@@ -251,7 +262,7 @@ public class UserServiceImpl implements UserService{
 		    bodyBuilder.append("This is auto generated Mail.");
 		    emailContent.setEmailBody(bodyBuilder.toString());
 		    
-		    String subj = "Predict To Win: New Password";
+		    String subj = "Predict 2 Win: New Password";
 		    emailContent.setEmailSubject(subj);
 		    try{
 		    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
@@ -336,7 +347,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserGroupBeanList getUserOwnedLeague(UserBean userBean) {
+	public UserGroupBeanList getUserOwnedGroup(UserBean userBean) {
 		UserGroupBeanList retGroupBeanList = new UserGroupBeanList();
 		try{
 			TournamentBeanValidator.validateRequest(userBean);
@@ -363,5 +374,176 @@ public class UserServiceImpl implements UserService{
 			baseBean.setResultDescription(exception.getDescription());
 		}
 		return baseBean;
+	}
+
+	@Override
+	public BaseBean inviteUserToGroup(UserGroupInvitationBean userGroupInvitationBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupInvitationBean);
+			UserBeanValidator.validateGroupInviteRequest(userGroupInvitationBean);
+			UserGroupBean group = getGroup(userGroupInvitationBean.getGroupId());
+			if(group == null){
+				throw new PTWException(PTWConstants.ERROR_CODE_GROUP_NAME_NO_EMPTY, PTWConstants.ERROR_DESC_INVALID_GROUP);
+			}
+			List<UserBean> phoneUsers = null;
+			UserBean inviteeUser = null;
+			if(!StringUtil.isEmptyNull(userGroupInvitationBean.getPhone())){
+				UserBean phoneUserQuery = new UserBean();
+				phoneUserQuery.setPhone(userGroupInvitationBean.getPhone());
+				phoneUsers = userDao.getUsers(phoneUserQuery, false);
+			}
+			if(phoneUsers == null || phoneUsers.size()!=1){
+				if(!StringUtil.isEmptyNull(userGroupInvitationBean.getEmailId())){
+					UserBean emailUserQuery = new UserBean();
+					emailUserQuery.setEmail(userGroupInvitationBean.getEmailId());
+					List<UserBean> emailUsers = userDao.getUsers(emailUserQuery, false);
+					if(emailUsers != null && !emailUsers.isEmpty()){
+						inviteeUser = emailUsers.get(0);
+					}
+				}
+			}else if(phoneUsers.size() == 1){
+				inviteeUser = phoneUsers.get(0);
+			}
+			if(inviteeUser != null){
+				userGroupInvitationBean.setInviteeUserId(inviteeUser.getUserId());
+			}
+			userGroupInvitationBean.setInvitationStatusId(DBConstants.USER_INVITATION_STATUS_INVITED);
+			userDao.inviteUserToGroup(userGroupInvitationBean);
+			
+			UserBean queryInvitedUser = new UserBean();
+			queryInvitedUser.setUserId(userGroupInvitationBean.getGroupOwnerId());
+			List<UserBean> ownerUserList = userDao.getUsers(queryInvitedUser, false);
+			if(ownerUserList != null && !ownerUserList.isEmpty()){
+				UserBean owner = ownerUserList.get(0);
+				String senderEmail = null;
+				if(inviteeUser != null){
+					senderEmail = inviteeUser.getEmail();
+				}else{
+					senderEmail = userGroupInvitationBean.getEmailId();
+				}
+				if(StringUtil.isEmptyNull(senderEmail)){
+					throw new PTWException(PTWConstants.ERROR_CODE_INVITEE_USER_NOT_FOUND, PTWConstants.ERROR_DESC_INVITEE_USER_NOT_FOUND);
+				}
+				
+				sendGroupWelcomeMail(senderEmail, owner, group);
+			}
+			
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
+		}
+		return baseBean;
+	}
+
+	private void sendGroupWelcomeMail(String senderEmail, UserBean owner,
+		UserGroupBean userGroup) throws PTWException{
+	
+		EmailContent emailContent = new EmailContent();
+		emailContent.setToAddress(senderEmail);
+	    StringBuilder bodyBuilder = new StringBuilder();
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("Welcome to Predict 2 Win. Your friend ");
+	    bodyBuilder.append(owner.getUserName());
+	    bodyBuilder.append(" has invited you to his League: ");
+	    bodyBuilder.append("\"");
+	    bodyBuilder.append(userGroup.getGroupName());
+	    bodyBuilder.append("\"");
+	    bodyBuilder.append(".");
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("For already registered users, Login to P2W App and Go To Leages, Provide the confirmation Code ");
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("\"");
+	    bodyBuilder.append(userGroup.getGroupCode());
+	    bodyBuilder.append("\"");
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("and confirm. Start competing with your freind!! Happy Predicting!!!");
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("For Unregistered User, please download P2W from Google Playstore & register yourselves to start predicting.");
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("This is auto generated Mail.");
+	    emailContent.setEmailBody(bodyBuilder.toString());
+	    
+	    String subj = "Predict 2 Win: League Invitation";
+	    emailContent.setEmailSubject(subj);
+	    try{
+	    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
+	    }catch (Exception ex) {
+			ex.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
+		} 
+		
+		
+	}
+
+	private UserGroupBean getGroup(Integer groupId) throws PTWException {
+		UserGroupBean retGroup = null;
+		UserGroupBean userGroupBean = new UserGroupBean();
+		userGroupBean.setGroupId(groupId);
+		List<UserGroupBean> groups = userDao.getUserGroup(userGroupBean);
+		if(groups != null && !groups.isEmpty()){
+			retGroup = groups.get(0);
+		}
+		return retGroup;
+	}
+
+	@Override
+	public UserGroupInvitationBeanList getPendingGrounInvitation(UserBean userBean) {
+		UserGroupInvitationBeanList retList = new UserGroupInvitationBeanList();
+		try{
+			TournamentBeanValidator.validateRequest(userBean);
+			UserBeanValidator.validateUserId(userBean.getUserId());
+			List<UserGroupInvitationBean> invitations = userDao.getUserInvitations(userBean);
+			retList.setUserInvitationGroup(invitations);
+		}catch (PTWException ex) {
+			retList.setResultCode(ex.getCode());
+			retList.setResultDescription(ex.getDescription());
+		}
+		return retList;
+	}
+
+	@Override
+	public BaseBean addUserToGroup(UserGroupInvitationBean userGroupInvitationBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupInvitationBean);
+			UserBeanValidator.validateAddUserToGroupRequest(userGroupInvitationBean);
+			Integer groupId = userGroupInvitationBean.getGroupId();
+			
+			UserGroupBean queryUserGroup = new UserGroupBean();
+			queryUserGroup.setGroupId(groupId);
+			List<UserGroupBean> userGroupBeanList = userDao.getUserGroup(queryUserGroup);
+			if(userGroupBeanList != null && !userGroupBeanList.isEmpty()){
+				UserGroupBean userGroupBean = userGroupBeanList.get(0);
+				if(userGroupBean.getGroupCode().equals(userGroupInvitationBean.getGroupCode())){
+					userGroupInvitationBean.setTournamentId(userGroupBean.getTournamentId());
+					userDao.addUserToGroup(userGroupInvitationBean);
+				}else{
+					throw new PTWException(PTWConstants.ERROR_CODE_GROUP_CODE_INCORRECT, PTWConstants.ERROR_DESC_GROUP_CODE_INCORRECT);
+				}
+			}
+		}catch (PTWException ex) {
+			baseBean.setResultCode(ex.getCode());
+			baseBean.setResultDescription(ex.getDescription());
+		}
+		return baseBean;
+	}
+
+	@Override
+	public UserGroupBeanList getUserGroups(UserGroupBean userGroupBean) {
+		UserGroupBeanList userGroupList = new UserGroupBeanList();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			UserBeanValidator.validateUserId(userGroupBean.getUserId());
+			
+			List<UserGroupBean> userGroups = userDao.getUserMappedGroup(userGroupBean);
+		}catch (PTWException ex) {
+			userGroupList.setResultCode(ex.getCode());
+			userGroupList.setResultDescription(ex.getDescription());
+		}
+		return userGroupList;
 	}
 }

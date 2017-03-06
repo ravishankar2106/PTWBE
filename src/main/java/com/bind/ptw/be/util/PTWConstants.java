@@ -50,6 +50,10 @@ public class PTWConstants {
 	
 	public final static String ERROR_CODE_PHONE_NO_EMPTY = "118";
 	
+	public final static String ERROR_CODE_USER_PHONE_DUPLICATE = "119";
+	public final static String ERROR_DESC_USER_PHONE_DUPLICATE = "User Phone No. is already registered";
+	
+	
 	public final static String ERROR_CODE_USER_PWD_NOT_FOUND = "120";
 	public final static String ERROR_DESC_USER_PWD_NOT_FOUND = "Auth failed due to incorrect login user Id or password";
 	
@@ -205,5 +209,16 @@ public class PTWConstants {
 	
 	public final static String ERROR_CODE_GROUP_DELETE_NOT_ALLOWED = "264";
 	public final static String ERROR_DESC_GROUP_DELETE_NOT_ALLOWED = "Group cannot be Deleted as there are registered users.";
+
+	public final static String ERROR_CODE_INVITEE_DETAILS_EMPTY = "265";
+	public final static String ERROR_DESC_INVITEE_DETAILS_EMPTY = "Invitee Details Missing";
+	
+	public final static String ERROR_CODE_INVITEE_USER_NOT_FOUND = "266";
+	public final static String ERROR_DESC_INVITEE_USER_NOT_FOUND = "Invited User Not found. User can join once registration is complete";
+	
+	public final static String ERROR_CODE_GROUP_CODE_EMPTY = "267";
+	
+	public final static String ERROR_CODE_GROUP_CODE_INCORRECT = "268";
+	public final static String ERROR_DESC_GROUP_CODE_INCORRECT = "Incorrect Group Confirmation Code.";
 	
 }

@@ -59,7 +59,7 @@ public class UserGroupHome {
 			queryToExecute.append("AND ug.userGroupId =:userGroupId ");
 		}
 		if(!StringUtil.isEmptyNull(userGroupBean.getOwnerId())){
-			queryToExecute.append("AND ug.ownerUserId =:ownerUserId ");
+			queryToExecute.append("AND ug.ownerUser.userId =:ownerUserId ");
 		}
 		if(!StringUtil.isEmptyNull(userGroupBean.getGroupName())){
 			queryToExecute.append("AND ug.userGroupName =:userGroupName ");

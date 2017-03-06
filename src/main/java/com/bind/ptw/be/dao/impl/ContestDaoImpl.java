@@ -323,6 +323,10 @@ public class ContestDaoImpl implements ContestDao{
 		retContestBean.setContestTypeId(contest.getContestType().getContestTypeId());
 		retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
 		retContestBean.setTournamentId(contest.getTournament().getTournamentId());
+		Match match = contest.getMatch();
+		if(match!=null){
+			retContestBean.setMatchId(match.getMatchId());
+		}
 		retContestBean.setContestStatusId(contest.getContestStatus().getContestStatusId());
 		return retContestBean;
 	}
@@ -1061,8 +1065,8 @@ public class ContestDaoImpl implements ContestDao{
 					UserGroupBean retUserGroupBean = new UserGroupBean();
 					retUserGroupBean.setGroupId(userGroup.getUserGroupId());
 					retUserGroupBean.setGroupName(userGroup.getUserGroupName());
-					retUserGroupBean.setTournamentId(userGroup.getTournamentId());
-					retUserGroupBean.setOwnerId(userGroup.getOwnerUserId());
+					retUserGroupBean.setTournamentId(userGroup.getTournament().getTournamentId());
+					retUserGroupBean.setOwnerId(userGroup.getOwnerUser().getUserId());
 					retUserGroupBean.setGroupCode(userGroup.getUserGroupCode());
 					retUserGroupBean.setPrizeGroupFlag(userGroup.getPrizeIncludedFlag());
 					retUserGroups.add(retUserGroupBean);

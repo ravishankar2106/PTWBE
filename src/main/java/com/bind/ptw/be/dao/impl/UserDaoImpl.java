@@ -16,6 +16,7 @@ import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.entities.City;
@@ -26,10 +27,13 @@ import com.bind.ptw.be.entities.UserConfirmation;
 import com.bind.ptw.be.entities.UserConfirmationHome;
 import com.bind.ptw.be.entities.UserGroup;
 import com.bind.ptw.be.entities.UserGroupHome;
+import com.bind.ptw.be.entities.UserGroupInvitation;
+import com.bind.ptw.be.entities.UserGroupInvitationHome;
 import com.bind.ptw.be.entities.UserGroupMapping;
 import com.bind.ptw.be.entities.UserGroupMappingHome;
 import com.bind.ptw.be.entities.UserGroupMappingKey;
 import com.bind.ptw.be.entities.UserHome;
+import com.bind.ptw.be.entities.UserInvitationStatus;
 import com.bind.ptw.be.entities.UserScoreBoard;
 import com.bind.ptw.be.entities.UserScoreBoardHome;
 import com.bind.ptw.be.entities.UserStatus;
@@ -327,27 +331,53 @@ public class UserDaoImpl implements UserDao{
 		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
 		try{
 			UserGroup userGroup = new UserGroup();
-			userGroup.setOwnerUserId(userGroupBean.getOwnerId());
-			userGroup.setTournamentId(userGroupBean.getTournamentId());
+			Users user = new Users();
+			user.setUserId(userGroupBean.getOwnerId());
+			userGroup.setOwnerUser(user);
+			Tournament tournament = new Tournament();
+			tournament.setTournamentId(userGroupBean.getTournamentId());
+			userGroup.setTournament(tournament);
 			userGroup.setUserGroupCode(userGroupBean.getGroupCode());
 			userGroup.setPrizeIncludedFlag(userGroupBean.getPrizeGroupFlag());
 			userGroup.setUserGroupName(userGroupBean.getGroupName());
 			userGroupHome.persist(userGroup);
 			userGroupBean.setGroupId(userGroup.getUserGroupId());
-			createUserGroupMapping(userGroupBean.getOwnerId(), userGroupMappingHome, userGroup.getUserGroupId());
+			createUserGroupMapping(userGroupBean.getOwnerId(), userGroupMappingHome, userGroup.getUserGroupId(), userGroupBean.getTournamentId());
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		return userGroupBean;
 	}
+	
+	@Override
+	public void addUserToGroup(UserGroupInvitationBean groupInvitation) throws PTWException{
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(getSession());
+		UserGroupInvitationHome userGroupInvitationHome = new UserGroupInvitationHome(getSession());
+		createUserGroupMapping(groupInvitation.getInviteeUserId(), userGroupMappingHome, groupInvitation.getGroupId(), groupInvitation.getTournamentId());
+		try{
+			List<UserGroupInvitation> invitations = userGroupInvitationHome.findByFilter(groupInvitation);
+			if(invitations != null && !invitations.isEmpty()){
+				for (UserGroupInvitation userGroupInvitation : invitations) {
+					UserInvitationStatus status = new UserInvitationStatus();
+					status.setInvitationStatusId(DBConstants.USER_INVITATION_STATUS_ACCEPTED);
+					userGroupInvitation.setUserInvitationStatus(status);
+					userGroupInvitationHome.merge(userGroupInvitation);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
 
 	private void createUserGroupMapping(Integer userId, UserGroupMappingHome userGroupMappingHome,
-			Integer groupId) {
+			Integer groupId, Integer tournamentId) {
 		UserGroupMapping userGroupMapping = new UserGroupMapping();
 		UserGroupMappingKey userGroupMappingKey = new UserGroupMappingKey();
 		userGroupMappingKey.setUserGroupId(groupId);
 		userGroupMappingKey.setUserId(userId);
+		userGroupMapping.setTournamentId(tournamentId);
 		userGroupMapping.setUserGroupMappingKey(userGroupMappingKey);
 		userGroupMappingHome.persist(userGroupMapping);
 	}
@@ -383,13 +413,7 @@ public class UserDaoImpl implements UserDao{
 			if(userGroupLst != null && !userGroupLst.isEmpty()){
 				userGroupBeanList = new ArrayList<UserGroupBean>();
 				for (UserGroup userGroup : userGroupLst) {
-					UserGroupBean userGroupBean = new UserGroupBean();
-					userGroupBean.setGroupId(userGroup.getUserGroupId());
-					userGroupBean.setTournamentId(userGroup.getTournamentId());
-					userGroupBean.setGroupCode(userGroup.getUserGroupCode());
-					userGroupBean.setOwnerId(userGroup.getOwnerUserId());
-					userGroupBean.setGroupName(userGroup.getUserGroupName());
-					userGroupBean.setPrizeGroupFlag(userGroup.getPrizeIncludedFlag());
+					UserGroupBean userGroupBean = getUserGroupBean(userGroup);
 					userGroupBeanList.add(userGroupBean);
 				}
 			}
@@ -398,6 +422,17 @@ public class UserDaoImpl implements UserDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}		
 		return userGroupBeanList;
+	}
+
+	private UserGroupBean getUserGroupBean(UserGroup userGroup) {
+		UserGroupBean userGroupBean = new UserGroupBean();
+		userGroupBean.setGroupId(userGroup.getUserGroupId());
+		userGroupBean.setTournamentId(userGroup.getTournament().getTournamentId());
+		userGroupBean.setGroupCode(userGroup.getUserGroupCode());
+		userGroupBean.setOwnerId(userGroup.getOwnerUser().getUserId());
+		userGroupBean.setGroupName(userGroup.getUserGroupName());
+		userGroupBean.setPrizeGroupFlag(userGroup.getPrizeIncludedFlag());
+		return userGroupBean;
 	}
 	
 	@Override
@@ -421,5 +456,121 @@ public class UserDaoImpl implements UserDao{
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
+	}
+	
+	@Override
+	public List<UserGroupBean> getUserGroup(UserGroupBean userGroupBean)  throws PTWException{
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		List<UserGroupBean> retUserGroup = null;
+		try{
+			List<UserGroup> userGroupList = userGroupHome.findByFilter(userGroupBean);
+			if(userGroupList != null && !userGroupList.isEmpty()){
+				retUserGroup = new ArrayList<UserGroupBean>();
+				for (UserGroup userGroup : userGroupList) {
+					UserGroupBean retUserGroupBean = getUserGroupBean(userGroup);
+					retUserGroup.add(retUserGroupBean);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retUserGroup;
+	}
+
+	@Override
+	public void inviteUserToGroup(UserGroupInvitationBean userGroupInvitationBean) throws PTWException {
+		UserGroupInvitationHome invitationHome = new UserGroupInvitationHome(getSession());
+		try{
+			UserGroupInvitation userGroupInvitation = new UserGroupInvitation();
+			userGroupInvitation.setInviteeUserId(userGroupInvitationBean.getInviteeUserId());
+			
+			UserGroup userGroup = new UserGroup();
+			userGroup.setUserGroupId(userGroupInvitationBean.getGroupId());
+			userGroupInvitation.setUserGroup(userGroup);
+			
+			userGroupInvitation.setEmailId(userGroupInvitationBean.getEmailId());
+			userGroupInvitation.setPhone(userGroupInvitationBean.getPhone());
+			
+			UserInvitationStatus status = new UserInvitationStatus();
+			status.setInvitationStatusId(userGroupInvitationBean.getInvitationStatusId());
+			userGroupInvitation.setUserInvitationStatus(status);
+			invitationHome.persist(userGroupInvitation);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+
+	@Override
+	public List<UserGroupInvitationBean> getUserInvitations(UserBean userBean) throws PTWException {
+		UserGroupInvitationHome invitationHome = new UserGroupInvitationHome(getSession());
+		List<UserGroupInvitationBean> retList = null;
+		try{
+			UserGroupInvitationBean queryUserGroupInvitation = new UserGroupInvitationBean();
+			queryUserGroupInvitation.setInviteeUserId(userBean.getUserId());
+			queryUserGroupInvitation.setInvitationStatusId(DBConstants.USER_INVITATION_STATUS_INVITED);
+			List<UserGroupInvitation> invitations = invitationHome.findByFilter(queryUserGroupInvitation);
+			if(invitations != null && !invitations.isEmpty()){
+				retList = new ArrayList<UserGroupInvitationBean>();
+				for (UserGroupInvitation userGroupInvitation : invitations) {
+					UserGroupInvitationBean retGroupInvitationBean = new UserGroupInvitationBean();
+					retGroupInvitationBean.setUserGroupInvitationId(userGroupInvitation.getUserGroupInvitationId());
+					retGroupInvitationBean.setEmailId(userGroupInvitation.getEmailId());
+					retGroupInvitationBean.setGroupCode(userGroupInvitation.getUserGroup().getUserGroupCode());
+					retGroupInvitationBean.setGroupId(userGroupInvitation.getUserGroup().getUserGroupId());
+					retGroupInvitationBean.setGroupName(userGroupInvitation.getUserGroup().getUserGroupName());
+					retGroupInvitationBean.setGroupOwnerId(userGroupInvitation.getUserGroup().getOwnerUser().getUserId());
+					retGroupInvitationBean.setGroupOwnerName(userGroupInvitation.getUserGroup().getOwnerUser().getUserName());
+					retGroupInvitationBean.setTournamentId(userGroupInvitation.getUserGroup().getTournament().getTournamentId());
+					retGroupInvitationBean.setTournamentName(userGroupInvitation.getUserGroup().getTournament().getTournamentName());
+					retGroupInvitationBean.setTournamentShortName(userGroupInvitation.getUserGroup().getTournament().getTournamentDescription());
+					retGroupInvitationBean.setInvitationStatusId(userGroupInvitation.getUserInvitationStatus().getInvitationStatusId());
+					retGroupInvitationBean.setInvitationStatusName(userGroupInvitation.getUserInvitationStatus().getInvitationStatusName());
+					retList.add(retGroupInvitationBean);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retList;
+	}
+	
+	@Override
+	public void updateUserIdForInvitation(UserBean userBean) throws PTWException {
+		UserGroupInvitationHome invitationHome = new UserGroupInvitationHome(getSession());
+		try{
+			UserGroupInvitationBean queryInvitation = new UserGroupInvitationBean();
+			queryInvitation.setEmailId(userBean.getEmail());
+			queryInvitation.setPhone(userBean.getPhone());
+			queryInvitation.setInvitationStatusId(DBConstants.USER_INVITATION_STATUS_INVITED);
+			List<UserGroupInvitation> invitations = invitationHome.findByFilter(queryInvitation);
+			if(invitations != null && !invitations.isEmpty()){
+				System.out.println("Updating invitations Ids");
+				for (UserGroupInvitation userGroupInvitation : invitations) {
+					userGroupInvitation.setInviteeUserId(userBean.getUserId());
+					invitationHome.merge(userGroupInvitation);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public List<UserGroupBean> getUserMappedGroup(UserGroupBean userGroupBean)throws PTWException {
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(getSession());
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		try{
+			UserGroupBean queryUserGroupBean = new UserGroupBean();
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return null;
 	}
 }

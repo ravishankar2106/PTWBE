@@ -55,31 +55,50 @@ public class UserGroupInvitationHome {
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();
 		queryToExecute.append(QueryConstants.RETRIEVE_USER_INVIATION);
-		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getUserGroupInvitationId())){
-			queryToExecute.append("AND ugi.userGroupInvitationId =:userGroupInvitationId ");
+		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getInviteeUserId())){
+			queryToExecute.append("AND ugi.inviteeUserId =:inviteeUserId ");
+		}else{
+			if(!StringUtil.isEmptyNull(userGroupInvitationBean.getEmailId()) || 
+					!StringUtil.isEmptyNull(userGroupInvitationBean.getPhone())){
+				queryToExecute.append("AND (");
+				boolean emailQuery = false;
+				if(!StringUtil.isEmptyNull(userGroupInvitationBean.getPhone()) ){
+					queryToExecute.append("ugi.phone =:phone ");
+					emailQuery = true;
+				}
+				if(!StringUtil.isEmptyNull(userGroupInvitationBean.getEmailId())){
+					if(emailQuery){
+						queryToExecute.append("OR ");
+					}
+					queryToExecute.append("ugi.emailId =:emailId ");
+				}
+				queryToExecute.append(" )");
+				
+			}
 		}
-		
-		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getEmailId())){
-			queryToExecute.append("AND ugi.emailId =:emailId ");
+		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getInvitationStatusId())){
+			queryToExecute.append("AND ugi.userInvitationStatus.invitationStatusId =:invitationStatusId ");
 		}
-		
-		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getPhone())){
-			queryToExecute.append("AND ugi.phone =:phone ");
+		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getGroupId())){
+			queryToExecute.append("AND ugi.userGroup.userGroupId =:userGroupId ");
 		}
-		
 		query = session.createQuery(queryToExecute.toString());
-		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getUserGroupInvitationId())){
-			query.setParameter("userGroupInvitationId", userGroupInvitationBean.getUserGroupInvitationId());
+		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getInviteeUserId())){
+			query.setParameter("inviteeUserId", userGroupInvitationBean.getInviteeUserId());
+		}else {
+			if(!StringUtil.isEmptyNull(userGroupInvitationBean.getEmailId())){
+				query.setParameter("emailId", userGroupInvitationBean.getEmailId());
+			}
+			if(!StringUtil.isEmptyNull(userGroupInvitationBean.getPhone())){
+				query.setParameter("phone", userGroupInvitationBean.getPhone());
+			}
 		}
-		
-		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getEmailId())){
-			query.setParameter("emailId", userGroupInvitationBean.getEmailId());
+		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getInvitationStatusId())){
+			query.setParameter("invitationStatusId", userGroupInvitationBean.getInvitationStatusId());
 		}
-		
-		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getPhone())){
-			query.setParameter("phone", userGroupInvitationBean.getPhone());
+		if(!StringUtil.isEmptyNull(userGroupInvitationBean.getGroupId())){
+			query.setParameter("userGroupId", userGroupInvitationBean.getGroupId());
 		}
-		
 		return query.list();
 	}
 

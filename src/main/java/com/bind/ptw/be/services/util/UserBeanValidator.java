@@ -9,6 +9,7 @@ import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.util.PTWConstants;
@@ -31,6 +32,7 @@ public class UserBeanValidator {
 		
 		validateDuplicateLoginId(userBean.getUserLoginId(), userDao);
 		validateDuplicateUserTeam(userBean.getTeamName(), userDao);
+		validateDuplicatePhoneNo(userBean.getPhone(), userDao);
 		validateCity(userBean.getCityId(), userDao);
 	}
 	
@@ -179,6 +181,17 @@ public class UserBeanValidator {
 		}
 	}
 	
+	private static void validateDuplicatePhoneNo(String phone,
+			UserDao userDao) throws PTWException {
+		UserBean searchLoginUserBean = new UserBean();
+		searchLoginUserBean.setPhone(phone);
+		List<UserBean> searchedUserList = userDao.getUsers(searchLoginUserBean, false);
+		if(searchedUserList != null && !searchedUserList.isEmpty()){
+			throw new PTWException( PTWConstants.ERROR_CODE_USER_PHONE_DUPLICATE, 
+					PTWConstants.ERROR_DESC_USER_PHONE_DUPLICATE);
+		}
+	}
+	
 	private static void validateDuplicateUserTeam(String teamName,
 			UserDao userDao) throws PTWException {
 		UserBean searchLoginUserBean = new UserBean();
@@ -231,6 +244,27 @@ public class UserBeanValidator {
 		if(StringUtil.isEmptyNull(userGroupBean.getGroupName())){
 			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Name");
 		}
+	}
+
+	public static void validateGroupInviteRequest(UserGroupInvitationBean userGroupInvitationBean) throws PTWException{
+		validateGroupId(userGroupInvitationBean.getGroupId());
+		String inviteeEmailId = userGroupInvitationBean.getEmailId();
+		String inviteePhone = userGroupInvitationBean.getPhone();
+		if(StringUtil.isEmptyNull(inviteeEmailId) && StringUtil.isEmptyNull(inviteePhone)){
+			throw new PTWException(PTWConstants.ERROR_CODE_INVITEE_DETAILS_EMPTY, PTWConstants.ERROR_DESC_INVITEE_DETAILS_EMPTY);
+		}
+	}
+	
+	private static void validateGroupCode(Integer groupCode)throws PTWException{
+		if(StringUtil.isEmptyNull(groupCode)){
+			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_CODE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Code");
+		}
+	}
+
+	public static void validateAddUserToGroupRequest(UserGroupInvitationBean userGroupInvitationBean) throws PTWException{
+		validateGroupId(userGroupInvitationBean.getGroupId());
+		validateUserId(userGroupInvitationBean.getInviteeUserId());
+		validateGroupCode(userGroupInvitationBean.getGroupCode());
 	}
 
 	

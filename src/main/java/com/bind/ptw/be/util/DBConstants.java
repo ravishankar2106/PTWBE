@@ -12,5 +12,7 @@ public class DBConstants {
 	public static final String SMTP_HOST_KEY = "smtp.host";
 	public static final String PORT_KEY = "smtp.port";
 	
+	public static final int USER_INVITATION_STATUS_INVITED = 1;
+	public static final int USER_INVITATION_STATUS_ACCEPTED = 2;
 
 }

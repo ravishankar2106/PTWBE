@@ -7,6 +7,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.util.PTWException;
@@ -31,4 +32,10 @@ public interface UserDao {
 	void updateUserGroup(UserGroupBean userGroupBean) throws PTWException;
 	List<UserGroupBean> getUserCreatedGroups(UserBean userBean) throws PTWException;
 	void deleteUserGroup(UserGroupBean userGroungBean) throws PTWException;
+	void inviteUserToGroup(UserGroupInvitationBean userGroupInvitationBean) throws PTWException;
+	List<UserGroupBean> getUserGroup(UserGroupBean userGroupBean) throws PTWException;
+	void updateUserIdForInvitation(UserBean userBean) throws PTWException;
+	List<UserGroupInvitationBean> getUserInvitations(UserBean userBean) throws PTWException;
+	void addUserToGroup(UserGroupInvitationBean groupInvitation) throws PTWException;
+	List<UserGroupBean> getUserMappedGroup(UserGroupBean userGroupBean) throws PTWException;
 }

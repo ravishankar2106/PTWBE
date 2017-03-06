@@ -16,6 +16,7 @@ public class UserGroupBean extends BaseBean implements Serializable{
 	private String groupName;
 	private Integer groupCode;
 	private Boolean prizeGroupFlag;
+	private Integer userId;
 	
 	public Integer getGroupId() {
 		return groupId;
@@ -52,6 +53,12 @@ public class UserGroupBean extends BaseBean implements Serializable{
 	}
 	public void setPrizeGroupFlag(Boolean prizeGroupFlag) {
 		this.prizeGroupFlag = prizeGroupFlag;
+	}
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 	
 	

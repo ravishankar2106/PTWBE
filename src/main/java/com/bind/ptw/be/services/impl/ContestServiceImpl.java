@@ -644,9 +644,10 @@ public class ContestServiceImpl implements ContestService{
 		return namesList;
 	}
 
-	private void appendPlayers(List<String> namesList, Integer teamAId) throws PTWException {
+	private void appendPlayers(List<String> namesList, Integer teamId) throws PTWException {
+		
 		TournamentTeamBean tournTeamBean = new TournamentTeamBean();
-		tournTeamBean.setTournamentTeamId(teamAId);
+		tournTeamBean.setTournamentTeamId(teamId);
 		TournTeamPlayerBeanList teamPlayers = tournamentDao.getPlayersForTournamentTeam(tournTeamBean);
 		if(teamPlayers != null && teamPlayers.getTeamPlayerBeanList() != null){
 			for (TeamPlayerBean teamPlayer : teamPlayers.getTeamPlayerBeanList()) {

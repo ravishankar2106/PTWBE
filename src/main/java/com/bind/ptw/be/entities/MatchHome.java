@@ -59,7 +59,7 @@ public class MatchHome {
 			queryToExecute.append(QueryConstants.RETRIEVE_TOURNAMENT_MATCHES);
 			if( matchBean != null ) {
 				if(!StringUtils.isEmpty(matchBean.getMatchId())){
-					queryToExecute.append("AND m.matchId =:matchId");
+					queryToExecute.append("AND m.matchId =:matchId ");
 				}else if(!StringUtil.isEmptyNull(matchBean.getTournamentId())){
 					queryToExecute.append("AND m.tournament.tournamentId =:tournamentId ");
 				}

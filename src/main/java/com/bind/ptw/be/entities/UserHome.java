@@ -55,7 +55,9 @@ public class UserHome {
 			queryToExecute.append(QueryConstants.RETRIEVE_USERS);
 			
 			if( userRequest != null ) {
-				
+				if(userRequest.getUserId()!= null){
+					queryToExecute.append("AND userId =:userId ");
+				}
 				if(userRequest.getUserLoginId() != null){
 					queryToExecute.append("AND loginId =:userLoginId ");
 				}
@@ -78,7 +80,9 @@ public class UserHome {
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(userRequest != null){
-				
+				if(userRequest.getUserId()!= null){
+					query.setParameter("userId", userRequest.getUserId());
+				}
 				if(userRequest.getUserLoginId() != null){
 					query.setParameter("userLoginId", userRequest.getUserLoginId());
 				}

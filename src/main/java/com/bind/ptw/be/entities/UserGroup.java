@@ -4,16 +4,19 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "USER_GROUPS")
 public class UserGroup {
 	private Integer userGroupId;
-	private Integer tournamentId;
-	private Integer ownerUserId;
+	private Tournament tournament;
+	private Users ownerUser;
 	private String userGroupName;
 	private Integer userGroupCode;
 	private Boolean prizeIncludedFlag;
@@ -28,12 +31,13 @@ public class UserGroup {
 		this.userGroupId = userGroupId;
 	}
 	
-	@Column(name = "TOURNAMENT_ID")
-	public Integer getTournamentId() {
-		return tournamentId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TOURNAMENT_ID", nullable = true)
+	public Tournament getTournament() {
+		return tournament;
 	}
-	public void setTournamentId(Integer tournamentId) {
-		this.tournamentId = tournamentId;
+	public void setTournament(Tournament tournament) {
+		this.tournament = tournament;
 	}
 	
 	@Column(name = "USER_GROUP_NAME")
@@ -44,12 +48,13 @@ public class UserGroup {
 		this.userGroupName = userGroupName;
 	}
 	
-	@Column(name = "OWNER_USER_ID")
-	public Integer getOwnerUserId() {
-		return ownerUserId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "OWNER_USER_ID", nullable = true)
+	public Users getOwnerUser() {
+		return ownerUser;
 	}
-	public void setOwnerUserId(Integer ownerUserId) {
-		this.ownerUserId = ownerUserId;
+	public void setOwnerUser(Users ownerUser) {
+		this.ownerUser = ownerUser;
 	}
 	
 	@Column(name = "USER_GROUP_CODE")

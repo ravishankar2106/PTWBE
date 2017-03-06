@@ -51,7 +51,6 @@ public class ContestBean extends BaseBean implements Serializable{
 	public void setMatchId(Integer matchId) {
 		this.matchId = matchId;
 	}
-	
 	public Integer getContestTypeId() {
 		return contestTypeId;
 	}
