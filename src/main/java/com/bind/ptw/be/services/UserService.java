@@ -23,10 +23,10 @@ public interface UserService {
 	BaseBean updatePassword(UserPasswordBean userPasswordBean);
 	UserGroupBean createUserGroup(UserGroupBean userGroupBean);
 	BaseBean updateUserGroup(UserGroupBean userGroupBean);
-	UserGroupBeanList getUserOwnedGroup(UserBean userBean);
 	BaseBean deleteUserOwnerGroup(UserGroupBean userGroupBean);
 	BaseBean inviteUserToGroup(UserGroupInvitationBean userGroupInvitationBean);
 	UserGroupInvitationBeanList getPendingGrounInvitation(UserBean userBean);
 	BaseBean addUserToGroup(UserGroupInvitationBean userGroupInvitationBean);
 	UserGroupBeanList getUserGroups(UserGroupBean userGroupBean);
+	UserGroupBeanList getUserOwnedGroup(UserGroupBean userGroupBean);
 }

@@ -54,6 +54,7 @@ public interface ContestService {
 	PrizeContestBeanList getPrizeContests(PrizeContestBean prizeContestBean);
 	BaseBean deletePrizeContest(PrizeContestBean prizeContestBean);
 	UserGroupBeanList getPrizeGroups(UserGroupBean userGroupBean);
+	LeaderBoardBeanList getGroupLeaderBoard(UserGroupBean userGroupBean);
 	
 	
 }

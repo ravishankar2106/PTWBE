@@ -30,7 +30,6 @@ public interface UserDao {
 	List<UserTournamentBean> getUserRegisteredTournament(UserBean userBean) throws PTWException;
 	UserGroupBean createUserGroup(UserGroupBean userGroupBean) throws PTWException;
 	void updateUserGroup(UserGroupBean userGroupBean) throws PTWException;
-	List<UserGroupBean> getUserCreatedGroups(UserBean userBean) throws PTWException;
 	void deleteUserGroup(UserGroupBean userGroungBean) throws PTWException;
 	void inviteUserToGroup(UserGroupInvitationBean userGroupInvitationBean) throws PTWException;
 	List<UserGroupBean> getUserGroup(UserGroupBean userGroupBean) throws PTWException;
@@ -38,4 +37,5 @@ public interface UserDao {
 	List<UserGroupInvitationBean> getUserInvitations(UserBean userBean) throws PTWException;
 	void addUserToGroup(UserGroupInvitationBean groupInvitation) throws PTWException;
 	List<UserGroupBean> getUserMappedGroup(UserGroupBean userGroupBean) throws PTWException;
+	List<UserGroupBean> getUserCreatedGroups(UserGroupBean userGroupBean) throws PTWException;
 }

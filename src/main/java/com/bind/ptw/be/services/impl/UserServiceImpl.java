@@ -16,6 +16,7 @@ import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.CityBeanList;
+import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -347,13 +348,14 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserGroupBeanList getUserOwnedGroup(UserBean userBean) {
+	public UserGroupBeanList getUserOwnedGroup(UserGroupBean userGroupBean) {
 		UserGroupBeanList retGroupBeanList = new UserGroupBeanList();
 		try{
-			TournamentBeanValidator.validateRequest(userBean);
-			UserBeanValidator.validateUserId(userBean.getUserId());
-			List<UserGroupBean> userGroups = userDao.getUserCreatedGroups(userBean);
-			retGroupBeanList.setUserGroupBean(userGroups);
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			UserBeanValidator.validateUserId(userGroupBean.getOwnerId());
+			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			List<UserGroupBean> userGroups = userDao.getUserCreatedGroups(userGroupBean);
+			retGroupBeanList.setUserGroups(userGroups);
 		}catch(PTWException exception){
 			retGroupBeanList.setResultCode(exception.getCode());
 			retGroupBeanList.setResultDescription(exception.getDescription());
@@ -546,4 +548,5 @@ public class UserServiceImpl implements UserService{
 		}
 		return userGroupList;
 	}
+
 }

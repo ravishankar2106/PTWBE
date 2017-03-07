@@ -70,7 +70,9 @@ public class UserGroupHome {
 		if(userGroupBean.getPrizeGroupFlag() != null && userGroupBean.getPrizeGroupFlag()){
 			queryToExecute.append("AND ug.prizeIncludedFlag IS TRUE ");
 		}
-		
+		if(!StringUtil.isEmptyNull(userGroupBean.getTournamentId())){
+			queryToExecute.append("AND ug.tournament.tournamentId =:tournamentId ");
+		}
 		query = session.createQuery(queryToExecute.toString());
 		if(!StringUtil.isEmptyNull(userGroupBean.getGroupId())){
 			query.setParameter("userGroupId", userGroupBean.getGroupId());
@@ -83,6 +85,9 @@ public class UserGroupHome {
 		}
 		if(!StringUtil.isEmptyNull(userGroupBean.getGroupCode())){
 			query.setParameter("userGroupCode", userGroupBean.getGroupCode());
+		}
+		if(!StringUtil.isEmptyNull(userGroupBean.getTournamentId())){
+			query.setParameter("tournamentId", userGroupBean.getTournamentId());
 		}
 		return query.list();
 	}

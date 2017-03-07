@@ -147,8 +147,8 @@ public class UserRest {
 	}
 	
 	@PostMapping("/getUserOwnedLeague")
-	public UserGroupBeanList getUserOwnedLeague(@RequestBody UserBean userBean){
-		return userService.getUserOwnedGroup(userBean);
+	public UserGroupBeanList getUserOwnedLeague(@RequestBody UserGroupBean userGroupBean){
+		return userService.getUserOwnedGroup(userGroupBean);
 	}
 
 	@PostMapping("/inviteUserToLeague")
@@ -171,6 +171,9 @@ public class UserRest {
 		return userService.getUserGroups(userGroupBean);
 	}
 	
-	
+	@PostMapping("/getLeagueStandings")
+	public LeaderBoardBeanList getGroupLeaderBoard(@RequestBody UserGroupBean userGroupBean){
+		return contestService.getGroupLeaderBoard(userGroupBean);
+	}
 	
 }

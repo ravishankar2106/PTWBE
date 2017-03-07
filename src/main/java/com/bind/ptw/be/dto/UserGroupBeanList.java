@@ -10,14 +10,14 @@ public class UserGroupBeanList extends BaseBean implements Serializable{
 	 */
 	private static final long serialVersionUID = 1888628800905334534L;
 	
-	private List<UserGroupBean> userGroupBean;
+	private List<UserGroupBean> userGroups;
 
-	public List<UserGroupBean> getUserGroupBean() {
-		return userGroupBean;
+	public List<UserGroupBean> getUserGroups() {
+		return userGroups;
 	}
 
-	public void setUserGroupBean(List<UserGroupBean> userGroupBean) {
-		this.userGroupBean = userGroupBean;
+	public void setUserGroups(List<UserGroupBean> userGroups) {
+		this.userGroups = userGroups;
 	}
 	
 	

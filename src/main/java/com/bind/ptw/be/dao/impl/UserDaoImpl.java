@@ -403,18 +403,19 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public List<UserGroupBean> getUserCreatedGroups(UserBean userBean) throws PTWException {
+	public List<UserGroupBean> getUserCreatedGroups(UserGroupBean userGroupBean) throws PTWException {
 		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
 		List<UserGroupBean> userGroupBeanList= null;
 		try{
 			UserGroupBean queryBean = new UserGroupBean();
-			queryBean.setOwnerId(userBean.getUserId());
+			queryBean.setOwnerId(userGroupBean.getOwnerId());
+			queryBean.setTournamentId(userGroupBean.getTournamentId());
 			List<UserGroup> userGroupLst = userGroupHome.findByFilter(queryBean);
 			if(userGroupLst != null && !userGroupLst.isEmpty()){
 				userGroupBeanList = new ArrayList<UserGroupBean>();
 				for (UserGroup userGroup : userGroupLst) {
-					UserGroupBean userGroupBean = getUserGroupBean(userGroup);
-					userGroupBeanList.add(userGroupBean);
+					UserGroupBean retUserGroupBean = getUserGroupBean(userGroup);
+					userGroupBeanList.add(retUserGroupBean);
 				}
 			}
 		}catch(Exception exception){

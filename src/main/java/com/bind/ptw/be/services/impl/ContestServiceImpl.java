@@ -44,6 +44,7 @@ import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
+import com.bind.ptw.be.services.util.UserBeanValidator;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -774,12 +775,47 @@ public class ContestServiceImpl implements ContestService{
 			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
 			userGroupBean.setPrizeGroupFlag(true);
 			List<UserGroupBean> userGroups = contestDao.getUserGroups(userGroupBean);
-			userGroupBeanList.setUserGroupBean(userGroups);
+			userGroupBeanList.setUserGroups(userGroups);
 		}catch(PTWException exception){
 			userGroupBeanList.setResultCode(exception.getCode());
 			userGroupBeanList.setResultDescription(exception.getDescription());
 		}
 		return userGroupBeanList;
+	}
+
+	@Override
+	public LeaderBoardBeanList getGroupLeaderBoard(UserGroupBean userGroupBean) {
+		LeaderBoardBeanList retLeaderBoard = new LeaderBoardBeanList();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			UserBeanValidator.validateGroupId(userGroupBean.getGroupId());
+			LeaderBoardBeanList queryLeaderBoardBean = new LeaderBoardBeanList();
+			queryLeaderBoardBean.setGroupId(userGroupBean.getGroupId());
+			List<LeaderBoardBean> leadersList = contestDao.getLeaderBoard(queryLeaderBoardBean);
+			reRankGroupUsers(leadersList);
+			retLeaderBoard.setLeaders(leadersList);
+		}catch(PTWException exception){
+			retLeaderBoard.setResultCode(exception.getCode());
+			retLeaderBoard.setResultDescription(exception.getDescription());
+		}
+		return retLeaderBoard;
+	}
+	
+	private void reRankGroupUsers(List<LeaderBoardBean> leaders){
+		if(leaders!=null && !leaders.isEmpty()){
+			int newRank = 1;
+			int prevRank = leaders.get(0).getRank();
+			for (LeaderBoardBean leaderBoardBean : leaders) {
+				int currentRank = leaderBoardBean.getRank();
+				if(prevRank == currentRank){
+					leaderBoardBean.setRank(newRank);
+				}else{
+					newRank++;
+					prevRank = leaderBoardBean.getRank();
+					leaderBoardBean.setRank(newRank);
+				}
+			}
+		}
 	}
 
 	

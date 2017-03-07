@@ -51,6 +51,8 @@ import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
 import com.bind.ptw.be.entities.UserGroup;
 import com.bind.ptw.be.entities.UserGroupHome;
+import com.bind.ptw.be.entities.UserGroupMapping;
+import com.bind.ptw.be.entities.UserGroupMappingHome;
 import com.bind.ptw.be.entities.UserScoreBoard;
 import com.bind.ptw.be.entities.UserScoreBoardHome;
 import com.bind.ptw.be.util.PTWConstants;
@@ -938,7 +940,15 @@ public class ContestDaoImpl implements ContestDao{
 		Integer rankSize = null;
 		try{
 			if(!StringUtil.isEmptyNull(leaderBoardBeanList.getGroupId())){
-				
+				UserGroupMappingHome userGroupHomeMapping = new UserGroupMappingHome(getSession());
+				List<UserGroupMapping> userGroups = userGroupHomeMapping.findUserGroup(null, leaderBoardBeanList.getGroupId());
+				if(userGroups != null && !userGroups.isEmpty()){
+					users = new Integer[userGroups.size()];
+					int index = 0;
+					for (UserGroupMapping userGroupMapping : userGroups) {
+						users[index++] = userGroupMapping.getUserGroupMappingKey().getUserId();
+					}
+				}
 			}else{
 				rankSize = 100;
 			}
