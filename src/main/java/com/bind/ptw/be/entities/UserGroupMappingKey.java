@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 public class UserGroupMappingKey implements Serializable{
@@ -13,8 +16,9 @@ public class UserGroupMappingKey implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "USER_GROUP_ID", nullable = false)
-	private Integer userGroupId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_GROUP_ID", nullable = false)
+	private UserGroup userGroup;
 	
 	@Column(name = "USER_ID", nullable = false)
 	private Integer userId;
@@ -26,11 +30,12 @@ public class UserGroupMappingKey implements Serializable{
 		this.userId = userId;
 	}
 	
-	public Integer getUserGroupId() {
-		return userGroupId;
+	
+	public UserGroup getUserGroup() {
+		return userGroup;
 	}
-	public void setUserGroupId(Integer userGroupId) {
-		this.userGroupId = userGroupId;
+	public void setUserGroup(UserGroup userGroup) {
+		this.userGroup = userGroup;
 	}
 	
 	

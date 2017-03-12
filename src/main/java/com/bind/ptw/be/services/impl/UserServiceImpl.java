@@ -542,6 +542,7 @@ public class UserServiceImpl implements UserService{
 			UserBeanValidator.validateUserId(userGroupBean.getUserId());
 			
 			List<UserGroupBean> userGroups = userDao.getUserMappedGroup(userGroupBean);
+			userGroupList.setUserGroups(userGroups);
 		}catch (PTWException ex) {
 			userGroupList.setResultCode(ex.getCode());
 			userGroupList.setResultDescription(ex.getDescription());

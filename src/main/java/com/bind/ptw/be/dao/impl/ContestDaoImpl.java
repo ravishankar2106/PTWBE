@@ -941,7 +941,7 @@ public class ContestDaoImpl implements ContestDao{
 		try{
 			if(!StringUtil.isEmptyNull(leaderBoardBeanList.getGroupId())){
 				UserGroupMappingHome userGroupHomeMapping = new UserGroupMappingHome(getSession());
-				List<UserGroupMapping> userGroups = userGroupHomeMapping.findUserGroup(null, leaderBoardBeanList.getGroupId());
+				List<UserGroupMapping> userGroups = userGroupHomeMapping.findUserGroup(null, leaderBoardBeanList.getGroupId(), null);
 				if(userGroups != null && !userGroups.isEmpty()){
 					users = new Integer[userGroups.size()];
 					int index = 0;

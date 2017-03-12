@@ -375,7 +375,9 @@ public class UserDaoImpl implements UserDao{
 			Integer groupId, Integer tournamentId) {
 		UserGroupMapping userGroupMapping = new UserGroupMapping();
 		UserGroupMappingKey userGroupMappingKey = new UserGroupMappingKey();
-		userGroupMappingKey.setUserGroupId(groupId);
+		UserGroup userGroup = new UserGroup();
+		userGroup.setUserGroupId(groupId);
+		userGroupMappingKey.setUserGroup(userGroup);
 		userGroupMappingKey.setUserId(userId);
 		userGroupMapping.setTournamentId(tournamentId);
 		userGroupMapping.setUserGroupMappingKey(userGroupMappingKey);
@@ -445,7 +447,7 @@ public class UserDaoImpl implements UserDao{
 			if(userGroupList == null || userGroupList.size() != 1){
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_GROUP, PTWConstants.ERROR_DESC_INVALID_GROUP);
 			}
-			List<UserGroupMapping> userGroups = userGroupMappingHome.findUserGroup(null, userGroupBean.getGroupId());
+			List<UserGroupMapping> userGroups = userGroupMappingHome.findUserGroup(null, userGroupBean.getGroupId(), null);
 			if(userGroups == null || userGroups.size() != 1){
 				throw new PTWException(PTWConstants.ERROR_CODE_GROUP_DELETE_NOT_ALLOWED, PTWConstants.ERROR_DESC_GROUP_DELETE_NOT_ALLOWED);
 			}
@@ -564,14 +566,24 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public List<UserGroupBean> getUserMappedGroup(UserGroupBean userGroupBean)throws PTWException {
 		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(getSession());
-		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		List<UserGroupBean> userGroups = null;
 		try{
-			UserGroupBean queryUserGroupBean = new UserGroupBean();
-			
+			List<UserGroupMapping> userGroupMappingList = userGroupMappingHome.findUserGroup(userGroupBean.getUserId(), null, userGroupBean.getTournamentId());
+			if(userGroupMappingList != null && !userGroupMappingList.isEmpty()){
+				userGroups = new ArrayList<UserGroupBean>();
+				for (UserGroupMapping userGroupMapping : userGroupMappingList) {
+					UserGroupBean dbUserGroupBean = new UserGroupBean();
+					UserGroup userGroup = userGroupMapping.getUserGroupMappingKey().getUserGroup();
+					dbUserGroupBean.setGroupId(userGroup.getUserGroupId());
+					dbUserGroupBean.setGroupName(userGroup.getUserGroupName());
+					dbUserGroupBean.setGroupCode(userGroup.getUserGroupCode());
+					userGroups.add(dbUserGroupBean);
+				}
+			}
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
-		return null;
+		return userGroups;
 	}
 }

@@ -791,6 +791,7 @@ public class ContestServiceImpl implements ContestService{
 			UserBeanValidator.validateGroupId(userGroupBean.getGroupId());
 			LeaderBoardBeanList queryLeaderBoardBean = new LeaderBoardBeanList();
 			queryLeaderBoardBean.setGroupId(userGroupBean.getGroupId());
+			queryLeaderBoardBean.setTournamentId(userGroupBean.getTournamentId());
 			List<LeaderBoardBean> leadersList = contestDao.getLeaderBoard(queryLeaderBoardBean);
 			reRankGroupUsers(leadersList);
 			retLeaderBoard.setLeaders(leadersList);

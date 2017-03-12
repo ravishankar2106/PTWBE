@@ -33,7 +33,7 @@ public class UserGroupMappingHome {
 		}
 	}
 	
-	public List<UserGroupMapping> findUserGroup( Integer userId, Integer groupId) {
+	public List<UserGroupMapping> findUserGroup( Integer userId, Integer groupId, Integer tournamentId) {
 		Query query = null;
 		try{
 			StringBuilder queryToExecuteBuilder = new StringBuilder();
@@ -42,7 +42,10 @@ public class UserGroupMappingHome {
 				queryToExecuteBuilder.append("AND ugm.userGroupMappingKey.userId = :userId ");
 			}
 			if(!StringUtil.isEmptyNull(groupId)){
-				queryToExecuteBuilder.append("AND ugm.userGroupMappingKey.userGroupId = :userGroupId ");
+				queryToExecuteBuilder.append("AND ugm.userGroupMappingKey.userGroup.userGroupId = :userGroupId ");
+			}
+			if(!StringUtil.isEmptyNull(tournamentId)){
+				queryToExecuteBuilder.append("AND ugm.tournamentId = :tournamentId");
 			}
             
 			query = session.createQuery(queryToExecuteBuilder.toString());
@@ -53,7 +56,9 @@ public class UserGroupMappingHome {
 			if(!StringUtil.isEmptyNull(groupId)){
 				query.setParameter("userGroupId", groupId);
 			}
-			
+			if(!StringUtil.isEmptyNull(tournamentId)){
+				query.setParameter("tournamentId", tournamentId);
+			}
 		
 		}catch(RuntimeException e){
 			throw e;
