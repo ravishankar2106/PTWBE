@@ -233,17 +233,25 @@ public class UserBeanValidator {
 	public static void validateCreateUserGroup(UserGroupBean userGroupBean) throws PTWException {
 		validateUserId(userGroupBean.getOwnerId());
 		TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
-		if(StringUtil.isEmptyNull(userGroupBean.getGroupName())){
+		validateGroupName(userGroupBean);
+	}
+
+	private static void validateGroupName(UserGroupBean userGroupBean) throws PTWException {
+		String groupName = userGroupBean.getGroupName();
+		if(StringUtil.isEmptyNull(groupName)){
 			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Name");
 		}
+		if(groupName.trim().length() > 20){
+			throw new PTWException(PTWConstants.ERROR_CODE_INVALID_GROUP_NAME, PTWConstants.ERROR_DESC_INVALID_GROUP_NAME);
+		}
+		userGroupBean.setGroupName(groupName.trim().toUpperCase());
+		
 	}
 	
 	public static void validateUpdateUserGroup(UserGroupBean userGroupBean) throws PTWException {
 		validateUserId(userGroupBean.getOwnerId());
 		validateGroupId(userGroupBean.getGroupId());
-		if(StringUtil.isEmptyNull(userGroupBean.getGroupName())){
-			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Name");
-		}
+		validateGroupName(userGroupBean);
 	}
 
 	public static void validateGroupInviteRequest(UserGroupInvitationBean userGroupInvitationBean) throws PTWException{

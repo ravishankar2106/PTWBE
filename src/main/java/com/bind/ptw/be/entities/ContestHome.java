@@ -104,7 +104,8 @@ public class ContestHome {
 			StringBuilder queryToExecute = new StringBuilder();
 			queryToExecute.append(QueryConstants.RETRIEVE_TOURNAMENT_CONTEST);
 			queryToExecute.append("AND NOW() > c.publishStartDateTime ");
-			queryToExecute.append("AND c.contestStatus.contestStatusId IN (1,2)");
+			queryToExecute.append("AND c.contestStatus.contestStatusId IN (1,2) ");
+			queryToExecute.append("ORDER BY c.publishStartDateTime ");
 			query = session.createQuery(queryToExecute.toString());
 		}catch(RuntimeException e){
 			throw e;

@@ -330,6 +330,15 @@ public class UserDaoImpl implements UserDao{
 		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
 		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
 		try{
+			UserGroupBean queryBean = new UserGroupBean();
+			queryBean.setGroupName(userGroupBean.getGroupName());
+			queryBean.setOwnerId(userGroupBean.getOwnerId());
+			queryBean.setTournamentId(userGroupBean.getTournamentId());
+			List<UserGroup> existingGroups = userGroupHome.findByFilter(userGroupBean);
+			if(existingGroups != null && !existingGroups.isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_CODE_DUPLICATE_GROUP_NAME, PTWConstants.ERROR_DESC_DUPLICATE_GROUP_NAME);
+			}
+			
 			UserGroup userGroup = new UserGroup();
 			Users user = new Users();
 			user.setUserId(userGroupBean.getOwnerId());
@@ -343,6 +352,8 @@ public class UserDaoImpl implements UserDao{
 			userGroupHome.persist(userGroup);
 			userGroupBean.setGroupId(userGroup.getUserGroupId());
 			createUserGroupMapping(userGroupBean.getOwnerId(), userGroupMappingHome, userGroup.getUserGroupId(), userGroupBean.getTournamentId());
+		}catch(PTWException exception){
+			throw exception;
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);

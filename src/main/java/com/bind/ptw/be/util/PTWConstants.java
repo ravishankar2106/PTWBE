@@ -221,4 +221,14 @@ public class PTWConstants {
 	public final static String ERROR_CODE_GROUP_CODE_INCORRECT = "268";
 	public final static String ERROR_DESC_GROUP_CODE_INCORRECT = "Incorrect Group Confirmation Code.";
 	
+	public final static String ERROR_CODE_DUPLICATE_GROUP_NAME = "269";
+	public final static String ERROR_DESC_DUPLICATE_GROUP_NAME = "Duplicate Group Name.";
+	
+	public final static String ERROR_CODE_DUPLICATE_INVITATION = "270";
+	public final static String ERROR_DESC_DUPLICATE_INVITATION = "Cannon self-invite.";
+	
+	public final static String ERROR_CODE_INVALID_GROUP_NAME = "271";
+	public final static String ERROR_DESC_INVALID_GROUP_NAME = "Enter shorter group name (Max 20)";
+
+	
 }
