@@ -772,13 +772,18 @@ public class ContestDaoImpl implements ContestDao{
 			List<Question> dbQuestionList = questionHome.findQuestionByFilter(contestBean);
 			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
 				List<UserAnswerBean> userAnswers = null; 
+				int totalPoints = 0;
 				for (Question question : dbQuestionList) {
+					
 					UserAnswerBean userAnswerBean = new UserAnswerBean();
 					userAnswerBean.setQuestionId(question.getQuestionId());
 					List<UserAnswer> dbAnswers = answerHome.getUserAnswer(userId, question.getQuestionId());
-					int totalPoints = 0;
+					
+					
 					if(dbAnswers != null && !dbAnswers.isEmpty()){
-						userAnswers = new ArrayList<UserAnswerBean>();
+						if(userAnswers == null){
+							userAnswers = new ArrayList<UserAnswerBean>();
+						}
 						List<AnswerBean> answerBeanList = new ArrayList<AnswerBean>();
 						for (UserAnswer userAnswer : dbAnswers) {
 							AnswerBean answerBean = new AnswerBean();
@@ -791,9 +796,9 @@ public class ContestDaoImpl implements ContestDao{
 							answerBeanList.add(answerBean);
 						}
 						userAnswerBean.setSelectedAnswerList(answerBeanList);
-						userAnswerBean.setPointsScored(totalPoints);
 					}
 					
+					userAnswerBean.setPointsScored(totalPoints);
 					userAnswers.add(userAnswerBean);
 				}
 				UserBonusPointHome userBonusPointHome = new UserBonusPointHome(this.getSession());
