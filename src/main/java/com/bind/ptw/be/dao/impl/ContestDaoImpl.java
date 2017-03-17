@@ -799,7 +799,9 @@ public class ContestDaoImpl implements ContestDao{
 					}
 					
 					userAnswerBean.setPointsScored(totalPoints);
-					userAnswers.add(userAnswerBean);
+					if(userAnswers != null){
+						userAnswers.add(userAnswerBean);
+					}
 				}
 				UserBonusPointHome userBonusPointHome = new UserBonusPointHome(this.getSession());
 				List<UserBonusPoint> userBonusPoints = userBonusPointHome.findByFilter(userId, contestId);

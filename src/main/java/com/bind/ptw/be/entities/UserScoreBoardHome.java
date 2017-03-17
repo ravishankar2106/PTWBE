@@ -63,7 +63,7 @@ public class UserScoreBoardHome {
 				queryToExecute.append(")");
 			}
 			
-			queryToExecute.append("AND usb.totalPoints > 0 ");
+			//queryToExecute.append("AND usb.totalPoints > 0 ");
 			if(!StringUtil.isEmptyNull(rankSize)){
 				queryToExecute.append("AND usb.rank <= ");
 				queryToExecute.append(rankSize);

@@ -43,8 +43,10 @@ public class HibernateConfiguration {
 		hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		hibernateProperties.put("hibernate.show_sql", true);
 		hibernateProperties.put("hibernate.hbm2ddl.auto", "update");
+		hibernateProperties.put("connection.autoReconnect", true);
+		hibernateProperties.put("connection.autoReconnectForPools", true);
+		hibernateProperties.put("connection.is-connection-validation-required", true);
 		sessionFactoryBean.setHibernateProperties(hibernateProperties);
-
 		// return (SessionFactory) sessionFactoryBean.get;
 
 		return new LocalSessionFactoryBuilder(getDataSource()).scanPackages("com.bind.ptw.be.entities").addProperties(hibernateProperties)

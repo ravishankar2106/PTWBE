@@ -262,9 +262,7 @@ public class ContestServiceImpl implements ContestService{
 			if(!StringUtil.isEmptyNull(contestBean.getContestId()) && !(StringUtil.isEmptyNull(contestBean.getContestStatusId()))){
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_PROCESS_REQUEST, PTWConstants.ERROR_DESC_FIELD_INVALID + "Status Id");
 			}
-			if(StringUtil.isEmptyNull(contestBean.getContestId())){
-				contestBean.setContestStatusId(2);
-			}
+			contestBean.setContestStatusId(2);
 			List<ContestBean> contestBeanList = contestDao.getContestList(contestBean);
 			if(contestBeanList == null || contestBeanList.isEmpty()){
 				throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_PROCESS_NO_RECORD, PTWConstants.ERROR_DESC_CONTEST_PROCESS_NO_RECORD);
@@ -301,8 +299,6 @@ public class ContestServiceImpl implements ContestService{
 					}
 					
 					Integer correctAnswerOptionId = answerOptionBean.getAnswerOptionId();
-					System.out.println("Correct Answer Option " + correctAnswerOptionId);
-					System.out.println("Points Scored " + pointsScored);
 					selectedAnswerPointMap.put(correctAnswerOptionId, pointsScored);
 					
 					UserSelectedAnswerBean reqSelectedAnswer = new UserSelectedAnswerBean();
@@ -311,7 +307,6 @@ public class ContestServiceImpl implements ContestService{
 					if(userSelectedAnswerList != null && !userSelectedAnswerList.isEmpty()){
 						for (UserSelectedAnswerBean userSelectedAnswerBean : userSelectedAnswerList) {
 							Integer userId = userSelectedAnswerBean.getUserId();
-							System.out.println("Correct answer given by " + userId);
 							Integer newPoints = pointsScored;
 							if(userPointMap.containsKey(userId)){
 								Integer currentPoints = userPointMap.get(userId);
@@ -680,7 +675,6 @@ public class ContestServiceImpl implements ContestService{
 			TournamentBeanValidator.validateRequest(userContestBean);
 			ContestBeanValidator.validateContestId(userContestBean.getContestId());
 			userContestAnswer = contestDao.getUserAnswer(userContestBean);
-			
 		}catch(PTWException exception){
 			userContestAnswer = new UserContestAnswer();
 			userContestAnswer.setResultCode(exception.getCode());
