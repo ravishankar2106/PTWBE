@@ -872,7 +872,7 @@ public class ContestDaoImpl implements ContestDao{
 			for (UserScoreBoardBean userScoreBoardBean : userScoreBoardBeanList) {
 				Integer user[] = new Integer[1];
 				user[0] = userScoreBoardBean.getUserId();
-				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(userScoreBoardBean.getTournamentId(), user , null);
+				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(userScoreBoardBean.getTournamentId(), user , null, false);
 				if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
 					UserScoreBoard userScoreBoard = userScoreBoardList.get(0);
 					userScoreBoard.setTotalPoints(userScoreBoardBean.getPointsScored());	
@@ -959,7 +959,7 @@ public class ContestDaoImpl implements ContestDao{
 			}else{
 				rankSize = 100;
 			}
-			List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(tournamentId, users, rankSize);
+			List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(tournamentId, users, rankSize, true);
 			if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
 				leaderBoardList = new ArrayList<LeaderBoardBean>();
 				for (UserScoreBoard userScoreBoard : userScoreBoardList) {

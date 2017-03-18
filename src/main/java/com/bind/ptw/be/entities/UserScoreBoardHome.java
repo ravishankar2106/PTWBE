@@ -49,7 +49,7 @@ public class UserScoreBoardHome {
 		}
 	}
 
-	public List<UserScoreBoard> findByFilter( Integer tournamentId, Integer[] userIdArr, Integer rankSize ) {
+	public List<UserScoreBoard> findByFilter( Integer tournamentId, Integer[] userIdArr, Integer rankSize, Boolean includeZero ) {
 		
 		Query query = null;
 		
@@ -63,7 +63,9 @@ public class UserScoreBoardHome {
 				queryToExecute.append(")");
 			}
 			
-			//queryToExecute.append("AND usb.totalPoints > 0 ");
+			if(includeZero){
+				queryToExecute.append("AND usb.totalPoints > 0 ");
+			}
 			if(!StringUtil.isEmptyNull(rankSize)){
 				queryToExecute.append("AND usb.rank <= ");
 				queryToExecute.append(rankSize);

@@ -309,7 +309,7 @@ public class UserDaoImpl implements UserDao{
 					
 					Integer user[] = new Integer[1];
 					user[0] = userBean.getUserId();
-					List<UserScoreBoard> scoreBoardList = scoreBoardHome.findByFilter(userTournamentRegistration.getTournament().getTournamentId(), user , null);
+					List<UserScoreBoard> scoreBoardList = scoreBoardHome.findByFilter(userTournamentRegistration.getTournament().getTournamentId(), user , null, false);
 					if(scoreBoardList != null && scoreBoardList.size() == 1){
 						UserScoreBoard userScores = scoreBoardList.get(0);
 						userTournamentBean.setTotalPoints(userScores.getTotalPoints());
