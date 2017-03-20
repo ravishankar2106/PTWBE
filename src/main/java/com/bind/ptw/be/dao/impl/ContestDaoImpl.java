@@ -875,7 +875,12 @@ public class ContestDaoImpl implements ContestDao{
 				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(userScoreBoardBean.getTournamentId(), user , null, false);
 				if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
 					UserScoreBoard userScoreBoard = userScoreBoardList.get(0);
-					userScoreBoard.setTotalPoints(userScoreBoardBean.getPointsScored());	
+					Integer currentPoints = userScoreBoard.getTotalPoints();
+					Integer newPoints = userScoreBoardBean.getPointsScored();
+					if(currentPoints != null){
+						newPoints += currentPoints;
+					}
+					userScoreBoard.setTotalPoints(newPoints);	
 					userScoreBoardHome.merge(userScoreBoard);
 				}
 			}

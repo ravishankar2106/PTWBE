@@ -28,6 +28,7 @@ public class UserBeanValidator {
 		userBean.setPassword(sha256hex);
 		validateUserName(userBean.getUserName());
 		validateTeamName(userBean.getTeamName());
+		userBean.setTeamName(userBean.getTeamName().toUpperCase());
 		validatePhoneNumber(userBean.getPhone());
 		
 		validateDuplicateLoginId(userBean.getUserLoginId(), userDao);
