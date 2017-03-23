@@ -225,7 +225,7 @@ public class PTWConstants {
 	public final static String ERROR_DESC_DUPLICATE_GROUP_NAME = "Duplicate Group Name.";
 	
 	public final static String ERROR_CODE_DUPLICATE_INVITATION = "270";
-	public final static String ERROR_DESC_DUPLICATE_INVITATION = "Cannon self-invite.";
+	public final static String ERROR_DESC_DUPLICATE_INVITATION = "Cannot self-invite.";
 	
 	public final static String ERROR_CODE_INVALID_GROUP_NAME = "271";
 	public final static String ERROR_DESC_INVALID_GROUP_NAME = "Enter shorter group name (Max 20)";

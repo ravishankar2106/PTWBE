@@ -408,7 +408,7 @@ public class UserServiceImpl implements UserService{
 				inviteeUser = phoneUsers.get(0);
 			}
 			if(inviteeUser != null){
-				if(inviteeUser.getUserId().equals(userGroupInvitationBean.getGroupOwnerId())){
+				if(inviteeUser.getUserId().equals(group.getOwnerId())){
 					throw new PTWException(PTWConstants.ERROR_CODE_DUPLICATE_INVITATION, PTWConstants.ERROR_DESC_DUPLICATE_INVITATION);
 				}
 				userGroupInvitationBean.setInviteeUserId(inviteeUser.getUserId());
