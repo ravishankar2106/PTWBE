@@ -17,6 +17,7 @@ import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
+import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TeamTypeBeanList;
@@ -403,7 +404,9 @@ public class TournamentServiceImpl implements TournamentService{
 			TournamentBeanValidator.validateRequest(tournamentBean);
 			TournamentBeanValidator.validateTournamentId(tournamentBean.getTournamentId());
 			TournamentBeanValidator.validateTournament(tournamentBean.getTournamentId(), tournamentDao);
-			returnBean = tournamentDao.getTeamsForTournament(tournamentBean);
+			returnBean.setTournamentId(tournamentBean.getTournamentId());
+			List<TournamentTeamBean> teams = tournamentDao.getTeamsForTournament(tournamentBean);
+			returnBean.setTournamentTeamBeanList(teams);
 		}catch(PTWException exception){
 			returnBean.setResultCode(exception.getCode());
 			returnBean.setResultDescription(exception.getDescription());
@@ -445,7 +448,8 @@ public class TournamentServiceImpl implements TournamentService{
 		try{
 			TournamentBeanValidator.validateRequest(tournamentTeamBean);
 			TournamentBeanValidator.validateTeamId(tournamentTeamBean.getTournamentTeamId());
-			returnBean = tournamentDao.getPlayersForTournamentTeam(tournamentTeamBean);
+			List<TeamPlayerBean> dbBean = tournamentDao.getPlayersForTournamentTeam(tournamentTeamBean);
+			returnBean.setTeamPlayerBeanList(dbBean);
 		}catch(PTWException exception){
 			returnBean.setResultCode(exception.getCode());
 			returnBean.setResultDescription(exception.getDescription());

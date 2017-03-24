@@ -32,7 +32,6 @@ import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
-import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
@@ -609,9 +608,9 @@ public class ContestServiceImpl implements ContestService{
 					List<String> teamListStr = new ArrayList<String>();
 					TournamentBean tournamentBean = new TournamentBean();
 					tournamentBean.setTournamentId(contestBean.getTournamentId());;
-					TournamentTeamBeanList teamList = tournamentDao.getTeamsForTournament(tournamentBean);
-					if(teamList != null && teamList.getTournamentTeamBeanList() != null){
-						for (TournamentTeamBean tournamentTeam : teamList.getTournamentTeamBeanList()) {
+					List<TournamentTeamBean> teamList = tournamentDao.getTeamsForTournament(tournamentBean);
+					if(teamList != null && !teamList.isEmpty()){
+						for (TournamentTeamBean tournamentTeam : teamList) {
 							teamListStr.add(tournamentTeam.getTeamName());
 						}
 					}
@@ -644,9 +643,9 @@ public class ContestServiceImpl implements ContestService{
 		
 		TournamentTeamBean tournTeamBean = new TournamentTeamBean();
 		tournTeamBean.setTournamentTeamId(teamId);
-		TournTeamPlayerBeanList teamPlayers = tournamentDao.getPlayersForTournamentTeam(tournTeamBean);
-		if(teamPlayers != null && teamPlayers.getTeamPlayerBeanList() != null){
-			for (TeamPlayerBean teamPlayer : teamPlayers.getTeamPlayerBeanList()) {
+		List<TeamPlayerBean> teamPlayers = tournamentDao.getPlayersForTournamentTeam(tournTeamBean);
+		if(teamPlayers != null && !teamPlayers.isEmpty()){
+			for (TeamPlayerBean teamPlayer : teamPlayers) {
 				namesList.add(teamPlayer.getPlayerBean().getFirstName() + " " + teamPlayer.getPlayerBean().getLastName());
 			}
 			

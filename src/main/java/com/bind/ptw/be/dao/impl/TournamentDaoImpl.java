@@ -631,14 +631,12 @@ public class TournamentDaoImpl implements TournamentDao{
 	
 	
 	@Override
-	public TournamentTeamBeanList getTeamsForTournament(TournamentBean tournamentBean) throws PTWException{
-		TournamentTeamBeanList retTournamentTeamList = null;
+	public List<TournamentTeamBean> getTeamsForTournament(TournamentBean tournamentBean) throws PTWException{
 		TournamentTeamHome tournamentTeamHome = new TournamentTeamHome(getSession());
+		List<TournamentTeamBean> teamBeanList = null;
 		List<TournamentTeam>  dbTeams = tournamentTeamHome.findTeamsByTournament(tournamentBean);
 		if(dbTeams != null && !dbTeams.isEmpty()){
-			retTournamentTeamList = new TournamentTeamBeanList();
-			retTournamentTeamList.setTournamentId(tournamentBean.getTournamentId());
-			List<TournamentTeamBean> teamBeanList = new ArrayList<TournamentTeamBean>();
+			teamBeanList = new ArrayList<TournamentTeamBean>();
 			for (TournamentTeam tournamentTeam : dbTeams) {
 				TournamentTeamBean tournamentTeamBean = new TournamentTeamBean();
 				tournamentTeamBean.setTournamentTeamId(tournamentTeam.getTournamentTeamId());
@@ -649,9 +647,8 @@ public class TournamentDaoImpl implements TournamentDao{
 				tournamentTeamBean.setTeamShortName(team.getTeamShortName());
 				teamBeanList.add(tournamentTeamBean);
 			}
-			retTournamentTeamList.setTournamentTeamBeanList(teamBeanList);
 		}
-		return retTournamentTeamList;
+		return teamBeanList;
 	}
 	
 	@Override
@@ -716,14 +713,12 @@ public class TournamentDaoImpl implements TournamentDao{
 	}
 	
 	@Override
-	public TournTeamPlayerBeanList getPlayersForTournamentTeam(TournamentTeamBean tournamentTeamBean) throws PTWException{
-		TournTeamPlayerBeanList retTournTeamPlayerList = null;
+	public List<TeamPlayerBean> getPlayersForTournamentTeam(TournamentTeamBean tournamentTeamBean) throws PTWException{
 		TournTeamPlayerHome tournTeamPlayerHome = new TournTeamPlayerHome(getSession());
 		List<TournTeamPlayer>  dbPlayers = tournTeamPlayerHome.getTournTeamPlayers(tournamentTeamBean.getTournamentTeamId());
+		List<TeamPlayerBean> players = null;
 		if(dbPlayers != null && !dbPlayers.isEmpty()){
-			retTournTeamPlayerList = new TournTeamPlayerBeanList();
-			retTournTeamPlayerList.setTournamentTeamId(tournamentTeamBean.getTournamentTeamId());
-			List<TeamPlayerBean> players = new ArrayList<TeamPlayerBean>();
+			players = new ArrayList<TeamPlayerBean>();
 			for (TournTeamPlayer tourTeamPlayers : dbPlayers) {
 				TeamPlayerBean teamPlayerBean = new TeamPlayerBean();
 				teamPlayerBean.setTourTeamPlayerId(tourTeamPlayers.getTournTeamPlayerId());
@@ -736,9 +731,8 @@ public class TournamentDaoImpl implements TournamentDao{
 				teamPlayerBean.setPlayerBean(playerBean);
 				players.add(teamPlayerBean);
 			}
-			retTournTeamPlayerList.setTeamPlayerBeanList(players);
 		}
-		return retTournTeamPlayerList;
+		return players;
 	}
 	
 }
