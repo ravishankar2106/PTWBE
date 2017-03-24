@@ -73,8 +73,9 @@ public class ContestHome {
 			if(isOngoingContest != null && isOngoingContest){
 				queryToExecute.append("AND ( NOW() BETWEEN c.publishStartDateTime AND ");
 				queryToExecute.append("c.publishEndDateTime) AND ");
-				queryToExecute.append("c.contestStatus.contestStatusId = 1");
+				queryToExecute.append("c.contestStatus.contestStatusId = 1 ");
 			}
+			queryToExecute.append("ORDER BY c.cutoffDateTime DESC ");
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(contestBean != null){

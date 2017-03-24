@@ -60,14 +60,14 @@ public class PlayerHome {
 			boolean firstQuery=false;
 			if( playerBean != null ) {
 				if(!StringUtils.isEmpty(playerBean.getPlayerId())){
-					queryToExecute.append("AND play.playerId =:playerId");
+					queryToExecute.append("AND play.playerId =:playerId ");
 				}else if(!StringUtil.isEmptyNull(playerBean.getSportTypeId()) && !StringUtil.isEmptyNull(playerBean.getCountryId())){
 					queryToExecute.append("AND play.country.countryId =:countryId ");
-					queryToExecute.append("AND play.sportType.sportTypeId =:sportTypeId");
+					queryToExecute.append("AND play.sportType.sportTypeId =:sportTypeId ");
 				}else if(!StringUtil.isEmptyNull(playerBean.getSportTypeId())){
-					queryToExecute.append("AND play.sportType.sportTypeId =:sportTypeId");
+					queryToExecute.append("AND play.sportType.sportTypeId =:sportTypeId ");
 				}else if(!StringUtil.isEmptyNull(playerBean.getCountryId())){
-					queryToExecute.append("AND play.country.countryId =:countryId");
+					queryToExecute.append("AND play.country.countryId =:countryId ");
 				}else {
 					if(!StringUtil.isEmptyNull(playerBean.getFirstName()) || !StringUtil.isEmptyNull(playerBean.getLastName())){
 						queryToExecute.append("AND (");
@@ -82,11 +82,12 @@ public class PlayerHome {
 							}
 							queryToExecute.append("play.lastName =:lastName ");
 						}
-						queryToExecute.append(")");
+						queryToExecute.append(") ");
 					}
 					
 				}
 			}
+			queryToExecute.append("ORDER BY play.firstName ");
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(playerBean != null){

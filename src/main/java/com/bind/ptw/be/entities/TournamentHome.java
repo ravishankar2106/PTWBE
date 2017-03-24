@@ -72,7 +72,7 @@ public class TournamentHome {
 			if(onlyOngoingTournament != null && onlyOngoingTournament){
 				queryToExecute.append("AND t.archievedFlag = 0 AND t.publishDate < CURRENT_TIMESTAMP() ");
 			}
-            
+			queryToExecute.append("ORDER BY t.publishDate DESC");
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(tournamentRequest != null){
