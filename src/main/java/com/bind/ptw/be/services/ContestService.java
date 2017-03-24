@@ -3,6 +3,7 @@ package com.bind.ptw.be.services;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.AnswerTypeBeanList;
 import com.bind.ptw.be.dto.BaseBean;
+import com.bind.ptw.be.dto.CodeMojoRewardBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
@@ -55,6 +56,8 @@ public interface ContestService {
 	BaseBean deletePrizeContest(PrizeContestBean prizeContestBean);
 	UserGroupBeanList getPrizeGroups(UserGroupBean userGroupBean);
 	LeaderBoardBeanList getGroupLeaderBoard(UserGroupBean userGroupBean);
+	
+	void createCodeRewardRecord(CodeMojoRewardBean rewardBean);
 	
 	
 }

@@ -1,5 +1,6 @@
 package com.bind.ptw.be.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,16 +10,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CodeMojoRewardBean;
 import com.bind.ptw.be.dto.Coupon;
+import com.bind.ptw.be.services.ContestService;
 
 @EnableAutoConfiguration
 @RestController
 @RequestMapping("/p2wreward")
 public class CodeMojoRewardRest {
 	
+	@Autowired
+	ContestService contestService;
+	
 		
 	@PostMapping("/rewardCallback")
 	public BaseBean processRewardCallback(@RequestBody CodeMojoRewardBean rewardBean){
-		System.out.println("Customer Id " + rewardBean.getCustomer_id());
+		contestService.createCodeRewardRecord(rewardBean);
+		/*System.out.println("Customer Id " + rewardBean.getCustomer_id());
 		System.out.println("Email Id " + rewardBean.getCommunication_channel_email());
 		System.out.println("Phone No " + rewardBean.getCommunication_channel_phone());
 		System.out.println("Hash " + rewardBean.getHash());
@@ -40,7 +46,7 @@ public class CodeMojoRewardRest {
 			System.out.println("Value Ratio " + coupon.getValue_ratio());
 			System.out.println("Validity Stamp " + coupon.getValidity_stamp());
 			System.out.println("Validity " + coupon.getValidity());
-		}
+		}*/
 		return new BaseBean();
 	}
 	

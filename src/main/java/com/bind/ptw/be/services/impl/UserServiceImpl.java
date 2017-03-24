@@ -16,7 +16,6 @@ import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.CityBeanList;
-import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -109,39 +108,19 @@ public class UserServiceImpl implements UserService{
 	    String subj = "Predict 2 Win: Confirmation Code";
 	    emailContent.setEmailSubject(subj);
 	    try{
-	    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
+	    	EmailUtil.sendEmail(emailContent, EmailUtil.getMailConfiguration(env));
 	    }catch (Exception ex) {
 			ex.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
 		}
 	}
 	
-	private MailConfiguration getMailConfiguration(){
-		MailConfiguration config = new MailConfiguration();
-		String senderAddress = env.getProperty(DBConstants.FROM_ADDRESS_KEY);
-		String smtpUserName = env.getProperty(DBConstants.SMTP_USERNAME_KEY);
-		String smtpPassword = env.getProperty(DBConstants.SMTP_PASSWORD_KEY);
-		String smtpHost = env.getProperty(DBConstants.SMTP_HOST_KEY);
-		String smtpPort = env.getProperty(DBConstants.PORT_KEY);
-		
-		config.setFromAddress(senderAddress);
-		config.setSmtpUserName(smtpUserName);
-		config.setSmtpPassword(smtpPassword);
-		config.setHost(smtpHost);
-		try{
-			config.setPort(Integer.parseInt(smtpPort));
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-		
-		return config;
-		
-	}
+	
 	
 	public UserBean authenticateUser(UserBean authUser, Boolean adminFlag){
 		UserBean userResponse;
 		try{
-			MailConfiguration config = getMailConfiguration();
+			MailConfiguration config = EmailUtil.getMailConfiguration(env);
 			UserBeanValidator.validateAuthenticateUser(authUser);
 			List<UserBean> retrievedUsers = userDao.getUsers(authUser, adminFlag);
 			if(retrievedUsers == null || retrievedUsers.isEmpty()){
@@ -266,7 +245,7 @@ public class UserServiceImpl implements UserService{
 		    String subj = "Predict 2 Win: New Password";
 		    emailContent.setEmailSubject(subj);
 		    try{
-		    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
+		    	EmailUtil.sendEmail(emailContent, EmailUtil.getMailConfiguration(env));
 		    }catch (Exception ex) {
 				ex.printStackTrace();
 				throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_RESET_PWD_EMAIL_DEL_FAILURE);
@@ -474,7 +453,7 @@ public class UserServiceImpl implements UserService{
 	    String subj = "Predict 2 Win: League Invitation";
 	    emailContent.setEmailSubject(subj);
 	    try{
-	    	EmailUtil.sendEmail(emailContent, getMailConfiguration());
+	    	EmailUtil.sendEmail(emailContent, EmailUtil.getMailConfiguration(env));
 	    }catch (Exception ex) {
 			ex.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);

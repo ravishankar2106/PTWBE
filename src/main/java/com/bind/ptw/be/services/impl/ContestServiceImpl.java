@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +22,10 @@ import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.AnswerTypeBean;
 import com.bind.ptw.be.dto.AnswerTypeBeanList;
 import com.bind.ptw.be.dto.BaseBean;
+import com.bind.ptw.be.dto.CodeMojoRewardBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
+import com.bind.ptw.be.dto.Coupon;
 import com.bind.ptw.be.dto.LeaderBoardBean;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
@@ -34,7 +38,6 @@ import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
-import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserGroupBeanList;
@@ -44,11 +47,14 @@ import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.services.util.UserBeanValidator;
+import com.bind.ptw.be.util.EmailContent;
+import com.bind.ptw.be.util.EmailUtil;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
 
 @Service("contestService")
+@PropertySource("file:${prop.path}/app.properties")
 @Transactional
 public class ContestServiceImpl implements ContestService{
 
@@ -60,6 +66,9 @@ public class ContestServiceImpl implements ContestService{
 	
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	private Environment env;
 	
 	@Autowired
 	HibernateTemplate hibernateTemplate;
@@ -812,6 +821,77 @@ public class ContestServiceImpl implements ContestService{
 			}
 		}
 	}
+
+	@Override
+	public void createCodeRewardRecord(CodeMojoRewardBean rewardBean) {
+		contestDao.createCodeMojoRewardRecord(rewardBean);
+		try{
+			sendGroupWelcomeMail(rewardBean);
+		}catch(Exception excetion){
+			excetion.printStackTrace();
+		}
+	}
+	
+	private void sendGroupWelcomeMail(CodeMojoRewardBean rewardBean) throws PTWException{
+		
+			EmailContent emailContent = new EmailContent();
+			emailContent.setToAddress("ravishankar@innovationculture.in");
+		    StringBuilder bodyBuilder = new StringBuilder();
+		    bodyBuilder.append("\r\n");
+		    bodyBuilder.append("Email Id " + rewardBean.getCommunication_channel_email());
+		    bodyBuilder.append("\r\n");
+		    bodyBuilder.append("Phone No " + rewardBean.getCommunication_channel_phone());
+		    bodyBuilder.append("\r\n");
+		    bodyBuilder.append("Hash " + rewardBean.getHash());
+		    bodyBuilder.append("\r\n");
+			Coupon coupon = rewardBean.getCoupon();
+			if(coupon == null){
+				bodyBuilder.append("Coupon is null...");
+			}else{
+				bodyBuilder.append("Transaction Id " + coupon.getTxn_id());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Coupon Code " + coupon.getCoupon_code());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Brand Name " + coupon.getBrand_name());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Brand URL " + coupon.getBrand_url());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Logo " + coupon.getLogo());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Title " + coupon.getTitle());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Fineprint " + coupon.getFineprint());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Redemption Process " + coupon.getRedemption_process());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Support " + coupon.getSupport());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Value Formatted " + coupon.getValue_formatted());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Value Numeric " + coupon.getValue_numeric());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Value Ratio " + coupon.getValue_ratio());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Validity Stamp " + coupon.getValidity_stamp());
+				bodyBuilder.append("\r\n");
+				bodyBuilder.append("Validity " + coupon.getValidity());
+				bodyBuilder.append("\r\n");
+			}
+		    bodyBuilder.append("\r\n");
+		    bodyBuilder.append("This is auto generated Mail.");
+		    emailContent.setEmailBody(bodyBuilder.toString());
+		    
+		    String subj = "Predict 2 Win: Code Mojo Reward Alert";
+		    emailContent.setEmailSubject(subj);
+		    try{
+		    	EmailUtil.sendEmail(emailContent, EmailUtil.getMailConfiguration(env));
+		    }catch (Exception ex) {
+				ex.printStackTrace();
+				throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
+			} 
+			
+			
+		}
 
 	
 }

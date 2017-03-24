@@ -14,7 +14,9 @@ import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.AnswerTypeBean;
+import com.bind.ptw.be.dto.CodeMojoRewardBean;
 import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.Coupon;
 import com.bind.ptw.be.dto.LeaderBoardBean;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
@@ -30,6 +32,8 @@ import com.bind.ptw.be.dto.UserSelectedAnswerBean;
 import com.bind.ptw.be.entities.AnswerOption;
 import com.bind.ptw.be.entities.AnswerOptionHome;
 import com.bind.ptw.be.entities.AnswerType;
+import com.bind.ptw.be.entities.CodeMojoReward;
+import com.bind.ptw.be.entities.CodeMojoRewardHome;
 import com.bind.ptw.be.entities.Contest;
 import com.bind.ptw.be.entities.ContestHome;
 import com.bind.ptw.be.entities.ContestStatus;
@@ -1120,6 +1124,35 @@ public class ContestDaoImpl implements ContestDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		return retContestBeanList;
+	}
+
+	@Override
+	public void createCodeMojoRewardRecord(CodeMojoRewardBean rewardBean) {
+		CodeMojoRewardHome rewardHome = new CodeMojoRewardHome(this.getSession());
+		CodeMojoReward reward = new CodeMojoReward();
+		reward.setHashVal(rewardBean.getHash());
+		reward.setCommunicationEmailId(rewardBean.getCommunication_channel_email());
+		reward.setCommunicationPhone(rewardBean.getCommunication_channel_phone());
+		reward.setCustomerId(reward.getCustomerId());
+		Coupon coupon = rewardBean.getCoupon();
+		if(coupon != null){
+			reward.setBrandName(coupon.getBrand_name());
+			reward.setBrandUrl(coupon.getBrand_url());
+			reward.setCouponCode(coupon.getCoupon_code());
+			reward.setFinePrint(coupon.getFineprint());
+			reward.setLogo(coupon.getLogo());
+			reward.setRedeemProcess(coupon.getRedemption_process());
+			reward.setSupport(coupon.getSupport());
+			reward.setTitle(coupon.getTitle());
+			reward.setTransactionId(coupon.getTxn_id());
+			reward.setValFormatter(coupon.getValue_formatted());
+			reward.setValidity(coupon.getValidity());
+			reward.setValNumeric(coupon.getValue_numeric());
+			reward.setValRation(coupon.getValue_ratio());
+			reward.setValStamp(coupon.getValidity_stamp());
+			rewardHome.persist(reward);
+		}
+		
 	}
 	
 	

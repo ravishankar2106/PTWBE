@@ -9,6 +9,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.core.env.Environment;
+
 public class EmailUtil {
 
 	/*public static final String FROM_ADDRESS = "ravishankar2106@gmail.com";
@@ -72,6 +74,28 @@ public class EmailUtil {
 			}
 		}
 
+	}
+	
+	public static MailConfiguration getMailConfiguration(Environment env){
+		MailConfiguration config = new MailConfiguration();
+		String senderAddress = env.getProperty(DBConstants.FROM_ADDRESS_KEY);
+		String smtpUserName = env.getProperty(DBConstants.SMTP_USERNAME_KEY);
+		String smtpPassword = env.getProperty(DBConstants.SMTP_PASSWORD_KEY);
+		String smtpHost = env.getProperty(DBConstants.SMTP_HOST_KEY);
+		String smtpPort = env.getProperty(DBConstants.PORT_KEY);
+		
+		config.setFromAddress(senderAddress);
+		config.setSmtpUserName(smtpUserName);
+		config.setSmtpPassword(smtpPassword);
+		config.setHost(smtpHost);
+		try{
+			config.setPort(Integer.parseInt(smtpPort));
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return config;
+		
 	}
 
 }

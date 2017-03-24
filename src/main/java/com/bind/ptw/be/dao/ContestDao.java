@@ -6,6 +6,7 @@ import java.util.Set;
 import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
 import com.bind.ptw.be.dto.AnswerTypeBean;
+import com.bind.ptw.be.dto.CodeMojoRewardBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.LeaderBoardBean;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
@@ -64,6 +65,7 @@ public interface ContestDao {
 	void deletePrizeContest(PrizeContestBean prizeContestBean) throws PTWException;
 	List<UserGroupBean> getUserGroups(UserGroupBean userGroupBean) throws PTWException;
 	List<ContestBean> getRunningContests() throws PTWException;
+	void createCodeMojoRewardRecord(CodeMojoRewardBean rewardBean);
 	
 	
 }
