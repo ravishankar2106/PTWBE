@@ -782,6 +782,7 @@ public class ContestServiceImpl implements ContestService{
 		try{
 			TournamentBeanValidator.validateRequest(userGroupBean);
 			UserBeanValidator.validateGroupId(userGroupBean.getGroupId());
+			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
 			LeaderBoardBeanList queryLeaderBoardBean = new LeaderBoardBeanList();
 			queryLeaderBoardBean.setGroupId(userGroupBean.getGroupId());
 			queryLeaderBoardBean.setTournamentId(userGroupBean.getTournamentId());
