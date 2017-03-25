@@ -108,17 +108,19 @@ public class UserScoreBoardHome {
 		return query.list();
 	}
 
-	public int updateRanks(Integer points, Integer rank){
+	public int updateRanks(Integer points, Integer rank, Integer tournamentId){
 		Query query = null;
 		
 		try{
 			StringBuilder queryToExecute = new StringBuilder();
 			queryToExecute.append("Update UserScoreBoard SET rank =:rank ");
-			queryToExecute.append(" where totalPoints =:points");
+			queryToExecute.append(" where totalPoints =:points ");
+			queryToExecute.append("AND tournamentId =:tournamentId ");
 			query = session.createQuery(queryToExecute.toString());
 			
 			query.setParameter("rank", rank);
 			query.setParameter("points", points);
+			query.setParameter("tournamentId", tournamentId);
 			
 			int returnInt = query.executeUpdate();
 			return returnInt;
