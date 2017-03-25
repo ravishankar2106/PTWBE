@@ -909,12 +909,12 @@ public class ContestDaoImpl implements ContestDao{
 	
 	
 	@Override
-	public void updateUserRanks(Set<Integer> reOrderedList) throws PTWException {
+	public void updateUserRanks(Set<Integer> reOrderedList, Integer tournamentId) throws PTWException {
 		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
 		try{
 			int rank = 1;
 			for (Integer orderedRank : reOrderedList) {
-				int updatedRows = userScoreBoardHome.updateRanks(orderedRank, rank);
+				int updatedRows = userScoreBoardHome.updateRanks(orderedRank, rank, tournamentId);
 				rank += updatedRows;
 			}
 			

@@ -363,7 +363,7 @@ public class ContestServiceImpl implements ContestService{
 		for (Integer points : pointsList) {
 			newPointRanking.add(points);
 		}
-		contestDao.updateUserRanks(newPointRanking);
+		contestDao.updateUserRanks(newPointRanking, tournamentId);
 	}
 
 	private void updateScoreBoard(Integer tournamentId, Map<Integer, Integer> userPointMap) throws PTWException{

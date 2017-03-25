@@ -54,7 +54,7 @@ public interface ContestDao {
 	void updatePointsForUserAnswer(List<AnswerBean> answerBeanList) throws PTWException;
 	void updateUserScoreBoard(List<UserScoreBoardBean> userScoreBoardBeanList) throws PTWException;
 	List<Integer> getTournamentScores(TournamentBean tournamentBean) throws PTWException;
-	void updateUserRanks(Set<Integer> reOrderedList) throws PTWException;
+	void updateUserRanks(Set<Integer> reOrderedList, Integer tournamentId) throws PTWException;
 	List<AnswerTypeBean> getAnswerTypes() throws PTWException;
 	QuestionBean getQuestion(QuestionBean questionBean) throws PTWException;
 	List<LeaderBoardBean> getLeaderBoard(LeaderBoardBeanList leaderBoardBeanList) throws PTWException;
