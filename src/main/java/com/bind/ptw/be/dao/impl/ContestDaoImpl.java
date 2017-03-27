@@ -51,6 +51,8 @@ import com.bind.ptw.be.entities.TournamentTeam;
 import com.bind.ptw.be.entities.TournamentTeamHome;
 import com.bind.ptw.be.entities.UserAnswer;
 import com.bind.ptw.be.entities.UserAnswerHome;
+import com.bind.ptw.be.entities.UserAnswerStats;
+import com.bind.ptw.be.entities.UserAnswerStatsHome;
 import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
 import com.bind.ptw.be.entities.UserGroup;
@@ -723,7 +725,6 @@ public class ContestDaoImpl implements ContestDao{
 			checkAndRemoveDuplicateAnswer(answerHome, userId, questionIdList);
 			for (UserAnswerBean userAnswerBean : userAnswerBeanList) {
 				Integer questionId = userAnswerBean.getQuestionId();
-				
 				List<AnswerBean> answerBeanList = userAnswerBean.getSelectedAnswerList();
 				for (AnswerBean answerBean : answerBeanList) {
 					UserAnswer userAnswer = new UserAnswer();
@@ -734,12 +735,53 @@ public class ContestDaoImpl implements ContestDao{
 					answerOption.setAnswerOptionId(answerBean.getAnswerOptionId());
 					userAnswer.setAnswerOption(answerOption);
 					answerHome.persist(userAnswer);
+					
 				}
 				
 			}
+			insertAnswerStats(userContestAnswer.getContestId(), userId);
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+
+	private void insertAnswerStats(Integer contestId, int userId) {
+		try{
+			ContestHome contestHome = new ContestHome(this.getSession());
+			Contest contest = contestHome.findById(contestId);
+			Integer tournamentId = contest.getTournament().getTournamentId();
+			UserAnswerStatsHome userAnswerStatsHome = new UserAnswerStatsHome(this.getSession());
+			List<UserAnswerStats> userAnswerStats = userAnswerStatsHome.findAnswerStatsForUser(userId, tournamentId);
+			if(userAnswerStats != null && !userAnswerStats.isEmpty()){
+				UserAnswerStats currentStats = userAnswerStats.get(0);
+				String currentContest = currentStats.getContestIds();
+				String[] contestIds = currentContest.split(",");
+				boolean contestAnsweredFlag = false;
+				for (String answeredContestId : contestIds) {
+					if(contestId.equals((Integer.parseInt(answeredContestId.trim())))){
+						contestAnsweredFlag = true;
+						break;
+					}
+				}
+				if(!contestAnsweredFlag){
+					currentContest = currentContest + ","+ contestId;
+					currentStats.setContestIds(currentContest);
+					userAnswerStatsHome.merge(currentStats);
+				}
+				
+			}else{
+				UserAnswerStats newStats = new UserAnswerStats();
+				newStats.setUserId(userId);
+				newStats.setTournamentId(tournamentId);
+				newStats.setContestIds(String.valueOf(contestId));
+				newStats.setPrizeCountRedeemed(0);
+				userAnswerStatsHome.persist(newStats);
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
 		}
 		
 	}

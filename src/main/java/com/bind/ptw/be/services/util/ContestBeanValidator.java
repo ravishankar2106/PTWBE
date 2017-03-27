@@ -302,7 +302,7 @@ public class ContestBeanValidator {
 		UserBeanValidator.validateUserId(userContestAnswer.getUserId());
 		List<UserAnswerBean> userAnswerBeanList = userContestAnswer.getUserAnswerList();
 		if(userAnswerBeanList == null || userAnswerBeanList.isEmpty()){
-			throw new PTWException(PTWConstants.ERROR_DESC_FIELD_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
+			throw new PTWException(PTWConstants.ERROR_CODE_ANSWER_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "User Answer");
 		}
 		
 		ContestBean queryContest = new ContestBean();

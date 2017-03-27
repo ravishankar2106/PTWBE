@@ -84,6 +84,7 @@ public class PTWConstants {
 	public final static String ERROR_DESC_INVALID_CITY = "City specified is Invalid";
 	
 	public final static String ERROR_CODE_CITY_EMPTY = "132";
+	public final static String ERROR_CODE_ANSWER_EMPTY = "133";
 	
 	public final static String ERROR_CODE_INVALID_CONTEST = "150";
 	public final static String ERROR_DESC_INVALID_CONTEST = "Unknown Contest";
