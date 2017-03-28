@@ -31,7 +31,7 @@ public class UserScoreBoard {
 		this.userScoreBoardId = userScoreBoardId;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "USER_ID", nullable = true)
 	public Users getUser() {
 		return user;
