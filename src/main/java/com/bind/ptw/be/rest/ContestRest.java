@@ -161,4 +161,8 @@ public class ContestRest {
 		return contestService.getProcessingContests();
 	}
 	
+	@GetMapping("/pushTest")
+	public BaseBean pushTest(){
+		return contestService.sendNotification();
+	}
 }

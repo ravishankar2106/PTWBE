@@ -58,6 +58,6 @@ public interface ContestService {
 	LeaderBoardBeanList getGroupLeaderBoard(UserGroupBean userGroupBean);
 	
 	void createCodeRewardRecord(CodeMojoRewardBean rewardBean);
-	
+	BaseBean sendNotification();
 	
 }

@@ -21,11 +21,19 @@ public class OneSignalUtil {
 			con.setDoOutput(true);
 			con.setDoInput(true);
 			con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			con.setRequestProperty("Authorization", "Basic " + oneSignalAuthKey);
+			//con.setRequestProperty("Authorization", "Basic YjZhNWYzMjMtYmIxNy00MzdjLTgyMjktNjJmYjFkNjkxNTAz");
+			con.setRequestProperty("Authorization", "Basic "+ oneSignalAuthKey);
 			con.setRequestMethod("POST");
 			
 			Gson gson = new Gson();
-			String payLoad = gson.toJson(pushBean);
+			String payLoad2 = gson.toJson(pushBean);
+			System.out.println(payLoad2);
+			String payLoad = "{"
+                    +   "\"app_id\": \"9a1af85b-5d82-4807-b3a4-2be4a8ae6a5c\","
+                    +   "\"included_segments\": [\"All\"],"
+                   // +   "\"data\": {\"datakey\": \"datavalue\"},"
+                    +   "\"contents\": {\"en\": \"server push new message\"}"
+                    + "}";
 			byte[] sendBytes = payLoad.getBytes("UTF-8");
 			con.setFixedLengthStreamingMode(sendBytes.length);
 			

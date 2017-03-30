@@ -33,6 +33,7 @@ import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.PrizeContestBeanList;
+import com.bind.ptw.be.dto.PushBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
@@ -49,6 +50,7 @@ import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.services.util.UserBeanValidator;
 import com.bind.ptw.be.util.EmailContent;
 import com.bind.ptw.be.util.EmailUtil;
+import com.bind.ptw.be.util.OneSignalUtil;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -893,5 +895,15 @@ public class ContestServiceImpl implements ContestService{
 			
 		}
 
-	
+		@Override
+		public BaseBean sendNotification(){
+			PushBean pushBean = new PushBean();
+			pushBean.setAppId("9a1af85b-5d82-4807-b3a4-2be4a8ae6a5c");
+			pushBean.setContents("testing message");
+			pushBean.setIncluded_segments("ALL");
+			
+			OneSignalUtil.sendNotification(pushBean, env.getProperty("onesignalAuth"));
+			return new BaseBean();
+			
+		}
 }

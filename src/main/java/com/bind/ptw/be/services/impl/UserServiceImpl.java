@@ -16,6 +16,7 @@ import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.CityBeanList;
+import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -530,6 +531,19 @@ public class UserServiceImpl implements UserService{
 			userGroupList.setResultDescription(ex.getDescription());
 		}
 		return userGroupList;
+	}
+
+	@Override
+	public BaseBean registerUserToPush(OneSignalUserRegistrationBean registrationBean) {
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(registrationBean);
+			userDao.saveOneSignalRegistraiont(registrationBean);
+		}catch (PTWException ex) {
+			baseBean.setResultCode(ex.getCode());
+			baseBean.setResultDescription(ex.getDescription());
+		}
+		return baseBean;
 	}
 
 }

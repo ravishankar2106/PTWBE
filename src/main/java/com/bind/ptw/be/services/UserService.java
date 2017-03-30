@@ -2,6 +2,7 @@ package com.bind.ptw.be.services;
 
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBeanList;
+import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -29,4 +30,5 @@ public interface UserService {
 	BaseBean addUserToGroup(UserGroupInvitationBean userGroupInvitationBean);
 	UserGroupBeanList getUserGroups(UserGroupBean userGroupBean);
 	UserGroupBeanList getUserOwnedGroup(UserGroupBean userGroupBean);
+	BaseBean registerUserToPush(OneSignalUserRegistrationBean registrationBean);
 }

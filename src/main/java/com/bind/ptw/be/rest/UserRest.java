@@ -16,6 +16,7 @@ import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
+import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
@@ -176,4 +177,8 @@ public class UserRest {
 		return contestService.getGroupLeaderBoard(userGroupBean);
 	}
 	
+	@PostMapping("/registerToPush")
+	public BaseBean registerUserToPush(@RequestBody OneSignalUserRegistrationBean registrationBean){
+		return userService.registerUserToPush(registrationBean);
+	}
 }

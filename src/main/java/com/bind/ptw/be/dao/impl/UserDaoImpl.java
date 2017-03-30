@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
@@ -20,6 +21,8 @@ import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.entities.City;
+import com.bind.ptw.be.entities.OneSignalUserRegistration;
+import com.bind.ptw.be.entities.OneSignalUserRegistrationHome;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
@@ -596,5 +599,22 @@ public class UserDaoImpl implements UserDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		return userGroups;
+	}
+
+	@Override
+	public void saveOneSignalRegistraiont(OneSignalUserRegistrationBean registrationBean) throws PTWException{
+		OneSignalUserRegistrationHome regHome = new OneSignalUserRegistrationHome(this.getSession());
+		try{
+			OneSignalUserRegistration registration = new OneSignalUserRegistration();
+			registration.setOneSignalRegistrationId(registrationBean.getOneSignalRegistrationId());
+			Users user = new Users();
+			user.setUserId(registrationBean.getUserId());
+			registration.setUsers(user);
+			regHome.merge(registration);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
 	}
 }
