@@ -14,5 +14,10 @@ public class DBConstants {
 	
 	public static final int USER_INVITATION_STATUS_INVITED = 1;
 	public static final int USER_INVITATION_STATUS_ACCEPTED = 2;
+	
+	public static final String ONE_SIGNAL_SEGMENT_ALL = "All";
+	public static final String ONE_SIGNAL_SEGMENT_ACTIVE_USERS = "Active Users";
+	public static final String ONE_SIGNAL_SEGMENT_ENGAGED_USERS = "Engaged Users";
+	
 
 }

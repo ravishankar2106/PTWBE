@@ -39,5 +39,6 @@ public interface UserDao {
 	void addUserToGroup(UserGroupInvitationBean groupInvitation) throws PTWException;
 	List<UserGroupBean> getUserMappedGroup(UserGroupBean userGroupBean) throws PTWException;
 	List<UserGroupBean> getUserCreatedGroups(UserGroupBean userGroupBean) throws PTWException;
-	void saveOneSignalRegistraiont(OneSignalUserRegistrationBean registrationBean) throws PTWException;
+	void saveOneSignalRegistraion(OneSignalUserRegistrationBean registrationBean) throws PTWException;
+	List<OneSignalUserRegistrationBean> getOneSignalRegistrations(Integer[] userId) throws PTWException;
 }

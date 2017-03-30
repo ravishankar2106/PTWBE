@@ -111,7 +111,7 @@ public class CountryHome {
 			queryToExecute.append(QueryConstants.RETRIEVE_COUNTRIES);
 			queryToExecute.append("AND cy.countryId IN (");
 			queryToExecute.append(StringUtil.convertToTokens(countryIdList));
-			queryToExecute.append(")");
+			queryToExecute.append(") ");
 			query = session.createQuery(queryToExecute.toString());
 		}catch(RuntimeException e){
 			throw e;

@@ -62,7 +62,7 @@ public class UserAnswerHome {
 		queryToExecute.append(" ");
 		queryToExecute.append("AND ua.questionId IN ( ");
 		queryToExecute.append(StringUtil.convertToTokens(questionIdList));
-		queryToExecute.append(")");
+		queryToExecute.append(") ");
 		query = session.createQuery(queryToExecute.toString());
 		query.executeUpdate();
 	}

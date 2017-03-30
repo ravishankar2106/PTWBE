@@ -602,19 +602,45 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
-	public void saveOneSignalRegistraiont(OneSignalUserRegistrationBean registrationBean) throws PTWException{
+	public void saveOneSignalRegistraion(OneSignalUserRegistrationBean registrationBean) throws PTWException{
 		OneSignalUserRegistrationHome regHome = new OneSignalUserRegistrationHome(this.getSession());
 		try{
-			OneSignalUserRegistration registration = new OneSignalUserRegistration();
-			registration.setOneSignalRegistrationId(registrationBean.getOneSignalRegistrationId());
-			Users user = new Users();
-			user.setUserId(registrationBean.getUserId());
-			registration.setUsers(user);
-			regHome.merge(registration);
+			List<OneSignalUserRegistration> currentRegs = regHome.findOneSignalUserRegistrationByFilter(registrationBean.getUserId(), registrationBean.getOneSignalRegistrationId(), null);
+			if(currentRegs == null || currentRegs.isEmpty()){
+				OneSignalUserRegistration registration = new OneSignalUserRegistration();
+				registration.setOneSignalRegistrationId(registrationBean.getOneSignalRegistrationId());
+				Users user = new Users();
+				user.setUserId(registrationBean.getUserId());
+				registration.setUsers(user);
+				regHome.persist(registration);
+			}
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 		
 	}
+	
+	@Override
+	public List<OneSignalUserRegistrationBean> getOneSignalRegistrations(Integer[] userList) throws PTWException{
+		List<OneSignalUserRegistrationBean> responses = null;
+		OneSignalUserRegistrationHome regHome = new OneSignalUserRegistrationHome(this.getSession());
+		try{
+			List<OneSignalUserRegistration> registrations = regHome.findOneSignalUserRegistrationByFilter(null, null, userList);
+			if(registrations != null && !registrations.isEmpty()){
+				responses = new ArrayList<OneSignalUserRegistrationBean>();
+				for (OneSignalUserRegistration oneSignalUserRegistration : registrations) {
+					OneSignalUserRegistrationBean response = new OneSignalUserRegistrationBean();
+					response.setOneSignalRegistrationId(oneSignalUserRegistration.getOneSignalRegistrationId());
+					response.setUserId(oneSignalUserRegistration.getUsers().getUserId());
+					responses.add(response);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return responses;
+	}
+	
 }

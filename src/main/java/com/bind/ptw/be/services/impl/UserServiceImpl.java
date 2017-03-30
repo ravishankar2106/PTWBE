@@ -538,7 +538,7 @@ public class UserServiceImpl implements UserService{
 		BaseBean baseBean = new BaseBean();
 		try{
 			TournamentBeanValidator.validateRequest(registrationBean);
-			userDao.saveOneSignalRegistraiont(registrationBean);
+			userDao.saveOneSignalRegistraion(registrationBean);
 		}catch (PTWException ex) {
 			baseBean.setResultCode(ex.getCode());
 			baseBean.setResultDescription(ex.getDescription());

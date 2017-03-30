@@ -60,7 +60,7 @@ public class UserScoreBoardHome {
 			if(userIdArr != null){
 				queryToExecute.append("AND usb.user.userId IN (");
 				queryToExecute.append(StringUtil.convertToTokens(userIdArr));
-				queryToExecute.append(")");
+				queryToExecute.append(") ");
 			}
 			
 			if(includeZero){

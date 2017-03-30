@@ -71,7 +71,7 @@ public class QuestionHome {
 					String questionIdStr = StringUtil.convertToTokens(questionIdArr);
 					queryToExecute.append("AND q.questionId IN (");
 					queryToExecute.append(questionIdStr);
-					queryToExecute.append(")");
+					queryToExecute.append(") ");
 				}
 			}
 			query = session.createQuery(queryToExecute.toString());

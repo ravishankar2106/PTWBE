@@ -30,6 +30,7 @@ import com.bind.ptw.be.dto.LeaderBoardBean;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
+import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.PrizeContestBeanList;
@@ -48,6 +49,7 @@ import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.services.util.UserBeanValidator;
+import com.bind.ptw.be.util.DBConstants;
 import com.bind.ptw.be.util.EmailContent;
 import com.bind.ptw.be.util.EmailUtil;
 import com.bind.ptw.be.util.OneSignalUtil;
@@ -897,13 +899,39 @@ public class ContestServiceImpl implements ContestService{
 
 		@Override
 		public BaseBean sendNotification(){
-			PushBean pushBean = new PushBean();
-			pushBean.setAppId("9a1af85b-5d82-4807-b3a4-2be4a8ae6a5c");
-			pushBean.setContents("testing message");
-			pushBean.setIncluded_segments("ALL");
-			
-			OneSignalUtil.sendNotification(pushBean, env.getProperty("onesignalAuth"));
+			//sendNotification("Test message " + System.currentTimeMillis(), null, DBConstants.ONE_SIGNAL_SEGMENT_ALL);
+			try {
+				List<OneSignalUserRegistrationBean> userRegs = userDao.getOneSignalRegistrations(null);
+				if(userRegs != null && !userRegs.isEmpty()){
+					String[] players = new String[userRegs.size()];
+					int counter = 0;
+					for (OneSignalUserRegistrationBean userReg : userRegs) {
+						players[counter++] = userReg.getOneSignalRegistrationId();
+					}
+					sendNotification("Testing with actuals", players, null);
+				}
+			} catch (PTWException e) {
+				e.printStackTrace();
+			}
 			return new BaseBean();
 			
+		}
+		
+		
+		
+		private void sendNotification(String message, String[] players, String segmentName){
+			PushBean pushBean = new PushBean();
+			pushBean.setApp_id(env.getProperty("onesignal.appid"));
+			Map<String, String> contentBeanMap = new HashMap<String,String>();
+			contentBeanMap.put("en", message);
+			pushBean.setContents(contentBeanMap);
+			pushBean.setInclude_player_ids(players);
+			pushBean.setIncluded_segments(segmentName);
+		
+			Map<String, String> dataBeanMap = new HashMap<String,String>();
+			dataBeanMap.put("foo","val");
+			pushBean.setData(dataBeanMap);
+			
+			OneSignalUtil.sendNotification(pushBean, env.getProperty("onesignal.auth"));
 		}
 }
