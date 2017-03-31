@@ -125,7 +125,7 @@ public class ContestHome {
 			queryToExecute.append("ORDER BY c.contestId");
 			query = session.createQuery(queryToExecute.toString());
 			
-			query.setParameter("matchId", matchBean.getMatchId());;
+			query.setParameter("matchId", matchBean.getMatchId());
 				
 		}catch(RuntimeException e){
 			throw e;

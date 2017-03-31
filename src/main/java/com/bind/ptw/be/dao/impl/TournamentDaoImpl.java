@@ -587,12 +587,11 @@ public class TournamentDaoImpl implements TournamentDao{
 	
 	@Override
 	public TeamPlayerList getPlayersForTeam(TeamPlayerList teamPlayerList) throws PTWException{
-		TeamPlayerList retTeamPlayerList = null;
+		TeamPlayerList retTeamPlayerList = new TeamPlayerList();
+		retTeamPlayerList.setTeamId(teamPlayerList.getTeamId());
 		TeamPlayerHome teamPlayerHome = new TeamPlayerHome(getSession());
 		List<TeamPlayerMapping>  dbPlayers = teamPlayerHome.getTeamPlayers(teamPlayerList.getTeamId());
 		if(dbPlayers != null && !dbPlayers.isEmpty()){
-			retTeamPlayerList = new TeamPlayerList();
-			retTeamPlayerList.setTeamId(teamPlayerList.getTeamId());
 			List<Integer> players = new ArrayList<Integer>();
 			for (TeamPlayerMapping teamPlayerMapping : dbPlayers) {
 				players.add(teamPlayerMapping.getTeamPlayerMappingKey().getPlayerId());
