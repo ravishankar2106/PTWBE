@@ -14,6 +14,7 @@ import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -66,6 +67,7 @@ public interface ContestDao {
 	List<UserGroupBean> getUserGroups(UserGroupBean userGroupBean) throws PTWException;
 	List<ContestBean> getRunningContests() throws PTWException;
 	void createCodeMojoRewardRecord(CodeMojoRewardBean rewardBean);
+	void updateFanClubStandings(TournamentFanClubBean tournamentFanClubBean);
 	
 	
 }

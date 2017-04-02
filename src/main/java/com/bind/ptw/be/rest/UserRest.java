@@ -20,6 +20,8 @@ import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
+import com.bind.ptw.be.dto.TournamentFanClubBean;
+import com.bind.ptw.be.dto.TournamentFanClubList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
@@ -180,5 +182,20 @@ public class UserRest {
 	@PostMapping("/registerToPush")
 	public BaseBean registerUserToPush(@RequestBody OneSignalUserRegistrationBean registrationBean){
 		return userService.registerUserToPush(registrationBean);
+	}
+	
+	@PostMapping("/getFanLeagues")
+	public TournamentFanClubList getFanLeagues(@RequestBody TournamentBean tournament){
+		return userService.getTournamentFanGroups(tournament);
+	}
+	
+	@PostMapping("/joinFanLeague")
+	public BaseBean joinFanLeague(@RequestBody UserGroupBean userGroupBean){
+		return userService.addUserToFanGroup(userGroupBean);
+	}
+	
+	@PostMapping("/getUserFanLeagues")
+	public TournamentFanClubBean getFanLeagues(@RequestBody UserGroupBean userGroupBean){
+		return userService.getUserTournamentFanGroups(userGroupBean);
 	}
 }

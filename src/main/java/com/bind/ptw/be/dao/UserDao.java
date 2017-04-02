@@ -5,6 +5,8 @@ import java.util.List;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
+import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -41,4 +43,8 @@ public interface UserDao {
 	List<UserGroupBean> getUserCreatedGroups(UserGroupBean userGroupBean) throws PTWException;
 	void saveOneSignalRegistraion(OneSignalUserRegistrationBean registrationBean) throws PTWException;
 	List<OneSignalUserRegistrationBean> getOneSignalRegistrations(Integer[] userId) throws PTWException;
+	List<TournamentFanClubBean> getTournamentSystemGroups(TournamentBean tournament) throws PTWException;
+	List<TournamentFanClubBean> getUserFanClub(UserGroupBean userGroupBean) throws PTWException;
+	void addUserToSystemGroup(UserGroupBean userGroupBean) throws PTWException;
+	Long getGroupPoints(TournamentFanClubBean tournamentFanClubBean) throws PTWException;
 }

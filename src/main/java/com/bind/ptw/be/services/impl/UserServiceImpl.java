@@ -17,6 +17,9 @@ import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
+import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentFanClubBean;
+import com.bind.ptw.be.dto.TournamentFanClubList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -544,6 +547,58 @@ public class UserServiceImpl implements UserService{
 			baseBean.setResultDescription(ex.getDescription());
 		}
 		return baseBean;
+	}
+
+	@Override
+	public TournamentFanClubList getTournamentFanGroups(TournamentBean tournament) {
+		TournamentFanClubList clubListResponse = new TournamentFanClubList();
+		try{
+			TournamentBeanValidator.validateRequest(tournament);
+			TournamentBeanValidator.validateTournamentId(tournament.getTournamentId());
+			List<TournamentFanClubBean> fanClubBeanList =userDao.getTournamentSystemGroups(tournament);
+			clubListResponse.setFanClubs(fanClubBeanList);
+		}catch (PTWException ex) {
+			clubListResponse.setResultCode(ex.getCode());
+			clubListResponse.setResultDescription(ex.getDescription());
+		}
+		return clubListResponse;
+	}
+	
+	@Override
+	public BaseBean addUserToFanGroup(UserGroupBean userGroupBean){
+		BaseBean baseBean = new BaseBean();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			UserBeanValidator.validateFanGroupJoinRequest(userGroupBean);
+			List<TournamentFanClubBean> clubBeanList = userDao.getUserFanClub(userGroupBean);
+			if(clubBeanList != null && !clubBeanList.isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_CODE_FAN_CLUB_JOINED, PTWConstants.ERROR_DESC_FAN_CLUB_JOINED);
+			}
+			userDao.addUserToSystemGroup(userGroupBean);
+		}catch (PTWException ex) {
+			baseBean.setResultCode(ex.getCode());
+			baseBean.setResultDescription(ex.getDescription());
+		}
+		
+		return baseBean;
+	}
+
+	@Override
+	public TournamentFanClubBean getUserTournamentFanGroups(UserGroupBean userGroupBean) {
+		TournamentFanClubBean userClub = new TournamentFanClubBean();
+		try{
+			TournamentBeanValidator.validateRequest(userGroupBean);
+			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			UserBeanValidator.validateUserId(userGroupBean.getUserId());
+			List<TournamentFanClubBean> clubBeanList = userDao.getUserFanClub(userGroupBean);
+			if(clubBeanList != null && clubBeanList.size() == 1){
+				userClub = clubBeanList.get(0);
+			}
+		}catch (PTWException ex) {
+			userClub.setResultCode(ex.getCode());
+			userClub.setResultDescription(ex.getDescription());
+		}
+		return userClub;
 	}
 
 }

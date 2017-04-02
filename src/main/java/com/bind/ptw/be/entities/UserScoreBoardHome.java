@@ -124,10 +124,26 @@ public class UserScoreBoardHome {
 			
 			int returnInt = query.executeUpdate();
 			return returnInt;
-			
+				
 		}catch(RuntimeException e){
 			throw e;
 		}
+	}
+
+	public Long getTotalPointsForGroups(Integer groupId, Integer tournamentId) {
+		Query query = null;
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select SUM(usb.totalPoints) from UserScoreBoard usb ");
+		queryToExecute.append("WHERE usb.tournamentId =:tournamentId ");
+		queryToExecute.append("AND usb.user.userId IN (SELECT ugm.userGroupMappingKey.userId FROM ");
+		queryToExecute.append("UserGroupMapping ugm where ugm.userGroupMappingKey.userGroup.userGroupId =:groupId )");
+		query = session.createQuery(queryToExecute.toString());
+		
+		query.setParameter("tournamentId", tournamentId);
+		query.setParameter("groupId", groupId);
+		
+		Long returnLong = (Long)query.list().get(0);
+		return returnLong;
 	}
 		
 }

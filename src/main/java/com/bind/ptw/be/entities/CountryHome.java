@@ -79,7 +79,6 @@ public class CountryHome {
 					}
 				}
 			}
-			System.out.println(queryToExecute.toString());
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(countryBean != null){

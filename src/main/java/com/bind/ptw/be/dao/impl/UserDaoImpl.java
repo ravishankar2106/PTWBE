@@ -14,6 +14,7 @@ import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -331,7 +332,6 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public UserGroupBean createUserGroup(UserGroupBean userGroupBean) throws PTWException {
 		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
-		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
 		try{
 			UserGroupBean queryBean = new UserGroupBean();
 			queryBean.setGroupName(userGroupBean.getGroupName());
@@ -354,7 +354,7 @@ public class UserDaoImpl implements UserDao{
 			userGroup.setUserGroupName(userGroupBean.getGroupName());
 			userGroupHome.persist(userGroup);
 			userGroupBean.setGroupId(userGroup.getUserGroupId());
-			createUserGroupMapping(userGroupBean.getOwnerId(), userGroupMappingHome, userGroup.getUserGroupId(), userGroupBean.getTournamentId());
+			createUserGroupMapping(userGroupBean.getOwnerId(), userGroup.getUserGroupId(), userGroupBean.getTournamentId());
 		}catch(PTWException exception){
 			throw exception;
 		}catch(Exception exception){
@@ -366,9 +366,8 @@ public class UserDaoImpl implements UserDao{
 	
 	@Override
 	public void addUserToGroup(UserGroupInvitationBean groupInvitation) throws PTWException{
-		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(getSession());
 		UserGroupInvitationHome userGroupInvitationHome = new UserGroupInvitationHome(getSession());
-		createUserGroupMapping(groupInvitation.getInviteeUserId(), userGroupMappingHome, groupInvitation.getGroupId(), groupInvitation.getTournamentId());
+		createUserGroupMapping(groupInvitation.getInviteeUserId(), groupInvitation.getGroupId(), groupInvitation.getTournamentId());
 		try{
 			List<UserGroupInvitation> invitations = userGroupInvitationHome.findByFilter(groupInvitation);
 			if(invitations != null && !invitations.isEmpty()){
@@ -385,8 +384,8 @@ public class UserDaoImpl implements UserDao{
 		}
 	}
 
-	private void createUserGroupMapping(Integer userId, UserGroupMappingHome userGroupMappingHome,
-			Integer groupId, Integer tournamentId) {
+	private void createUserGroupMapping(Integer userId, Integer groupId, Integer tournamentId) {
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(getSession());
 		UserGroupMapping userGroupMapping = new UserGroupMapping();
 		UserGroupMappingKey userGroupMappingKey = new UserGroupMappingKey();
 		UserGroup userGroup = new UserGroup();
@@ -396,6 +395,17 @@ public class UserDaoImpl implements UserDao{
 		userGroupMapping.setTournamentId(tournamentId);
 		userGroupMapping.setUserGroupMappingKey(userGroupMappingKey);
 		userGroupMappingHome.persist(userGroupMapping);
+	}
+	
+	@Override
+	public void addUserToSystemGroup(UserGroupBean userGroupBean) throws PTWException{
+		try{
+			UserGroupInvitationHome userGroupInvitationHome = new UserGroupInvitationHome(getSession());
+			createUserGroupMapping(userGroupBean.getUserId(), userGroupBean.getGroupId(), userGroupBean.getTournamentId());
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
 	}
 
 	@Override
@@ -565,7 +575,6 @@ public class UserDaoImpl implements UserDao{
 			queryInvitation.setInvitationStatusId(DBConstants.USER_INVITATION_STATUS_INVITED);
 			List<UserGroupInvitation> invitations = invitationHome.findByFilter(queryInvitation);
 			if(invitations != null && !invitations.isEmpty()){
-				System.out.println("Updating invitations Ids");
 				for (UserGroupInvitation userGroupInvitation : invitations) {
 					userGroupInvitation.setInviteeUserId(userBean.getUserId());
 					invitationHome.merge(userGroupInvitation);
@@ -642,5 +651,56 @@ public class UserDaoImpl implements UserDao{
 		}
 		return responses;
 	}
+
+	@Override
+	public List<TournamentFanClubBean> getTournamentSystemGroups(TournamentBean tournament) throws PTWException{
+		List<TournamentFanClubBean> fanClubs = null;
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		try{
+			List<UserGroup> userGroups = userGroupHome.findSystemGroupsForTournament(tournament.getTournamentId());
+			if(userGroups != null && !userGroups.isEmpty()){
+				fanClubs = new ArrayList<TournamentFanClubBean>();
+				for (UserGroup userGroup : userGroups) {
+					fanClubs.add(createTournamentFanClubBean(userGroup));
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return fanClubs;
+	}
+
+	private TournamentFanClubBean createTournamentFanClubBean(UserGroup userGroup) {
+		TournamentFanClubBean fanClub = new TournamentFanClubBean();
+		fanClub.setGroupId(userGroup.getUserGroupId());
+		fanClub.setGroupName(userGroup.getUserGroupName());
+		fanClub.setClubPoints(userGroup.getGroupPoints());
+		fanClub.setClubPosition(userGroup.getGroupRank());
+		return fanClub;
+	}
 	
+	@Override
+	public List<TournamentFanClubBean> getUserFanClub(UserGroupBean userGroupBean) throws PTWException{
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
+		List<TournamentFanClubBean> fanClubs = null;
+		List<UserGroupMapping> mappingList = userGroupMappingHome.findSystemUserGroup(userGroupBean.getUserId(), userGroupBean.getTournamentId());
+		if(mappingList != null && !mappingList.isEmpty()){
+			fanClubs = new ArrayList<TournamentFanClubBean>();
+			for (UserGroupMapping userGroupMapping : mappingList) {
+				TournamentFanClubBean fanClub = createTournamentFanClubBean(userGroupMapping.getUserGroupMappingKey().getUserGroup());
+				fanClubs.add(fanClub);
+				
+			}
+		}
+		return fanClubs;
+	}
+
+	@Override
+	public Long getGroupPoints(TournamentFanClubBean tournamentFanClubBean) throws PTWException {
+		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
+		Long totalPoints = userScoreBoardHome.getTotalPointsForGroups(tournamentFanClubBean.getGroupId(), tournamentFanClubBean.getTournamentId());
+		return totalPoints;
+	}
+
 }

@@ -59,5 +59,6 @@ public interface ContestService {
 	
 	void createCodeRewardRecord(CodeMojoRewardBean rewardBean);
 	BaseBean sendNotification();
+	void processFanGroupRanking(int tournamentId);
 	
 }

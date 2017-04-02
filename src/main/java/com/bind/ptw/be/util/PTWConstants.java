@@ -231,5 +231,6 @@ public class PTWConstants {
 	public final static String ERROR_CODE_INVALID_GROUP_NAME = "271";
 	public final static String ERROR_DESC_INVALID_GROUP_NAME = "Enter shorter group name (Max 20)";
 
-	
+	public final static String ERROR_CODE_FAN_CLUB_JOINED = "272";
+	public final static String ERROR_DESC_FAN_CLUB_JOINED = "You have already joined a Fan club!";
 }

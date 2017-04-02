@@ -264,6 +264,11 @@ public class UserBeanValidator {
 		}
 	}
 	
+	public static void validateFanGroupJoinRequest(UserGroupBean userGroupBean) throws PTWException{
+		validateGroupId(userGroupBean.getGroupId());
+		TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+		validateUserId(userGroupBean.getUserId());
+	}
 	private static void validateGroupCode(Integer groupCode)throws PTWException{
 		if(StringUtil.isEmptyNull(groupCode)){
 			throw new PTWException(PTWConstants.ERROR_CODE_GROUP_CODE_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Group Code");

@@ -39,6 +39,7 @@ import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserGroupBean;
@@ -49,7 +50,6 @@ import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.util.ContestBeanValidator;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.services.util.UserBeanValidator;
-import com.bind.ptw.be.util.DBConstants;
 import com.bind.ptw.be.util.EmailContent;
 import com.bind.ptw.be.util.EmailUtil;
 import com.bind.ptw.be.util.OneSignalUtil;
@@ -352,11 +352,48 @@ public class ContestServiceImpl implements ContestService{
 			}
 			updateScoreBoard(tournamentId, userPointMap);
 			processRanking(tournamentId);
+			processFanGroupRanking(tournamentId);
 			markContestAsCompleted(contestId);
 			
 		}
 		
 		
+	}
+
+	@Override
+	public void processFanGroupRanking(int tournamentId) {
+		try{
+			TournamentBean tournamentBean = new TournamentBean();
+			tournamentBean.setTournamentId(tournamentId);
+			List<TournamentFanClubBean> userGroupBean = userDao.getTournamentSystemGroups(tournamentBean);
+			Set<Long> pointSet = new TreeSet<Long>().descendingSet(); 
+			if(userGroupBean != null && !userGroupBean.isEmpty()){
+				for (TournamentFanClubBean tournamentFanClubBean : userGroupBean) {
+					tournamentFanClubBean.setTournamentId(tournamentId);
+					Long totalPoints = userDao.getGroupPoints(tournamentFanClubBean);
+					if(totalPoints == null){
+						totalPoints = 0l;
+					}
+					pointSet.add(totalPoints);
+					tournamentFanClubBean.setClubPoints(totalPoints);
+				}
+				
+				int rank = 0;
+				for (Long points : pointSet) {
+					rank++;
+					for (TournamentFanClubBean tournamentFanClubBean : userGroupBean) {
+						if(tournamentFanClubBean.getClubPoints().equals(points)){
+							tournamentFanClubBean.setClubPosition(rank);
+						}
+					}
+				}
+				for (TournamentFanClubBean tournamentFanClubBean : userGroupBean) {
+					contestDao.updateFanClubStandings(tournamentFanClubBean);
+				}
+			}
+		}catch(PTWException e){
+			e.printStackTrace();
+		}
 	}
 
 	private void processRanking(int tournamentId)throws PTWException {

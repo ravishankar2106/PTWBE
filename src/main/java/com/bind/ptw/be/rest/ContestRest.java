@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bind.ptw.be.dto.AnswerOptionBean;
@@ -165,4 +166,14 @@ public class ContestRest {
 	public BaseBean pushTest(){
 		return contestService.sendNotification();
 	}
+	
+	@PostMapping("/processFanGroup")
+	public BaseBean processFanGroup(@RequestParam Integer tournamentId){
+		BaseBean baseBean = new BaseBean();
+		contestService.processFanGroupRanking(tournamentId);
+		return baseBean;
+		
+	}
 }
+
+

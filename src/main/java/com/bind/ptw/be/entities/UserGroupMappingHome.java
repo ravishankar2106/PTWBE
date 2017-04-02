@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.util.StringUtil;
 
 
@@ -37,7 +36,7 @@ public class UserGroupMappingHome {
 		Query query = null;
 		try{
 			StringBuilder queryToExecuteBuilder = new StringBuilder();
-			queryToExecuteBuilder.append(QueryConstants.RETRIEVE_User_GROUP_MAPPING);
+			queryToExecuteBuilder.append(QueryConstants.RETRIEVE_USER_GROUP_MAPPING);
 			if(!StringUtil.isEmptyNull(userId)){
 				queryToExecuteBuilder.append("AND ugm.userGroupMappingKey.userId = :userId ");
 			}
@@ -65,5 +64,31 @@ public class UserGroupMappingHome {
 		}
 		
 		return query.list();
+	}
+	
+	public List<UserGroupMapping> findSystemUserGroup(Integer userId, Integer tournamentId){
+		Query query = null;
+		try{
+			StringBuilder queryToExecuteBuilder = new StringBuilder();
+			queryToExecuteBuilder.append("select ugm from UserGroupMapping ugm where 1=1 ");
+			if(!StringUtil.isEmptyNull(userId)){
+				queryToExecuteBuilder.append("AND ugm.userGroupMappingKey.userId = :userId ");
+			}
+			
+			queryToExecuteBuilder.append("AND ugm.userGroupMappingKey.userGroup.userGroupId IN (");
+			queryToExecuteBuilder.append("Select ug.userGroupId from UserGroup ug where ug.tournament.tournamentId =:tournamentId ");
+			queryToExecuteBuilder.append("AND ug.ownerUser IS NULL ) ");
+			query = session.createQuery(queryToExecuteBuilder.toString());
+			if(!StringUtil.isEmptyNull(userId)){
+				query.setParameter("userId", userId);
+			}
+			query.setParameter("tournamentId", tournamentId);
+		}catch(RuntimeException e){
+			throw e;
+		}
+		
+		return query.list();
+			
+		
 	}
 }

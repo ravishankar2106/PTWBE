@@ -19,6 +19,8 @@ public class UserGroup {
 	private Users ownerUser;
 	private String userGroupName;
 	private Integer userGroupCode;
+	private Long groupPoints;
+	private Integer groupRank;
 	private Boolean prizeIncludedFlag;
 	
 	@Id
@@ -73,6 +75,22 @@ public class UserGroup {
 		this.prizeIncludedFlag = prizeIncludedFlag;
 	}
 	
+	@Column(name = "GROUP_POINTS")
+	public Long getGroupPoints() {
+		return groupPoints;
+	}
 	
+	public void setGroupPoints(Long groupPoints) {
+		this.groupPoints = groupPoints;
+	}
+	
+	@Column(name = "GROUP_RANK")
+	public Integer getGroupRank() {
+		return groupRank;
+	}
+	
+	public void setGroupRank(Integer groupRank) {
+		this.groupRank = groupRank;
+	}
 	
 }

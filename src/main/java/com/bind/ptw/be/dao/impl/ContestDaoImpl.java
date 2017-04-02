@@ -23,6 +23,7 @@ import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserAnswerBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
@@ -877,7 +878,6 @@ public class ContestDaoImpl implements ContestDao{
 		try{
 			List<UserAnswer> userAnswerList = userAnswerHome.findByAnswerOption(userSelectedAnswerBean.getSelectedAnswerOptionId());
 			if(userAnswerList != null && !userAnswerList.isEmpty()){
-				System.out.println("Users with correct answer found");
 				retUserAnswerBeanList = new ArrayList<UserSelectedAnswerBean>();
 				for (UserAnswer userAnswer : userAnswerList) {
 					UserSelectedAnswerBean dbUserSelectedAnswerBean = new UserSelectedAnswerBean();
@@ -1195,6 +1195,15 @@ public class ContestDaoImpl implements ContestDao{
 			rewardHome.persist(reward);
 		}
 		
+	}
+
+	@Override
+	public void updateFanClubStandings(TournamentFanClubBean tournamentFanClubBean) {
+		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
+		UserGroup group = userGroupHome.findById(tournamentFanClubBean.getGroupId());
+		group.setGroupPoints(tournamentFanClubBean.getClubPoints());
+		group.setGroupRank(tournamentFanClubBean.getClubPosition());
+		userGroupHome.merge(group);
 	}
 	
 	

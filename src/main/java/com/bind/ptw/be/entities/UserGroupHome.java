@@ -92,6 +92,16 @@ public class UserGroupHome {
 		return query.list();
 	}
 
+	public List<UserGroup> findSystemGroupsForTournament(Integer tournamentId){
+		Query query = null;
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append(QueryConstants.RETRIEVE_USER_GROUP);
+		queryToExecute.append("AND ug.tournament.tournamentId =:tournamentId ");
+		queryToExecute.append("AND ug.ownerUser IS NULL");
+		query = session.createQuery(queryToExecute.toString());
+		query.setParameter("tournamentId", tournamentId);
+		return query.list();
+	}
 	
 }
 	
