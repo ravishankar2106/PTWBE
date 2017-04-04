@@ -352,6 +352,8 @@ public class UserDaoImpl implements UserDao{
 			userGroup.setUserGroupCode(userGroupBean.getGroupCode());
 			userGroup.setPrizeIncludedFlag(userGroupBean.getPrizeGroupFlag());
 			userGroup.setUserGroupName(userGroupBean.getGroupName());
+			userGroup.setGroupPoints(0l);
+			userGroup.setGroupRank(0);
 			userGroupHome.persist(userGroup);
 			userGroupBean.setGroupId(userGroup.getUserGroupId());
 			createUserGroupMapping(userGroupBean.getOwnerId(), userGroup.getUserGroupId(), userGroupBean.getTournamentId());

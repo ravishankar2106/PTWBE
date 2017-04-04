@@ -41,7 +41,7 @@ public class HibernateConfiguration {
 		sessionFactoryBean.setPackagesToScan("com.bind.ptw.be.entities");
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-		hibernateProperties.put("hibernate.show_sql", true);
+		hibernateProperties.put("hibernate.show_sql", false);
 		hibernateProperties.put("hibernate.hbm2ddl.auto", "update");
 		hibernateProperties.put("connection.autoReconnect", true);
 		hibernateProperties.put("connection.autoReconnectForPools", true);
