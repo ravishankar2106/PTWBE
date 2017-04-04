@@ -15,13 +15,19 @@ import javax.persistence.Table;
 @Table(name = "ONE_SIGNAL_USER_REGISTRATION")
 public class OneSignalUserRegistration {
 	
-	private Integer oneSignalUserRegistraionId;
-	private Users user;
-	private String oneSignalRegistrationId;
-		
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "ONE_SIGNAL_USER_REGISTRATION_ID", unique = true, nullable = false)
+	private Integer oneSignalUserRegistraionId;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "USER_ID", nullable = true)
+	private Users user;
+	
+	@Column(name = "ONE_SIGNAL_REGISTRATION_ID", nullable = true)
+	private String oneSignalRegistrationId;
+		
+	
 	public Integer getOneSignalUserRegistraionId() {
 		return oneSignalUserRegistraionId;
 	}
@@ -29,8 +35,6 @@ public class OneSignalUserRegistration {
 		this.oneSignalUserRegistraionId = oneSignalUserRegistraionId;
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "USER_ID", nullable = true)
 	public Users getUsers() {
 		return user;
 	}
@@ -39,7 +43,6 @@ public class OneSignalUserRegistration {
 		this.user = user;
 	}
 	
-	@Column(name = "ONE_SIGNAL_REGISTRATION_ID", nullable = true)
 	public String getOneSignalRegistrationId() {
 		return oneSignalRegistrationId;
 	}

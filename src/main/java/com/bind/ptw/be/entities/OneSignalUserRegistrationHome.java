@@ -40,7 +40,7 @@ public class OneSignalUserRegistrationHome {
 		}
 	}
 
-	public List<OneSignalUserRegistration> findOneSignalUserRegistrationByFilter(Integer userId, String oneSignalUserRegitrationId, Integer[] userIds){
+	public List<OneSignalUserRegistration> findOneSignalUserRegistrationByFilter(Integer userId, String oneSignalRegistrationId, Integer[] userIds){
 		Query query = null;
 		
 		try{
@@ -49,7 +49,7 @@ public class OneSignalUserRegistrationHome {
 			if(!StringUtils.isEmpty(userId)){
 				queryToExecute.append("AND osur.user.userId =:userId ");
 			}
-			if(!StringUtil.isEmptyNull(oneSignalUserRegitrationId)){
+			if(!StringUtil.isEmptyNull(oneSignalRegistrationId)){
 				queryToExecute.append("AND osur.oneSignalRegistrationId =:oneSignalRegistrationId ");
 			}
 			if(userIds != null){
@@ -62,8 +62,9 @@ public class OneSignalUserRegistrationHome {
 			
 			if(!StringUtils.isEmpty(userId)){
 				query.setParameter("userId", userId);;
-			}else if(!StringUtil.isEmptyNull(oneSignalUserRegitrationId)){
-				query.setParameter("oneSignalUserRegitrationId", oneSignalUserRegitrationId);
+			}
+			if(!StringUtil.isEmptyNull(oneSignalRegistrationId)){
+				query.setParameter("oneSignalRegistrationId", oneSignalRegistrationId);
 			}
 		}catch(RuntimeException e){
 			throw e;
