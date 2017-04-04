@@ -13,12 +13,14 @@ import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
+import com.bind.ptw.be.dto.TermsBean;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.entities.Country;
@@ -35,6 +37,8 @@ import com.bind.ptw.be.entities.TeamPlayerHome;
 import com.bind.ptw.be.entities.TeamPlayerMapping;
 import com.bind.ptw.be.entities.TeamPlayerMappingKey;
 import com.bind.ptw.be.entities.TeamType;
+import com.bind.ptw.be.entities.TermsCondition;
+import com.bind.ptw.be.entities.TermsAndConditionHome;
 import com.bind.ptw.be.entities.TournTeamPlayer;
 import com.bind.ptw.be.entities.TournTeamPlayerHome;
 import com.bind.ptw.be.entities.Tournament;
@@ -100,6 +104,7 @@ public class TournamentDaoImpl implements TournamentDao{
 				resultTournamentBean.setSportTypeId(tournament.getSportType().getSportTypeId());
 				resultTournamentBean.setTeamTypeId(tournament.getTeamType().getTeamTypeId());
 				resultTournamentBean.setTournamentVenue(tournament.getTournamentVenue());
+				resultTournamentBean.setTocId(tournament.getTocGroupId());
 				resultTournamentBeanList.add(resultTournamentBean);
 			}
 		}
@@ -733,5 +738,38 @@ public class TournamentDaoImpl implements TournamentDao{
 		}
 		return players;
 	}
+
+	@Override
+	public void createTOC(TournamentTAndCBean tocBean) throws PTWException{
+		TermsAndConditionHome tocHome = new TermsAndConditionHome(getSession());
+		try{
+			int newMax = 0;
+			if(StringUtil.isEmptyNull(tocBean.getGroupId())){
+				Integer currentMax = tocHome.getMaxTOCGroupId();
+				if(currentMax == null){
+					currentMax = 0;
+				}
+				newMax = currentMax+1;
+				
+			}else{
+				newMax = 1;
+			}
+			for(String tocText: tocBean.getTermsText()){
+				TermsCondition toc = new TermsCondition();
+				toc.setTocGroupId(newMax);
+				toc.setTocText(tocText);
+				tocHome.persist(toc);
+			}
+			TournamentHome tournamentHome = new TournamentHome(this.getSession());
+			Tournament tournament = tournamentHome.findById(tocBean.getTournamentId());
+			tournament.setTocGroupId(newMax);
+			tournamentHome.merge(tournament);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+	
 	
 }

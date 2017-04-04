@@ -31,6 +31,7 @@ public class Contest {
 	private Integer bonusPoints;
 	private List<Question> questionList = new ArrayList<Question>(
 			0);
+	private Integer tocGroupId;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -132,5 +133,14 @@ public class Contest {
 	public void setQuestion(
 			List<Question> questionList) {
 		this.questionList = questionList;
+	}
+	
+	@Column(name = "TOC_GROUP_ID")
+	public Integer getTocGroupId() {
+		return tocGroupId;
+	}
+	
+	public void setTocGroupId(Integer tocGroupId) {
+		this.tocGroupId = tocGroupId;
 	}
 }

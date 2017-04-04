@@ -24,6 +24,7 @@ import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentFanClubBean;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.UserAnswerBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
@@ -46,6 +47,8 @@ import com.bind.ptw.be.entities.PrizeContest;
 import com.bind.ptw.be.entities.PrizeContestHome;
 import com.bind.ptw.be.entities.Question;
 import com.bind.ptw.be.entities.QuestionHome;
+import com.bind.ptw.be.entities.TermsCondition;
+import com.bind.ptw.be.entities.TermsAndConditionHome;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
 import com.bind.ptw.be.entities.TournamentTeam;
@@ -240,6 +243,7 @@ public class ContestDaoImpl implements ContestDao{
 			contest.setPublishEndDateTime(contestBean.getPublishEndDate());
 			contest.setCutoffDateTime(contestBean.getCutoffDate());
 			contest.setBonusPoints(contestBean.getBonusPoints());
+			contest.setTocGroupId(contestBean.getTocId());
 			
 			Tournament tournament = new Tournament();
 			tournament.setTournamentId(contestBean.getTournamentId());
@@ -777,7 +781,6 @@ public class ContestDaoImpl implements ContestDao{
 				newStats.setUserId(userId);
 				newStats.setTournamentId(tournamentId);
 				newStats.setContestIds(String.valueOf(contestId));
-				newStats.setPrizeCountRedeemed(0);
 				userAnswerStatsHome.persist(newStats);
 			}
 			
@@ -1204,6 +1207,57 @@ public class ContestDaoImpl implements ContestDao{
 		group.setGroupPoints(tournamentFanClubBean.getClubPoints());
 		group.setGroupRank(tournamentFanClubBean.getClubPosition());
 		userGroupHome.merge(group);
+	}
+	
+	@Override
+	public void createTOC(TournamentTAndCBean tocBean) throws PTWException{
+		TermsAndConditionHome tocHome = new TermsAndConditionHome(getSession());
+		try{
+			int newMax = 0;
+			if(StringUtil.isEmptyNull(tocBean.getGroupId())){
+				Integer currentMax = tocHome.getMaxTOCGroupId();
+				if(currentMax == null){
+					currentMax = 0;
+				}
+				newMax = currentMax+1;
+				
+			}else{
+				newMax = 1;
+			}
+			for(String tocText: tocBean.getTermsText()){
+				TermsCondition toc = new TermsCondition();
+				toc.setTocGroupId(newMax);
+				toc.setTocText(tocText);
+				tocHome.persist(toc);
+			}
+			ContestHome contestHome = new ContestHome(this.getSession());
+			Contest contest = contestHome.findById(tocBean.getContestId());
+			contest.setTocGroupId(newMax);
+			contestHome.merge(contest);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
+
+	@Override
+	public List<String> getContestTerms(ContestBean contestBean) throws PTWException{
+		List<String> terms = null;
+		TermsAndConditionHome termsHome = new TermsAndConditionHome(getSession());
+		try{
+			List<TermsCondition> termsList = termsHome.getTOCForContest(contestBean.getContestId());
+			if(termsList != null && !termsList.isEmpty()){
+				terms = new ArrayList<String>();
+				for (TermsCondition termsAndCondition : termsList) {
+					terms.add(termsAndCondition.getTocText());
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return terms;
 	}
 	
 	

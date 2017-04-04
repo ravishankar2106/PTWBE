@@ -6,12 +6,14 @@ import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
+import com.bind.ptw.be.dto.TermsBean;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TeamPlayerList;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.util.PTWException;
@@ -56,5 +58,6 @@ public interface TournamentDao {
 	void addPlayerToTournamentTeam(TournTeamPlayerBeanList tournTeamPlayerBeanList) throws PTWException;
 	void removePlayerFromTournamentTeam(TournTeamPlayerBeanList tournTeamPlayerBeanList) throws PTWException;
 	List<TeamPlayerBean> getPlayersForTournamentTeam(TournamentTeamBean tournamentTeamBean) throws PTWException;
+	void createTOC(TournamentTAndCBean tocBean) throws PTWException;
 	
 }

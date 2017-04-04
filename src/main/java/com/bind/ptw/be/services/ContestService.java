@@ -14,6 +14,7 @@ import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserGroupBeanList;
@@ -60,5 +61,6 @@ public interface ContestService {
 	void createCodeRewardRecord(CodeMojoRewardBean rewardBean);
 	BaseBean sendNotification();
 	void processFanGroupRanking(int tournamentId);
+	TournamentTAndCBean getContestTAndC(ContestBean contestBean);
 	
 }

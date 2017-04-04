@@ -39,5 +39,5 @@ public class QueryConstants {
 	public static final String RETRIEVE_USER_INVIATION = "from UserGroupInvitation ugi where 1=1 ";
 	public static final String RETRIEVE_USER_ANSWER_STATS = "from UserAnswerStats uas where 1=1 ";
 	public static final String RETRIEVE_ONE_SIGNAL_REGISTRATIONS = "from OneSignalUserRegistration osur where 1=1 ";
-	
+	public static final String RETRIEVE_TANDC = "from TermsCondition toc where 1=1 ";
 }

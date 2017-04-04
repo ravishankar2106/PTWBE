@@ -22,6 +22,7 @@ import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.TournamentFanClubList;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
@@ -197,5 +198,10 @@ public class UserRest {
 	@PostMapping("/getUserFanLeagues")
 	public TournamentFanClubBean getFanLeagues(@RequestBody UserGroupBean userGroupBean){
 		return userService.getUserTournamentFanGroups(userGroupBean);
+	}
+	
+	@PostMapping("/getContestTerms")
+	public TournamentTAndCBean getContestTerms(@RequestBody ContestBean contestBean){
+		return contestService.getContestTAndC(contestBean);
 	}
 }

@@ -40,7 +40,9 @@ import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentFanClubBean;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
+import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserGroupBeanList;
@@ -157,6 +159,16 @@ public class ContestServiceImpl implements ContestService{
 		try{
 			TournamentBeanValidator.validateRequest(contestBean);
 			ContestBeanValidator.validateCreateContest(contestBean, tournamentDao, contestDao);
+			TournamentBean queryBean = new TournamentBean();
+			queryBean.setTournamentId(contestBean.getTournamentId());
+			List<TournamentBean> tournamentBeanList = tournamentDao.getTournament(queryBean, false);
+			if(tournamentBeanList == null || tournamentBeanList.isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_CODE_TOURNAMENT_ID_NOT_FOUND, PTWConstants.ERROR_DESC_TOURNAMENT_ID_NOT_FOUND);
+			}
+			if(StringUtil.isEmptyNull(contestBean.getTocId())){
+				TournamentBean tournamentBean = tournamentBeanList.get(0);
+				contestBean.setTocId(tournamentBean.getTocId());
+			}
 			retBean = contestDao.createContest(contestBean);
 		}catch(PTWException exception){
 			retBean = new ContestBean();
@@ -866,6 +878,13 @@ public class ContestServiceImpl implements ContestService{
 	@Override
 	public void createCodeRewardRecord(CodeMojoRewardBean rewardBean) {
 		contestDao.createCodeMojoRewardRecord(rewardBean);
+		
+		UserBean checkUserBean = new UserBean();
+		checkUserBean.setEmail(rewardBean.getCommunication_channel_email());
+		List<UserBean> foundUsers = userDao.getUsers(checkUserBean, false);
+		if(foundUsers!= null && foundUsers.size() == 1){
+			
+		}
 		try{
 			sendGroupWelcomeMail(rewardBean);
 		}catch(Exception excetion){
@@ -970,5 +989,20 @@ public class ContestServiceImpl implements ContestService{
 			pushBean.setData(dataBeanMap);
 			
 			OneSignalUtil.sendNotification(pushBean, env.getProperty("onesignal.auth"));
+		}
+		
+		@Override
+		public TournamentTAndCBean getContestTAndC(ContestBean contestBean){
+			TournamentTAndCBean retBean = new TournamentTAndCBean();
+			try{
+				TournamentBeanValidator.validateRequest(contestBean);
+				ContestBeanValidator.validateContestId(contestBean.getContestId());
+				List<String> terms = contestDao.getContestTerms(contestBean);
+				retBean.setTermsText(terms);
+			}catch(PTWException exception){
+				retBean.setResultCode(exception.getCode());
+				retBean.setResultDescription(exception.getDescription());
+			}
+			return retBean;
 		}
 }

@@ -27,9 +27,6 @@ public class UserAnswerStats {
 	private String contestIds;
 	
 	
-	@Column(name = "PRIZE_COUNT_REDEEMED")
-	private Integer prizeCountRedeemed;
-
 	public Integer getUserAnswerStatusId() {
 		return userAnswerStatusId;
 	}
@@ -62,13 +59,5 @@ public class UserAnswerStats {
 		this.contestIds = contestIds;
 	}
 
-	public Integer getPrizeCountRedeemed() {
-		return prizeCountRedeemed;
-	}
-
-	public void setPrizeCountRedeemed(Integer prizeCountRedeemed) {
-		this.prizeCountRedeemed = prizeCountRedeemed;
-	}
-	
 	
 }

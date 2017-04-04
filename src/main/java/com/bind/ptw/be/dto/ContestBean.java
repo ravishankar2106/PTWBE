@@ -24,8 +24,16 @@ public class ContestBean extends BaseBean implements Serializable{
 	private Date cutoffDate;
 	private String cutoffDateStr;
 	private List<QuestionBean> questionList;
+	
+	public Integer getTocId() {
+		return tocId;
+	}
+	public void setTocId(Integer tocId) {
+		this.tocId = tocId;
+	}
 	private Integer contestStatusId;
 	private Integer bonusPoints;
+	private Integer tocId; 
 	
 	public Integer getContestId() {
 		return contestId;

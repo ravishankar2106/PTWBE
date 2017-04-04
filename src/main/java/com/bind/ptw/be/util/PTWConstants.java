@@ -233,4 +233,6 @@ public class PTWConstants {
 
 	public final static String ERROR_CODE_FAN_CLUB_JOINED = "272";
 	public final static String ERROR_DESC_FAN_CLUB_JOINED = "You have already joined a Fan club!";
+	
+	public final static String ERROR_CODE_TOC_EMPTY = "290";
 }

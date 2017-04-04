@@ -52,7 +52,7 @@ public class ContestBeanValidator {
 	
 	public static void validateCreateContest(ContestBean contestBean, TournamentDao tournamentDao, ContestDao contestDao) throws PTWException{
 		TournamentBeanValidator.validateTournamentId(contestBean.getTournamentId());
-		TournamentBeanValidator.validateTournament(contestBean.getTournamentId(), tournamentDao);
+		//TournamentBeanValidator.validateTournament(contestBean.getTournamentId(), tournamentDao);
 		
 		if(StringUtil.isEmptyNull(contestBean.getContestName())){
 			throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_NAME_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + "Contest Name");

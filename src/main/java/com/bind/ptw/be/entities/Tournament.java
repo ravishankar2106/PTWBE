@@ -32,6 +32,7 @@ public class Tournament {
 	private SportType sportType;
 	private Set<Match> tournamentMatches = new LinkedHashSet<Match>(
 			0);
+	private Integer tocGroupId;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -128,5 +129,14 @@ public class Tournament {
 	public void setTournamentMatches(
 			Set<Match> tournamentMatches) {
 		this.tournamentMatches = tournamentMatches;
+	}
+	
+	@Column(name = "TOC_GROUP_ID")
+	public Integer getTocGroupId() {
+		return tocGroupId;
+	}
+	
+	public void setTocGroupId(Integer tocGroupId){
+		this.tocGroupId = tocGroupId;
 	}
 }

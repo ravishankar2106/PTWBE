@@ -22,6 +22,7 @@ public class TournamentBean extends BaseBean implements Serializable {
 	private String endDateStr;
 	private Date publishDate;
 	private String publishDateStr;
+	private Integer tocId;
 	
 	//private Integer groupId;
 	
@@ -102,6 +103,12 @@ public class TournamentBean extends BaseBean implements Serializable {
 	}
 	public void setPublishDateStr(String publishDateStr) {
 		this.publishDateStr = publishDateStr;
+	}
+	public Integer getTocId() {
+		return tocId;
+	}
+	public void setTocId(Integer tocId) {
+		this.tocId = tocId;
 	}
 	
 	

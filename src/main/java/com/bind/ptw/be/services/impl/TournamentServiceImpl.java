@@ -15,6 +15,7 @@ import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.PlayerBeanList;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
+import com.bind.ptw.be.dto.TermsBean;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
@@ -24,12 +25,15 @@ import com.bind.ptw.be.dto.TeamTypeBeanList;
 import com.bind.ptw.be.dto.TournTeamPlayerBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.TournamentTeamBean;
 import com.bind.ptw.be.dto.TournamentTeamBeanList;
 import com.bind.ptw.be.entities.SportTypeBeanList;
 import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
+import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
+import com.bind.ptw.be.util.StringUtil;
 
 @Service("tournamentService")
 @Transactional
@@ -469,6 +473,24 @@ public class TournamentServiceImpl implements TournamentService{
 			returnBean.setResultDescription(exception.getDescription());
 		}
 		return returnBean;
+	}
+
+	@Override
+	public BaseBean addTermsAndCondition(TournamentTAndCBean tocBean) {
+		BaseBean returnBean = new BaseBean();
+		try{
+			if(tocBean == null ){
+				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_REQUEST, PTWConstants.ERROR_DESC_INVALID_REQUEST);
+			}
+			if(tocBean.getTermsText() == null || tocBean.getTermsText().isEmpty()){
+				throw new PTWException(PTWConstants.ERROR_CODE_TOC_EMPTY, PTWConstants.ERROR_DESC_FIELD_EMPTY + " TOC Text");
+			}	
+			tournamentDao.createTOC(tocBean);
+		}catch(PTWException exception){
+			returnBean.setResultCode(exception.getCode());
+			returnBean.setResultDescription(exception.getDescription());
+		}
+		return null;
 	}
 
 	
