@@ -131,9 +131,9 @@ public class UserServiceImpl implements UserService{
 				throw new PTWException(PTWConstants.ERROR_CODE_USER_PWD_NOT_FOUND, PTWConstants.ERROR_DESC_USER_PWD_NOT_FOUND);
 			}
 			userResponse = retrievedUsers.get(0);
-			if(!adminFlag){
+			/*if(!adminFlag){
 				createUserToken(userResponse);
-			}
+			}*/
 		}catch(PTWException exception){
 			userResponse = new UserBean();
 			userResponse.setResultCode(exception.getCode());
@@ -543,7 +543,9 @@ public class UserServiceImpl implements UserService{
 			TournamentBeanValidator.validateRequest(registrationBean);
 			System.out.println("User Id " + registrationBean.getUserId());
 			System.out.println("Registrion ID " + registrationBean.getOneSignalRegistrationId());
-			userDao.saveOneSignalRegistraion(registrationBean);
+			if(!StringUtil.isEmptyNull(registrationBean.getUserId()) && !StringUtil.isEmptyNull(registrationBean.getOneSignalRegistrationId())){
+				userDao.saveOneSignalRegistraion(registrationBean);
+			}
 		}catch (PTWException ex) {
 			baseBean.setResultCode(ex.getCode());
 			baseBean.setResultDescription(ex.getDescription());

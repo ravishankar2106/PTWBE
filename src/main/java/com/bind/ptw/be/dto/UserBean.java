@@ -19,6 +19,7 @@ public class UserBean extends BaseBean implements Serializable{
 	private String token;
 	private Integer userStatusId;
 	private Integer cityId;
+	private boolean pushRegistered;
 	
 	public Integer getUserId() {
 		return userId;
@@ -79,6 +80,12 @@ public class UserBean extends BaseBean implements Serializable{
 	}
 	public void setCityId(Integer cityId) {
 		this.cityId = cityId;
+	}
+	public boolean isPushRegistered() {
+		return pushRegistered;
+	}
+	public void setPushRegistered(boolean pushRegistered) {
+		this.pushRegistered = pushRegistered;
 	}
 
 }

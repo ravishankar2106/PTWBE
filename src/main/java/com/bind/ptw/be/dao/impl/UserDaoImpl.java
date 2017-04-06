@@ -109,6 +109,7 @@ public class UserDaoImpl implements UserDao{
 					retrievedUserBean.setPhone(user.getPhone());
 					retrievedUserBean.setUserStatusId(user.getUserStatus().getUserStatusId());
 					retrievedUserBean.setCityId(user.getCity().getCityId());
+					retrievedUserBean.setPushRegistered(user.getPushRegistered());
 				}
 				retrievedUserBeanList.add(retrievedUserBean);
 			}
@@ -615,15 +616,21 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public void saveOneSignalRegistraion(OneSignalUserRegistrationBean registrationBean) throws PTWException{
 		OneSignalUserRegistrationHome regHome = new OneSignalUserRegistrationHome(this.getSession());
+		UserHome userHome = new UserHome(this.getSession());
 		try{
-			List<OneSignalUserRegistration> currentRegs = regHome.findOneSignalUserRegistrationByFilter(registrationBean.getUserId(), registrationBean.getOneSignalRegistrationId(), null);
-			if(currentRegs == null || currentRegs.isEmpty()){
-				OneSignalUserRegistration registration = new OneSignalUserRegistration();
-				registration.setOneSignalRegistrationId(registrationBean.getOneSignalRegistrationId());
-				Users user = new Users();
-				user.setUserId(registrationBean.getUserId());
-				registration.setUsers(user);
-				regHome.persist(registration);
+			Users foundUser = userHome.findById(registrationBean.getUserId());
+			if(foundUser != null){
+				List<OneSignalUserRegistration> currentRegs = regHome.findOneSignalUserRegistrationByFilter(registrationBean.getUserId(), registrationBean.getOneSignalRegistrationId(), null);
+				if(currentRegs == null || currentRegs.isEmpty()){
+					OneSignalUserRegistration registration = new OneSignalUserRegistration();
+					registration.setOneSignalRegistrationId(registrationBean.getOneSignalRegistrationId());
+					Users user = new Users();
+					user.setUserId(registrationBean.getUserId());
+					registration.setUsers(user);
+					regHome.persist(registration);
+					foundUser.setPushRegistered(true);
+					userHome.merge(foundUser);
+				}
 			}
 		}catch(Exception exception){
 			exception.printStackTrace();

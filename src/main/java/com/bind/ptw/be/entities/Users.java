@@ -25,6 +25,7 @@ public class Users {
 	private String randomPwd;
 	private UserStatus userStatus;
 	private City city;
+	private boolean pushRegistered;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -92,6 +93,14 @@ public class Users {
 		this.adminFlag = adminFlag;
 	}
 	
+	@Column(name = "PUSH_REGISTERED")
+	public void setPushRegistered(boolean pushRegistered){
+		this.pushRegistered = pushRegistered;
+	}
+	
+	public boolean getPushRegistered(){
+		return this.pushRegistered;
+	}
 	@Column(name = "RANDOM_PWD")
 	public String getRandomPwd() {
 		return this.randomPwd;
