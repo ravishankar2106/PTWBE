@@ -14,6 +14,7 @@ public class UserContestAnswer extends BaseBean implements Serializable{
 	private Integer contestId;
 	private Integer bonusPoints;
 	private List<UserAnswerBean> userAnswerList;
+	private Integer totalPointsWon;
 	
 	public Integer getUserId() {
 		return userId;
@@ -38,6 +39,12 @@ public class UserContestAnswer extends BaseBean implements Serializable{
 	}
 	public void setUserAnswerList(List<UserAnswerBean> userAnswerList) {
 		this.userAnswerList = userAnswerList;
+	}
+	public Integer getTotalPointsWon() {
+		return totalPointsWon;
+	}
+	public void setTotalPointsWon(Integer totalPointsWon) {
+		this.totalPointsWon = totalPointsWon;
 	}
 	
 	

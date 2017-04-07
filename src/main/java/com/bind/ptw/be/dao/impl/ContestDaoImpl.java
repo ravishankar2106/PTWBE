@@ -828,19 +828,19 @@ public class ContestDaoImpl implements ContestDao{
 		UserContestAnswer retContestAnswer = new UserContestAnswer();
 		retContestAnswer.setContestId(contestId);
 		retContestAnswer.setUserId(userId);
+		int totalPointsWon = 0;
 		try{
 			ContestBean contestBean = new ContestBean();
 			contestBean.setContestId(contestId);
 			List<Question> dbQuestionList = questionHome.findQuestionByFilter(contestBean);
 			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
 				List<UserAnswerBean> userAnswers = null; 
-				int totalPoints = 0;
 				for (Question question : dbQuestionList) {
 					
 					UserAnswerBean userAnswerBean = new UserAnswerBean();
 					userAnswerBean.setQuestionId(question.getQuestionId());
 					List<UserAnswer> dbAnswers = answerHome.getUserAnswer(userId, question.getQuestionId());
-					
+					int matchPoints = 0;
 					
 					if(dbAnswers != null && !dbAnswers.isEmpty()){
 						if(userAnswers == null){
@@ -853,14 +853,15 @@ public class ContestDaoImpl implements ContestDao{
 							answerBean.setAnswerOptionId(userAnswer.getAnswerOption().getAnswerOptionId());
 							answerBean.setPointsScored(userAnswer.getPointsScored());
 							if(!StringUtil.isEmptyNull(userAnswer.getPointsScored())){
-								totalPoints += userAnswer.getPointsScored();
+								matchPoints += userAnswer.getPointsScored();
 							}
 							answerBeanList.add(answerBean);
 						}
 						userAnswerBean.setSelectedAnswerList(answerBeanList);
 					}
 					
-					userAnswerBean.setPointsScored(totalPoints);
+					userAnswerBean.setPointsScored(matchPoints);
+					totalPointsWon += matchPoints;
 					if(userAnswers != null){
 						userAnswers.add(userAnswerBean);
 					}
@@ -870,7 +871,9 @@ public class ContestDaoImpl implements ContestDao{
 				if(userBonusPoints != null && !userBonusPoints.isEmpty()){
 					UserBonusPoint userBonusPoint = userBonusPoints.get(0);
 					retContestAnswer.setBonusPoints(userBonusPoint.getPoints());
+					totalPointsWon += userBonusPoint.getPoints();
 				}
+				retContestAnswer.setTotalPointsWon(totalPointsWon);
 				retContestAnswer.setUserAnswerList(userAnswers);
 			}
 		}catch(Exception exception){
