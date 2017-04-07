@@ -93,11 +93,11 @@ public class Users {
 		this.adminFlag = adminFlag;
 	}
 	
-	@Column(name = "PUSH_REGISTERED")
 	public void setPushRegistered(boolean pushRegistered){
 		this.pushRegistered = pushRegistered;
 	}
 	
+	@Column(name = "PUSH_REGISTERED")
 	public boolean getPushRegistered(){
 		return this.pushRegistered;
 	}
