@@ -474,7 +474,7 @@ public class UserDaoImpl implements UserDao{
 			if(userGroupList == null || userGroupList.size() != 1){
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_GROUP, PTWConstants.ERROR_DESC_INVALID_GROUP);
 			}
-			List<UserGroupMapping> userGroups = userGroupMappingHome.findUserGroup(null, userGroupBean.getGroupId(), null);
+			List<UserGroupMapping> userGroups = userGroupMappingHome.findUserGroup(null, userGroupBean.getGroupId(), null, true);
 			if(userGroups == null || userGroups.size() != 1){
 				throw new PTWException(PTWConstants.ERROR_CODE_GROUP_DELETE_NOT_ALLOWED, PTWConstants.ERROR_DESC_GROUP_DELETE_NOT_ALLOWED);
 			}
@@ -594,7 +594,7 @@ public class UserDaoImpl implements UserDao{
 		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(getSession());
 		List<UserGroupBean> userGroups = null;
 		try{
-			List<UserGroupMapping> userGroupMappingList = userGroupMappingHome.findUserGroup(userGroupBean.getUserId(), null, userGroupBean.getTournamentId());
+			List<UserGroupMapping> userGroupMappingList = userGroupMappingHome.findUserGroup(userGroupBean.getUserId(), null, userGroupBean.getTournamentId(), true);
 			if(userGroupMappingList != null && !userGroupMappingList.isEmpty()){
 				userGroups = new ArrayList<UserGroupBean>();
 				for (UserGroupMapping userGroupMapping : userGroupMappingList) {
