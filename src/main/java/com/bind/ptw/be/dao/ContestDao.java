@@ -1,5 +1,6 @@
 package com.bind.ptw.be.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import com.bind.ptw.be.dto.LeaderBoardBean;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
+import com.bind.ptw.be.dto.PrizeContestWinnerBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentFanClubBean;
@@ -71,6 +73,11 @@ public interface ContestDao {
 	void updateFanClubStandings(TournamentFanClubBean tournamentFanClubBean);
 	void createTOC(TournamentTAndCBean tocBean) throws PTWException;
 	List<String> getContestTerms(ContestBean contestBean) throws PTWException;
+	Integer[] getQuestionsForDates(Date startDate, Date endDate, Integer tournamentId) throws PTWException;
+	List<PrizeContestBean> getUnprocessedPrizeContest(PrizeContestBean prizeContestBean) throws PTWException;
+	void addPrizeWinners(List<PrizeContestWinnerBean> winnerBeanList) throws PTWException;
+	List<PrizeContestWinnerBean> getPrizeWinners(PrizeContestBean prizeContestBean)throws PTWException;
+	void removePrizeWinners(PrizeContestBean prizeContestBean) throws PTWException;
 	
 	
 }

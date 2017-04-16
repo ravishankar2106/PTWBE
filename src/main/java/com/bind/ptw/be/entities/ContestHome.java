@@ -1,9 +1,12 @@
 package com.bind.ptw.be.entities;
 
+import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.util.StringUtils;
 
 import com.bind.ptw.be.dto.ContestBean;
@@ -132,6 +135,13 @@ public class ContestHome {
 		}
 		
 		return query.list();
+	}
+	
+	public List<Contest> getContestBetweenDates(Date startDate, Date endDate, Integer tournamentId){
+		Criteria criteria = session.createCriteria(Contest.class);
+		criteria.add(Restrictions.between("cutoffDateTime", startDate, endDate));
+		criteria.add(Restrictions.eq("tournament.tournamentId", tournamentId));
+		return criteria.list();
 	}
 	
 }

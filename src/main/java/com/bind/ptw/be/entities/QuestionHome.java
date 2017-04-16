@@ -107,4 +107,19 @@ public class QuestionHome {
 		
 		return query.list();
 	}
+	
+	public List<Question> findQuestionForContest(Integer[] contestIds){
+		try{
+			StringBuilder queryToExecute = new StringBuilder();
+			queryToExecute.append(QueryConstants.RETRIEVE_QUESTIONS);
+			queryToExecute.append("and q.contest.id IN (");
+			queryToExecute.append(StringUtil.convertToTokens(contestIds));
+			queryToExecute.append(") ");
+			Query query = session.createQuery(queryToExecute.toString());
+			return query.list();
+		}catch(RuntimeException e){
+			throw e;
+		}
+			
+	}
 }

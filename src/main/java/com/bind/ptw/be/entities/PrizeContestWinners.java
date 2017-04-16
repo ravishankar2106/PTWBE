@@ -18,6 +18,7 @@ public class PrizeContestWinners {
 	private Users user;
 	private Integer pointsScored;
 	private PrizeContest prizeContest;
+	private Integer rank;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -55,6 +56,14 @@ public class PrizeContestWinners {
 	}
 	public void setPointsScored(Integer pointsScored) {
 		this.pointsScored = pointsScored;
+	}
+	
+	@Column(name = "RANK")
+	public Integer getRank() {
+		return rank;
+	}
+	public void setRank(Integer rank) {
+		this.rank = rank;
 	}
 	
 }

@@ -2,7 +2,9 @@ package com.bind.ptw.be.entities;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 
 import com.bind.ptw.be.util.StringUtil;
@@ -78,5 +80,19 @@ public class UserAnswerHome {
 		query.setParameter("pointsScored", pointsScored);
 		query.executeUpdate();
 		
+	}
+	
+	public List<Object> getUserScoreForQuestions(Integer[] userId, Integer[] questionId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select SUM(POINTS_SCORED) AS POINTS, ");
+		queryToExecute.append("USER_ID AS USER_ID ");
+		queryToExecute.append("from USER_ANSWERS where CONTEST_QUESTION_ID IN (");
+		queryToExecute.append(StringUtil.convertToTokens(questionId));
+		queryToExecute.append(") AND USER_ID IN (");
+		queryToExecute.append(StringUtil.convertToTokens(userId));
+		queryToExecute.append(") GROUP BY USER_ID ORDER BY POINTS DESC;");
+		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		return query.list();
 	}
 }

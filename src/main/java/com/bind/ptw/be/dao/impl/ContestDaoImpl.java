@@ -21,6 +21,7 @@ import com.bind.ptw.be.dto.LeaderBoardBean;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
+import com.bind.ptw.be.dto.PrizeContestWinnerBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentFanClubBean;
@@ -45,10 +46,12 @@ import com.bind.ptw.be.entities.MatchHome;
 import com.bind.ptw.be.entities.MatchStatus;
 import com.bind.ptw.be.entities.PrizeContest;
 import com.bind.ptw.be.entities.PrizeContestHome;
+import com.bind.ptw.be.entities.PrizeContestWinners;
+import com.bind.ptw.be.entities.PrizeContestWinnersHome;
 import com.bind.ptw.be.entities.Question;
 import com.bind.ptw.be.entities.QuestionHome;
-import com.bind.ptw.be.entities.TermsCondition;
 import com.bind.ptw.be.entities.TermsAndConditionHome;
+import com.bind.ptw.be.entities.TermsCondition;
 import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.TournamentHome;
 import com.bind.ptw.be.entities.TournamentTeam;
@@ -65,6 +68,7 @@ import com.bind.ptw.be.entities.UserGroupMapping;
 import com.bind.ptw.be.entities.UserGroupMappingHome;
 import com.bind.ptw.be.entities.UserScoreBoard;
 import com.bind.ptw.be.entities.UserScoreBoardHome;
+import com.bind.ptw.be.entities.Users;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -1097,13 +1101,13 @@ public class ContestDaoImpl implements ContestDao{
 		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
 		List<PrizeContestBean> contests = null;
 		try{
-			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean);
+			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean, false);
 			if(dbContests != null && !dbContests.isEmpty()){
 				contests = new ArrayList<PrizeContestBean>();
 				for (PrizeContest prizeContest : dbContests) {
 					PrizeContestBean retPrizeContest = new PrizeContestBean();
 					retPrizeContest.setPrizeContestId(prizeContest.getPrizeContestId());
-					retPrizeContest.setPrizeContestName(prizeContest.getprizeContestName());
+					retPrizeContest.setPrizeContestName(prizeContest.getPrizeContestName());
 					retPrizeContest.setTournamentId(prizeContest.getTournamentId());
 					retPrizeContest.setGroupId(prizeContest.getGroupId());
 					retPrizeContest.setStartDate(prizeContest.getStartDate());
@@ -1275,5 +1279,135 @@ public class ContestDaoImpl implements ContestDao{
 		return terms;
 	}
 	
+	@Override
+	public Integer[] getQuestionsForDates(Date startDate, Date endDate, Integer tournamentId)throws PTWException{
+		ContestHome contestHome = new ContestHome(this.getSession());
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		Integer[] questionIdList = null;
+		try{
+			List<Contest> contestList = contestHome.getContestBetweenDates(startDate, endDate, tournamentId);
+			Integer[] contestIdList = null;
+			if(contestList != null && !contestList.isEmpty()){
+				contestIdList = new Integer[contestList.size()];
+				int index = 0;
+				for (Contest contest : contestList) {
+					contestIdList[index++] = contest.getContestId();
+				}
+				
+				if(contestIdList != null){
+					List<Question> questionList = questionHome.findQuestionForContest(contestIdList);
+					if(questionList != null && !questionList.isEmpty()){
+						questionIdList = new Integer[questionList.size()];
+						int questIndex = 0;
+						for (Question question : questionList) {
+							questionIdList[questIndex++] = question.getQuestionId();
+						}
+					}
+				}
+				
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return questionIdList;
+		
+	}
+	
+	@Override
+	public List<PrizeContestBean> getUnprocessedPrizeContest(PrizeContestBean prizeContestBean) throws PTWException{
+		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
+		List<PrizeContestBean> contests = null;
+		try{
+			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean, true);
+			if(dbContests != null && !dbContests.isEmpty()){
+				contests = new ArrayList<PrizeContestBean>();
+				for (PrizeContest prizeContest : dbContests) {
+					PrizeContestBean retPrizeContest = new PrizeContestBean();
+					retPrizeContest.setPrizeContestId(prizeContest.getPrizeContestId());
+					retPrizeContest.setPrizeContestName(prizeContest.getPrizeContestName());
+					retPrizeContest.setTournamentId(prizeContest.getTournamentId());
+					retPrizeContest.setGroupId(prizeContest.getGroupId());
+					retPrizeContest.setStartDate(prizeContest.getStartDate());
+					retPrizeContest.setStartDateStr(StringUtil.convertDateToString(prizeContest.getStartDate()));
+					retPrizeContest.setEndDate(prizeContest.getEndDate());
+					retPrizeContest.setEndDateStr(StringUtil.convertDateToString(prizeContest.getEndDate()));
+					retPrizeContest.setWinnerSize(prizeContest.getWinnerSize());
+					retPrizeContest.setArchieved(prizeContest.getProcessedFlag());
+					contests.add(retPrizeContest);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return contests;
+	}
+	@Override
+	public void addPrizeWinners(List<PrizeContestWinnerBean> winnerBeanList) throws PTWException{
+		PrizeContestWinnersHome winnerHome = new PrizeContestWinnersHome(this.getSession());
+		try{
+			for (PrizeContestWinnerBean prizeContestWinnerBean : winnerBeanList) {
+				PrizeContestWinners prizeContestWinner = new PrizeContestWinners();
+				Users user = new Users();
+				user.setUserId(prizeContestWinnerBean.getUserId());
+				prizeContestWinner.setUser(user);
+				
+				PrizeContest prizeContest = new PrizeContest();
+				prizeContest.setPrizeContestId(prizeContestWinnerBean.getPrizeContestId());
+				prizeContestWinner.setPrizeContest(prizeContest);
+				
+				prizeContestWinner.setPointsScored(prizeContestWinnerBean.getPointsScored());
+				prizeContestWinner.setRank(prizeContestWinnerBean.getRank());
+				winnerHome.persist(prizeContestWinner);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+
+	@Override
+	public List<PrizeContestWinnerBean> getPrizeWinners(PrizeContestBean prizeContestBean) throws PTWException {
+		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
+		PrizeContestWinnersHome prizeContestWinnerHome = new PrizeContestWinnersHome(this.getSession());
+		List<PrizeContestWinnerBean> winners = null;
+		try{
+			List<PrizeContest> prizeContestList = prizeContestHome.findPrizeContestByFilter(prizeContestBean, true);
+			if(prizeContestList != null && prizeContestList.size() == 1){
+				PrizeContest dbPrizeContest = prizeContestList.get(0);
+				prizeContestBean.setPrizeContestId(dbPrizeContest.getPrizeContestId());
+				List<PrizeContestWinners> dbWinners = prizeContestWinnerHome.findPrizeContestByFilter(prizeContestBean);
+				if(dbWinners != null && !dbWinners.isEmpty()){
+					winners = new ArrayList<PrizeContestWinnerBean>();
+					for (PrizeContestWinners prizeContestWinners : dbWinners) {
+						PrizeContestWinnerBean winnerBean = new PrizeContestWinnerBean();
+						winnerBean.setPrizeContestWinnerId(prizeContestWinners.getPrizeContestWinnersId());
+						winnerBean.setUserId(prizeContestWinners.getUser().getUserId());
+						winnerBean.setUserName(prizeContestWinners.getUser().getUserName());
+						winnerBean.setTeamName(prizeContestWinners.getUser().getTeamName());
+						winnerBean.setPointsScored(prizeContestWinners.getPointsScored());
+						winnerBean.setRank(prizeContestWinners.getRank());
+						winners.add(winnerBean);
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return winners;
+	}
+	
+	@Override
+	public void removePrizeWinners(PrizeContestBean prizeContestBean)throws PTWException{
+		PrizeContestWinnersHome winnerHome = new PrizeContestWinnersHome(this.getSession());
+		try{
+			winnerHome.remove(prizeContestBean);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
 	
 }

@@ -27,7 +27,8 @@ public class PrizeContest {
 	private List<PrizeContestWinners> prizeContestWinners = new ArrayList<PrizeContestWinners>(
 			0); 
 	private Integer groupId;
-	
+	private Boolean archievedFlag;
+		
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "PRIZE_CONTEST_ID", unique = true, nullable = false)
@@ -48,14 +49,14 @@ public class PrizeContest {
 	}
 	
 	@Column(name = "PRIZE_CONTEST_NAME")
-	public String getprizeContestName() {
+	public String getPrizeContestName() {
 		return prizeContestName;
 	}
 	
 	public void setPrizeContestName(String prizeContestName) {
 		this.prizeContestName = prizeContestName;
 	}
-	
+
 	@Column(name = "START_DATE")
 	public Date getStartDate() {
 		return startDate;
@@ -107,5 +108,13 @@ public class PrizeContest {
 	
 	public void setGroupId(Integer groupId) {
 		this.groupId = groupId;
+	}
+	
+	@Column(name = "ARCHIEVED_FLAG")
+	public Boolean getArchievedFlag() {
+		return archievedFlag;
+	}
+	public void setArchievedFlag(Boolean archievedFlag) {
+		this.archievedFlag = archievedFlag;
 	}
 }

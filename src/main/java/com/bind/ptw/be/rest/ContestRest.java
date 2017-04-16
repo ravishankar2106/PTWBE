@@ -174,6 +174,11 @@ public class ContestRest {
 		return baseBean;
 		
 	}
+	
+	@PostMapping("/processPrizeContest")
+	public BaseBean processPrizeContest(){
+		return contestService.processPrizeContest();
+	}
 }
 
 

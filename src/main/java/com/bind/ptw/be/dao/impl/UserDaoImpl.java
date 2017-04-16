@@ -1,8 +1,10 @@
 package com.bind.ptw.be.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,14 @@ import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserGroupInvitationBean;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.entities.City;
 import com.bind.ptw.be.entities.OneSignalUserRegistration;
 import com.bind.ptw.be.entities.OneSignalUserRegistrationHome;
 import com.bind.ptw.be.entities.Tournament;
+import com.bind.ptw.be.entities.UserAnswerHome;
 import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
 import com.bind.ptw.be.entities.UserConfirmation;
@@ -612,6 +616,26 @@ public class UserDaoImpl implements UserDao{
 		}
 		return userGroups;
 	}
+	
+	@Override
+	public Integer[] getGroupUsers(UserGroupBean userGroupBean) throws PTWException{
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
+		Integer[] userIds = null;
+		try{
+			List<UserGroupMapping> userGroupMappingList = userGroupMappingHome.findUserGroup(userGroupBean.getUserId(), userGroupBean.getGroupId(), userGroupBean.getTournamentId(), true);
+			if(userGroupMappingList != null && !userGroupMappingList.isEmpty()){
+				userIds = new Integer[userGroupMappingList.size()];
+				int index = 0;
+				for (UserGroupMapping userGroupMapping : userGroupMappingList) {
+					userIds[index++] = userGroupMapping.getUserGroupMappingKey().getUserId();
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return userIds;
+	}
 
 	@Override
 	public void saveOneSignalRegistraion(OneSignalUserRegistrationBean registrationBean) throws PTWException{
@@ -710,6 +734,31 @@ public class UserDaoImpl implements UserDao{
 		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
 		Long totalPoints = userScoreBoardHome.getTotalPointsForGroups(tournamentFanClubBean.getGroupId(), tournamentFanClubBean.getTournamentId());
 		return totalPoints;
+	}
+	
+	@Override 
+	public List<UserScoreBoardBean> getUserPointsForQuestions(Integer userIds[], Integer questionIds[]){
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		List<UserScoreBoardBean> userScoreBoardBeanList = null;
+		List<Object> objMap = answerHome.getUserScoreForQuestions(userIds, questionIds);
+		if(objMap != null && !objMap.isEmpty()){
+			userScoreBoardBeanList = new ArrayList<UserScoreBoardBean>();
+			for (Object object : objMap) {
+				UserScoreBoardBean userScore = new UserScoreBoardBean();
+				Map userScoreMap = (Map)object;
+				BigDecimal pointsDec = (BigDecimal)userScoreMap.get("POINTS");
+				int points = 0;
+				if(pointsDec != null){
+					points = pointsDec.intValue();
+				}
+				Integer userId = (Integer)userScoreMap.get("USER_ID");
+				userScore.setPointsScored(points);
+				userScore.setUserId(userId);
+				userScoreBoardBeanList.add(userScore);
+			}
+		}
+		
+		return userScoreBoardBeanList;
 	}
 
 }

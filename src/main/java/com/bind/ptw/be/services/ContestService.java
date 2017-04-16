@@ -62,5 +62,6 @@ public interface ContestService {
 	BaseBean sendNotification();
 	void processFanGroupRanking(int tournamentId);
 	TournamentTAndCBean getContestTAndC(ContestBean contestBean);
+	BaseBean processPrizeContest();
 	
 }

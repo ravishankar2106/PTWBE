@@ -11,6 +11,7 @@ import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserGroupInvitationBean;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 import com.bind.ptw.be.util.PTWException;
@@ -47,4 +48,6 @@ public interface UserDao {
 	List<TournamentFanClubBean> getUserFanClub(UserGroupBean userGroupBean) throws PTWException;
 	void addUserToSystemGroup(UserGroupBean userGroupBean) throws PTWException;
 	Long getGroupPoints(TournamentFanClubBean tournamentFanClubBean) throws PTWException;
+	Integer[] getGroupUsers(UserGroupBean userGroupBean) throws PTWException;
+	List<UserScoreBoardBean> getUserPointsForQuestions(Integer[] userIds, Integer[] questionIds);
 }

@@ -1,6 +1,7 @@
 package com.bind.ptw.be.services.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.PossibleAnswerBean;
 import com.bind.ptw.be.dto.PrizeContestBean;
 import com.bind.ptw.be.dto.PrizeContestBeanList;
+import com.bind.ptw.be.dto.PrizeContestWinnerBean;
 import com.bind.ptw.be.dto.PushBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
@@ -845,12 +847,43 @@ public class ContestServiceImpl implements ContestService{
 			TournamentBeanValidator.validateRequest(userGroupBean);
 			UserBeanValidator.validateGroupId(userGroupBean.getGroupId());
 			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
-			LeaderBoardBeanList queryLeaderBoardBean = new LeaderBoardBeanList();
-			queryLeaderBoardBean.setGroupId(userGroupBean.getGroupId());
-			queryLeaderBoardBean.setTournamentId(userGroupBean.getTournamentId());
-			List<LeaderBoardBean> leadersList = contestDao.getLeaderBoard(queryLeaderBoardBean);
-			reRankGroupUsers(leadersList);
-			retLeaderBoard.setLeaders(leadersList);
+			
+			boolean isPrizeGroup = false;
+			UserGroupBean queryBean = new UserGroupBean();
+			queryBean.setGroupId(userGroupBean.getGroupId());
+			List<UserGroupBean> userGroup = userDao.getUserGroup(queryBean);
+			if(userGroup != null && !userGroup.isEmpty()){
+				Boolean prizeGroupFlag = userGroup.get(0).getPrizeGroupFlag();
+				if(prizeGroupFlag != null && prizeGroupFlag){
+					isPrizeGroup = true;
+				}
+			}
+			
+			if(!isPrizeGroup){
+				LeaderBoardBeanList queryLeaderBoardBean = new LeaderBoardBeanList();
+				queryLeaderBoardBean.setGroupId(userGroupBean.getGroupId());
+				queryLeaderBoardBean.setTournamentId(userGroupBean.getTournamentId());
+				List<LeaderBoardBean> leadersList = contestDao.getLeaderBoard(queryLeaderBoardBean);
+				reRankGroupUsers(leadersList);
+				retLeaderBoard.setLeaders(leadersList);
+			}else{
+				PrizeContestBean prizeContestBean = new PrizeContestBean();
+				prizeContestBean.setGroupId(userGroupBean.getGroupId());
+				List<PrizeContestWinnerBean> winners = contestDao.getPrizeWinners(prizeContestBean);
+				if(winners != null && !winners.isEmpty()){
+					List<LeaderBoardBean> leadersList = new ArrayList<LeaderBoardBean>();
+					for (PrizeContestWinnerBean prizeContestWinnerBean : winners) {
+						LeaderBoardBean leaderBoardBean = new LeaderBoardBean();
+						leaderBoardBean.setUserId(prizeContestWinnerBean.getUserId());
+						leaderBoardBean.setUserName(prizeContestWinnerBean.getUserName());
+						leaderBoardBean.setTeamName(prizeContestWinnerBean.getTeamName());
+						leaderBoardBean.setTotalPoints(prizeContestWinnerBean.getPointsScored());
+						leaderBoardBean.setRank(prizeContestWinnerBean.getRank());
+						leadersList.add(leaderBoardBean);
+					}
+					retLeaderBoard.setLeaders(leadersList);
+				}
+			}
 		}catch(PTWException exception){
 			retLeaderBoard.setResultCode(exception.getCode());
 			retLeaderBoard.setResultDescription(exception.getDescription());
@@ -893,116 +926,165 @@ public class ContestServiceImpl implements ContestService{
 	}
 	
 	private void sendGroupWelcomeMail(CodeMojoRewardBean rewardBean) throws PTWException{
-		
-			EmailContent emailContent = new EmailContent();
-			emailContent.setToAddress("ravishankar@innovationculture.in");
-		    StringBuilder bodyBuilder = new StringBuilder();
-		    bodyBuilder.append("\r\n");
-		    bodyBuilder.append("Email Id " + rewardBean.getCommunication_channel_email());
-		    bodyBuilder.append("\r\n");
-		    bodyBuilder.append("Phone No " + rewardBean.getCommunication_channel_phone());
-		    bodyBuilder.append("\r\n");
-		    bodyBuilder.append("Hash " + rewardBean.getHash());
-		    bodyBuilder.append("\r\n");
-			Coupon coupon = rewardBean.getCoupon();
-			if(coupon == null){
-				bodyBuilder.append("Coupon is null...");
-			}else{
-				bodyBuilder.append("Transaction Id " + coupon.getTxn_id());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Coupon Code " + coupon.getCoupon_code());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Brand Name " + coupon.getBrand_name());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Brand URL " + coupon.getBrand_url());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Logo " + coupon.getLogo());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Title " + coupon.getTitle());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Fineprint " + coupon.getFineprint());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Redemption Process " + coupon.getRedemption_process());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Support " + coupon.getSupport());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Value Formatted " + coupon.getValue_formatted());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Value Numeric " + coupon.getValue_numeric());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Value Ratio " + coupon.getValue_ratio());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Validity Stamp " + coupon.getValidity_stamp());
-				bodyBuilder.append("\r\n");
-				bodyBuilder.append("Validity " + coupon.getValidity());
-				bodyBuilder.append("\r\n");
-			}
-		    bodyBuilder.append("\r\n");
-		    bodyBuilder.append("This is auto generated Mail.");
-		    emailContent.setEmailBody(bodyBuilder.toString());
-		    
-		    String subj = "Predict 2 Win: Code Mojo Reward Alert";
-		    emailContent.setEmailSubject(subj);
-		    try{
-		    	EmailUtil.sendEmail(emailContent, EmailUtil.getMailConfiguration(env));
-		    }catch (Exception ex) {
-				ex.printStackTrace();
-				throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
-			} 
-			
-			
+		EmailContent emailContent = new EmailContent();
+		emailContent.setToAddress("ravishankar@innovationculture.in");
+	    StringBuilder bodyBuilder = new StringBuilder();
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("Email Id " + rewardBean.getCommunication_channel_email());
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("Phone No " + rewardBean.getCommunication_channel_phone());
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("Hash " + rewardBean.getHash());
+	    bodyBuilder.append("\r\n");
+		Coupon coupon = rewardBean.getCoupon();
+		if(coupon == null){
+			bodyBuilder.append("Coupon is null...");
+		}else{
+			bodyBuilder.append("Transaction Id " + coupon.getTxn_id());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Coupon Code " + coupon.getCoupon_code());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Brand Name " + coupon.getBrand_name());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Brand URL " + coupon.getBrand_url());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Logo " + coupon.getLogo());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Title " + coupon.getTitle());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Fineprint " + coupon.getFineprint());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Redemption Process " + coupon.getRedemption_process());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Support " + coupon.getSupport());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Value Formatted " + coupon.getValue_formatted());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Value Numeric " + coupon.getValue_numeric());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Value Ratio " + coupon.getValue_ratio());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Validity Stamp " + coupon.getValidity_stamp());
+			bodyBuilder.append("\r\n");
+			bodyBuilder.append("Validity " + coupon.getValidity());
+			bodyBuilder.append("\r\n");
 		}
+	    bodyBuilder.append("\r\n");
+	    bodyBuilder.append("This is auto generated Mail.");
+	    emailContent.setEmailBody(bodyBuilder.toString());
+	    
+	    String subj = "Predict 2 Win: Code Mojo Reward Alert";
+	    emailContent.setEmailSubject(subj);
+	    try{
+	    	EmailUtil.sendEmail(emailContent, EmailUtil.getMailConfiguration(env));
+	    }catch (Exception ex) {
+			ex.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
+		} 
+	}
 
-		@Override
-		public BaseBean sendNotification(){
-			//sendNotification("Test message " + System.currentTimeMillis(), null, DBConstants.ONE_SIGNAL_SEGMENT_ALL);
-			try {
-				List<OneSignalUserRegistrationBean> userRegs = userDao.getOneSignalRegistrations(null);
-				if(userRegs != null && !userRegs.isEmpty()){
-					String[] players = new String[userRegs.size()];
-					int counter = 0;
-					for (OneSignalUserRegistrationBean userReg : userRegs) {
-						players[counter++] = userReg.getOneSignalRegistrationId();
-					}
-					sendNotification("Testing with actuals", players, null);
+	@Override
+	public BaseBean sendNotification(){
+		//sendNotification("Test message " + System.currentTimeMillis(), null, DBConstants.ONE_SIGNAL_SEGMENT_ALL);
+		try {
+			List<OneSignalUserRegistrationBean> userRegs = userDao.getOneSignalRegistrations(null);
+			if(userRegs != null && !userRegs.isEmpty()){
+				String[] players = new String[userRegs.size()];
+				int counter = 0;
+				for (OneSignalUserRegistrationBean userReg : userRegs) {
+					players[counter++] = userReg.getOneSignalRegistrationId();
 				}
-			} catch (PTWException e) {
-				e.printStackTrace();
+				sendNotification("Testing with actuals", players, null);
 			}
-			return new BaseBean();
-			
+		} catch (PTWException e) {
+			e.printStackTrace();
 		}
+		return new BaseBean();
 		
+	}
 		
+	private void sendNotification(String message, String[] players, String segmentName){
+		PushBean pushBean = new PushBean();
+		pushBean.setApp_id(env.getProperty("onesignal.appid"));
+		Map<String, String> contentBeanMap = new HashMap<String,String>();
+		contentBeanMap.put("en", message);
+		pushBean.setContents(contentBeanMap);
+		pushBean.setInclude_player_ids(players);
+		pushBean.setIncluded_segments(segmentName);
+	
+		Map<String, String> dataBeanMap = new HashMap<String,String>();
+		dataBeanMap.put("foo","val");
+		pushBean.setData(dataBeanMap);
 		
-		private void sendNotification(String message, String[] players, String segmentName){
-			PushBean pushBean = new PushBean();
-			pushBean.setApp_id(env.getProperty("onesignal.appid"));
-			Map<String, String> contentBeanMap = new HashMap<String,String>();
-			contentBeanMap.put("en", message);
-			pushBean.setContents(contentBeanMap);
-			pushBean.setInclude_player_ids(players);
-			pushBean.setIncluded_segments(segmentName);
+		OneSignalUtil.sendNotification(pushBean, env.getProperty("onesignal.auth"));
+	}
 		
-			Map<String, String> dataBeanMap = new HashMap<String,String>();
-			dataBeanMap.put("foo","val");
-			pushBean.setData(dataBeanMap);
-			
-			OneSignalUtil.sendNotification(pushBean, env.getProperty("onesignal.auth"));
+	@Override
+	public TournamentTAndCBean getContestTAndC(ContestBean contestBean){
+		TournamentTAndCBean retBean = new TournamentTAndCBean();
+		try{
+			TournamentBeanValidator.validateRequest(contestBean);
+			ContestBeanValidator.validateContestId(contestBean.getContestId());
+			List<String> terms = contestDao.getContestTerms(contestBean);
+			retBean.setTermsText(terms);
+		}catch(PTWException exception){
+			retBean.setResultCode(exception.getCode());
+			retBean.setResultDescription(exception.getDescription());
 		}
+		return retBean;
+	}
 		
-		@Override
-		public TournamentTAndCBean getContestTAndC(ContestBean contestBean){
-			TournamentTAndCBean retBean = new TournamentTAndCBean();
-			try{
-				TournamentBeanValidator.validateRequest(contestBean);
-				ContestBeanValidator.validateContestId(contestBean.getContestId());
-				List<String> terms = contestDao.getContestTerms(contestBean);
-				retBean.setTermsText(terms);
-			}catch(PTWException exception){
-				retBean.setResultCode(exception.getCode());
-				retBean.setResultDescription(exception.getDescription());
+	@Override
+	public BaseBean processPrizeContest(){
+		BaseBean baseBean = new BaseBean();
+		try{
+			List<PrizeContestBean> prizeContestBeanList = contestDao.getUnprocessedPrizeContest(new PrizeContestBean());
+			if(prizeContestBeanList != null && !prizeContestBeanList.isEmpty()){
+				for (PrizeContestBean prizeContestBean : prizeContestBeanList) {
+					Date startDate = StringUtil.floorDate(prizeContestBean.getStartDate());
+					Date endDate = StringUtil.cielDate(prizeContestBean.getEndDate());
+					Integer[] questionIds = contestDao.getQuestionsForDates(startDate, endDate, prizeContestBean.getTournamentId());
+					if(questionIds != null){
+						UserGroupBean queryGroup = new UserGroupBean();
+						queryGroup.setGroupId(prizeContestBean.getGroupId());
+						Integer[] groupUsers = userDao.getGroupUsers(queryGroup);
+						
+						List<UserScoreBoardBean> userScores = userDao.getUserPointsForQuestions(groupUsers, questionIds);
+						List<PrizeContestWinnerBean> winners = null;
+						if(userScores!= null && !userScores.isEmpty()){
+							winners = new ArrayList<PrizeContestWinnerBean>();
+							for (UserScoreBoardBean userScoreBoardBean : userScores) {
+								PrizeContestWinnerBean prizeWinner = new PrizeContestWinnerBean();
+								prizeWinner.setPrizeContestId(prizeContestBean.getPrizeContestId());
+								prizeWinner.setUserId(userScoreBoardBean.getUserId());
+								prizeWinner.setPointsScored(userScoreBoardBean.getPointsScored());
+								winners.add(prizeWinner);
+							}
+							resetRanking(winners);
+							contestDao.removePrizeWinners(prizeContestBean);
+							contestDao.addPrizeWinners(winners);
+						}
+					}
+				}
 			}
-			return retBean;
+		}catch(PTWException exception){
+			baseBean.setResultCode(exception.getCode());
+			baseBean.setResultDescription(exception.getDescription());
 		}
+		return baseBean;
+	}
+
+	private void resetRanking(List<PrizeContestWinnerBean> winners) {
+		int rank = 1;
+		int newPoints = winners.get(0).getPointsScored();
+		for (PrizeContestWinnerBean prizeContestWinnerBean : winners) {
+			if(prizeContestWinnerBean.getPointsScored() != newPoints){
+				newPoints = prizeContestWinnerBean.getPointsScored();
+				rank++;
+			}
+			prizeContestWinnerBean.setRank(rank);
+		}
+		
+	}
+	
 }

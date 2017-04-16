@@ -51,7 +51,7 @@ public class PrizeContestHome {
 		}
 	}
 	
-	public List<PrizeContest> findPrizeContestByFilter(PrizeContestBean prizeContestBean){
+	public List<PrizeContest> findPrizeContestByFilter(PrizeContestBean prizeContestBean, boolean exludeArchived){
 		Query query = null;
 		
 		try{
@@ -66,6 +66,10 @@ public class PrizeContestHome {
 				}
 				if(!StringUtil.isEmptyNull(prizeContestBean.getGroupId())){
 					queryToExecute.append("AND pc.groupId =:groupId ");
+				}
+				if(exludeArchived){
+					queryToExecute.append("AND pc.archievedFlag = false ");
+					queryToExecute.append("AND pc.processedFlag = false ");
 				}
 			}
 			query = session.createQuery(queryToExecute.toString());
