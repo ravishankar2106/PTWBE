@@ -13,14 +13,6 @@ import org.springframework.core.env.Environment;
 
 public class EmailUtil {
 
-	/*public static final String FROM_ADDRESS = "ravishankar2106@gmail.com";
-	public static final String SMTP_USERNAME = "AKIAJUIM6EUWQ2PNBFKQ";
-	public static final String SMTP_PASSWORD = "AhsTBBggJN2wcx72bAQJjC7uA20WrC8U48X6+YJ/ZD9L";
-	public static final String HOST = "email-smtp.us-west-2.amazonaws.com";
-	public static final int PORT = 587;*/
-	
-	
-
 	public static void sendEmail(EmailContent emailContest, MailConfiguration mailConfig) throws Exception {
 
 		// Create a Properties object to contain connection configuration

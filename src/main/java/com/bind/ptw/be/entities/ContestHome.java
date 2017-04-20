@@ -78,7 +78,7 @@ public class ContestHome {
 				queryToExecute.append("c.publishEndDateTime) AND ");
 				queryToExecute.append("c.contestStatus.contestStatusId = 1 ");
 			}
-			queryToExecute.append("ORDER BY c.cutoffDateTime DESC ");
+			queryToExecute.append("ORDER BY c.cutoffDateTime ASC ");
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(contestBean != null){
