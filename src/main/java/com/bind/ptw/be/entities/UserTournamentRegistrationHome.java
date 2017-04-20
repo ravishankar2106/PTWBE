@@ -62,6 +62,7 @@ public class UserTournamentRegistrationHome {
 			if(!StringUtil.isEmptyNull(userId)){
 				queryToExecute.append("AND utr.userId =:userId ");
 			}
+			queryToExecute.append("AND utr.tournament.archievedFlag = false ");
 			query = session.createQuery(queryToExecute.toString());
 			if(!StringUtil.isEmptyNull(tournamentId)){
 				query.setParameter("tournamentId", tournamentId);
