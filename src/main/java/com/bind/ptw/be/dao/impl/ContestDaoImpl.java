@@ -386,6 +386,11 @@ public class ContestDaoImpl implements ContestDao{
 						matchDisplayNameBuilder.append(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
 						retContestBean.setMatchDisplayName(matchDisplayNameBuilder.toString());
 						retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
+					}else{
+						StringBuilder matchDisplayNameBuilder = new StringBuilder();
+						matchDisplayNameBuilder.append("Contest Cuoff Time is: ");
+						matchDisplayNameBuilder.append(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
+						retContestBean.setMatchDisplayName(matchDisplayNameBuilder.toString());
 					}
 					
 					retContestBeanList.add(retContestBean);
