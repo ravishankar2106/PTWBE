@@ -201,6 +201,9 @@ public class ContestServiceImpl implements ContestService{
 		try{
 			TournamentBeanValidator.validateRequest(contestBean);
 			TournamentBeanValidator.validateTournamentId(contestBean.getTournamentId());
+			if(StringUtil.isEmptyNull(contestBean.getContestTypeId())){
+				contestBean.setContestTypeId(1);
+			}
 			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, true);
 			if(contestBeanList != null && !contestBeanList.isEmpty()){
 				for (ContestBean retContestBean : contestBeanList) {
