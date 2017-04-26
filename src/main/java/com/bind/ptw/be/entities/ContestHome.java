@@ -72,6 +72,9 @@ public class ContestHome {
 				if(!StringUtil.isEmptyNull(contestBean.getContestStatusId())){
 					queryToExecute.append("AND c.contestStatus.contestStatusId =:contestStatusId ");
 				}
+				if(!StringUtil.isEmptyNull(contestBean.getContestTypeId())){
+					queryToExecute.append("AND c.contestType.contestTypeId =:contestTypeId ");
+				}
 			}
 			if(isOngoingContest != null && isOngoingContest){
 				queryToExecute.append("AND ( NOW() BETWEEN c.publishStartDateTime AND ");
@@ -92,7 +95,9 @@ public class ContestHome {
 				if(!StringUtil.isEmptyNull(contestBean.getContestStatusId())){
 					query.setParameter("contestStatusId", contestBean.getContestStatusId());
 				}
-				
+				if(!StringUtil.isEmptyNull(contestBean.getContestTypeId())){
+					query.setParameter("contestTypeId", contestBean.getContestTypeId());
+				}
 			}
 		}catch(RuntimeException e){
 			throw e;
