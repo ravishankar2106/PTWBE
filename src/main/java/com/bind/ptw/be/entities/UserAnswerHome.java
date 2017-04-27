@@ -69,7 +69,6 @@ public class UserAnswerHome {
 		query.executeUpdate();
 	}
 	
-	
 	public void saveUserPoints(Integer answerOptionId, Integer pointsScored) {
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();
@@ -91,6 +90,18 @@ public class UserAnswerHome {
 		queryToExecute.append(") AND USER_ID IN (");
 		queryToExecute.append(StringUtil.convertToTokens(userId));
 		queryToExecute.append(") GROUP BY USER_ID ORDER BY POINTS DESC;");
+		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		return query.list();
+	}
+	
+	public List<Object> getAnswerSelectionStats(Integer questionId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select COUNT(*) AS STATS_COUNT, ");
+		queryToExecute.append("SELECTED_ANSWER_OPTION_ID AS ANSWER_OPTION_ID ");
+		queryToExecute.append("from USER_ANSWERS where CONTEST_QUESTION_ID =");
+		queryToExecute.append(questionId);
+		queryToExecute.append(" GROUP BY SELECTED_ANSWER_OPTION_ID;");
 		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		return query.list();

@@ -1,8 +1,10 @@
 package com.bind.ptw.be.dao.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +14,11 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.bind.ptw.be.dao.UserDao;
+import com.bind.ptw.be.dto.AnswerPulseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
+import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.UserBean;
@@ -24,6 +28,8 @@ import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
+import com.bind.ptw.be.entities.AnswerOption;
+import com.bind.ptw.be.entities.AnswerOptionHome;
 import com.bind.ptw.be.entities.City;
 import com.bind.ptw.be.entities.OneSignalUserRegistration;
 import com.bind.ptw.be.entities.OneSignalUserRegistrationHome;
@@ -760,5 +766,49 @@ public class UserDaoImpl implements UserDao{
 		
 		return userScoreBoardBeanList;
 	}
+	
+	@Override 
+	public List<AnswerPulseBean> getAnswerStats(QuestionBean questionBean){
+		AnswerOptionHome answerOptionHome = new AnswerOptionHome(this.getSession());
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		List<AnswerPulseBean> answerPulseList = null;
+		
+		List<AnswerOption> answerOptions = answerOptionHome.findAnswerOptionByFilter(questionBean);
+		if(answerOptions != null && !answerOptions.isEmpty()){
+			List<Object> objMap = answerHome.getAnswerSelectionStats(questionBean.getQuestionId());
+			Map<Integer, Integer> answerCountMap = getAnswerCountMap(objMap);
+			answerPulseList = new ArrayList<AnswerPulseBean>();
+			for (AnswerOption answerOption : answerOptions) {
+				int answerOptionId = answerOption.getAnswerOptionId();
+				Integer count = answerCountMap.get(answerOptionId);
+				if(count == null){
+					count = 0;
+				}
+				AnswerPulseBean answerPulseBean = new AnswerPulseBean();
+				answerPulseBean.setAnswerOptionName(answerOption.getAnswerOptionStr());
+				answerPulseBean.setAnswerCount(count);
+				answerPulseList.add(answerPulseBean);
+			}
+		}
+		return answerPulseList;
+		
+	}
 
+
+	private Map<Integer, Integer> getAnswerCountMap(List<Object> objMap) {
+		Map<Integer, Integer> answerCountMap = new HashMap<Integer, Integer>();
+		if(objMap != null && !objMap.isEmpty()){
+			for (Object object : objMap) {
+				Map userScoreMap = (Map)object;
+				Integer answerOptionId = (Integer)userScoreMap.get("ANSWER_OPTION_ID");
+				BigInteger countDec = (BigInteger)userScoreMap.get("STATS_COUNT");
+				int count = 0;
+				if(countDec != null){
+					count = countDec.intValue();
+				}
+				answerCountMap.put(answerOptionId, count);
+			}
+		}
+		return answerCountMap;
+	}
 }

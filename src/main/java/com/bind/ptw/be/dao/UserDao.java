@@ -2,9 +2,11 @@ package com.bind.ptw.be.dao;
 
 import java.util.List;
 
+import com.bind.ptw.be.dto.AnswerPulseBean;
 import com.bind.ptw.be.dto.CityBean;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
+import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.UserBean;
@@ -50,4 +52,5 @@ public interface UserDao {
 	Long getGroupPoints(TournamentFanClubBean tournamentFanClubBean) throws PTWException;
 	Integer[] getGroupUsers(UserGroupBean userGroupBean) throws PTWException;
 	List<UserScoreBoardBean> getUserPointsForQuestions(Integer[] userIds, Integer[] questionIds);
+	List<AnswerPulseBean> getAnswerStats(QuestionBean questionBean);
 }

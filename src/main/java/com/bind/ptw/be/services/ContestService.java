@@ -1,6 +1,7 @@
 package com.bind.ptw.be.services;
 
 import com.bind.ptw.be.dto.AnswerOptionBean;
+import com.bind.ptw.be.dto.AnswerPulseBeanList;
 import com.bind.ptw.be.dto.AnswerTypeBeanList;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CodeMojoRewardBean;
@@ -63,5 +64,6 @@ public interface ContestService {
 	void processFanGroupRanking(int tournamentId);
 	TournamentTAndCBean getContestTAndC(ContestBean contestBean);
 	BaseBean processPrizeContest();
+	AnswerPulseBeanList getAnswerPulse(QuestionBean questionBean);
 	
 }

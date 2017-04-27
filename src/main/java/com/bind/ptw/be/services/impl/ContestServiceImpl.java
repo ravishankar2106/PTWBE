@@ -1,5 +1,6 @@
 package com.bind.ptw.be.services.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ import com.bind.ptw.be.dao.TournamentDao;
 import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.AnswerBean;
 import com.bind.ptw.be.dto.AnswerOptionBean;
+import com.bind.ptw.be.dto.AnswerPulseBean;
+import com.bind.ptw.be.dto.AnswerPulseBeanList;
 import com.bind.ptw.be.dto.AnswerTypeBean;
 import com.bind.ptw.be.dto.AnswerTypeBeanList;
 import com.bind.ptw.be.dto.BaseBean;
@@ -1089,5 +1092,38 @@ public class ContestServiceImpl implements ContestService{
 		}
 		
 	}
+
+	@Override
+	public AnswerPulseBeanList getAnswerPulse(QuestionBean questionBean) {
+		AnswerPulseBeanList answerPulseList = new AnswerPulseBeanList();
+		try{
+			TournamentBeanValidator.validateRequest(questionBean);
+			ContestBeanValidator.validateQuestionId(questionBean.getQuestionId());
+			List<AnswerPulseBean> answerPulses = userDao.getAnswerStats(questionBean);
+			setAnswerPercentages(answerPulses);
+			answerPulseList.setAnswerPulses(answerPulses);
+		}catch(PTWException exception){
+			answerPulseList.setResultCode(exception.getCode());
+			answerPulseList.setResultDescription(exception.getDescription());
+		}
+		return answerPulseList;
+	}
+
+	private void setAnswerPercentages(List<AnswerPulseBean> answerPulses) {
+		if(answerPulses != null && !answerPulses.isEmpty()){
+			int totalAnswers = 0;
+			for (AnswerPulseBean answerPulseBean : answerPulses) {
+				totalAnswers+=answerPulseBean.getAnswerCount();
+			}
+			for (AnswerPulseBean answerPulseBean : answerPulses) {
+				Float percent = ((float)answerPulseBean.getAnswerCount()/totalAnswers) * 100;
+				int percentInt = percent.intValue();
+				answerPulseBean.setAnsweredPercent(String.valueOf(percentInt));
+			}
+		}
+	}
+	
 	
 }
+
+
