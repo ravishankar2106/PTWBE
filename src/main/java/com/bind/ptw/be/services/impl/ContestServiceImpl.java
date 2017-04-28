@@ -189,7 +189,7 @@ public class ContestServiceImpl implements ContestService{
 		try{
 			TournamentBeanValidator.validateRequest(contestBean);
 			TournamentBeanValidator.validateTournamentId(contestBean.getTournamentId());
-			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, false);
+			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, false, true);
 			resContestBeanList.setContestBeanList(contestBeanList);
 		}catch(PTWException exception){
 			resContestBeanList.setResultCode(exception.getCode());
@@ -207,7 +207,7 @@ public class ContestServiceImpl implements ContestService{
 			if(StringUtil.isEmptyNull(contestBean.getContestTypeId())){
 				contestBean.setContestTypeId(1);
 			}
-			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, true);
+			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, true, false);
 			if(contestBeanList != null && !contestBeanList.isEmpty()){
 				for (ContestBean retContestBean : contestBeanList) {
 					List<QuestionBean> questionList = contestDao.getQuestion(retContestBean);
@@ -482,7 +482,7 @@ public class ContestServiceImpl implements ContestService{
 				Integer contestId = questionBean.getContestId();
 				ContestBean contestBean = new ContestBean();
 				contestBean.setContestId(contestId);
-				List<ContestBean> contestList = contestDao.getMatches(contestBean, false);
+				List<ContestBean> contestList = contestDao.getMatches(contestBean, false, true);
 				if(contestList != null && !contestList.isEmpty()){
 					ContestBean dbContestBean = contestList.get(0);
 					Integer matchId = dbContestBean.getMatchId();

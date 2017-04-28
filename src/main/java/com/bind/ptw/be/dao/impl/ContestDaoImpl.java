@@ -349,7 +349,7 @@ public class ContestDaoImpl implements ContestDao{
 	}
 	
 	@Override
-	public List<ContestBean> getMatches(ContestBean contestBean, Boolean isOngoingContest) throws PTWException {
+	public List<ContestBean> getMatches(ContestBean contestBean, Boolean isOngoingContest, Boolean fullData) throws PTWException {
 		List<ContestBean> retContestBeanList = null;
 		ContestHome contestHome = new ContestHome(this.getSession());
 		try{
@@ -360,17 +360,20 @@ public class ContestDaoImpl implements ContestDao{
 					ContestBean retContestBean = new ContestBean();
 					retContestBean.setContestId(contest.getContestId());
 					retContestBean.setContestName(contest.getContestName());
-					retContestBean.setPublishStartDate(contest.getPublishStartDateTime());
-					retContestBean.setPublishStartDateStr(StringUtil.convertDateTImeToString(contest.getPublishStartDateTime()));
-					retContestBean.setPublishEndDate(contest.getPublishEndDateTime());
-					retContestBean.setPublishEndDateStr(StringUtil.convertDateTImeToString(contest.getPublishEndDateTime()));
-					retContestBean.setCutoffDate(contest.getCutoffDateTime());
-					retContestBean.setCutoffDateStr(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
-					retContestBean.setBonusPoints(contest.getBonusPoints());
+					if(fullData){
+						retContestBean.setPublishStartDate(contest.getPublishStartDateTime());
+						retContestBean.setPublishStartDateStr(StringUtil.convertDateTImeToString(contest.getPublishStartDateTime()));
+						retContestBean.setPublishEndDate(contest.getPublishEndDateTime());
+						retContestBean.setPublishEndDateStr(StringUtil.convertDateTImeToString(contest.getPublishEndDateTime()));
+						retContestBean.setCutoffDate(contest.getCutoffDateTime());
+						retContestBean.setCutoffDateStr(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
+						retContestBean.setContestStatusId(contest.getContestStatus().getContestStatusId());
+						retContestBean.setBonusPoints(contest.getBonusPoints());
+						retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
+					}
 					retContestBean.setContestTypeId(contest.getContestType().getContestTypeId());
-					retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
 					retContestBean.setTournamentId(contest.getTournament().getTournamentId());
-					retContestBean.setContestStatusId(contest.getContestStatus().getContestStatusId());
+					
 					if(contest.getMatch() != null){
 						Match match = contest.getMatch();
 						retContestBean.setMatchId(match.getMatchId());
@@ -392,7 +395,6 @@ public class ContestDaoImpl implements ContestDao{
 						matchDisplayNameBuilder.append(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
 						retContestBean.setMatchDisplayName(matchDisplayNameBuilder.toString());
 					}
-					
 					retContestBeanList.add(retContestBean);
 				}
 			}

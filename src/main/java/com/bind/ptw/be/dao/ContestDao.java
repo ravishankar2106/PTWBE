@@ -34,7 +34,7 @@ public interface ContestDao {
 	List<TournamentTeamBean> getMatchTeams(MatchBean matchBean) throws PTWException;
 	
 	ContestBean createContest(ContestBean contestBean) throws PTWException;
-	List<ContestBean> getMatches(ContestBean contestBean, Boolean isOngoingContest) throws PTWException;
+	List<ContestBean> getMatches(ContestBean contestBean, Boolean isOngoingContest, Boolean fullData) throws PTWException;
 	void updateContest(ContestBean contestBean) throws PTWException;
 	void deleteContest(ContestBean contestBean) throws PTWException;
 	ContestBean getContest(ContestBean contestBean) throws PTWException;
