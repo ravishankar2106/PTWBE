@@ -78,8 +78,8 @@ public class ContestHome {
 			}
 			if(isOngoingContest != null && isOngoingContest){
 				queryToExecute.append("AND ( NOW() BETWEEN c.publishStartDateTime AND ");
-				queryToExecute.append("c.publishEndDateTime) AND ");
-				queryToExecute.append("c.contestStatus.contestStatusId = 1 ");
+				queryToExecute.append("c.publishEndDateTime) ");
+				//queryToExecute.append("AND c.contestStatus.contestStatusId = 1 ");
 			}
 			queryToExecute.append("ORDER BY c.cutoffDateTime ASC ");
 			query = session.createQuery(queryToExecute.toString());
