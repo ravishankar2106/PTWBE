@@ -106,4 +106,12 @@ public class UserAnswerHome {
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		return query.list();
 	}
+	
+	public List<Integer> getUsersAnsweredForQuestion(Integer questionId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select USER_ID from USER_ANSWERS where CONTEST_QUESTION_ID =");
+		queryToExecute.append(questionId);
+		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
+		return query.list();
+	}
 }

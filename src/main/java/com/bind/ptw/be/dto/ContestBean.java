@@ -25,6 +25,7 @@ public class ContestBean extends BaseBean implements Serializable{
 	private Date cutoffDate;
 	private String cutoffDateStr;
 	private List<QuestionBean> questionList;
+	private boolean pushNotified;
 	
 	public Integer getTocId() {
 		return tocId;
@@ -131,6 +132,12 @@ public class ContestBean extends BaseBean implements Serializable{
 	}
 	public void setBonusPoints(Integer bonusPoints) {
 		this.bonusPoints = bonusPoints;
+	}
+	public boolean isPushNotified() {
+		return pushNotified;
+	}
+	public void setPushNotified(boolean pushNotified) {
+		this.pushNotified = pushNotified;
 	}
 	
 	

@@ -149,4 +149,13 @@ public class ContestHome {
 		return criteria.list();
 	}
 	
+	public void updatePushStatus(Integer contestId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("UPDATE Contest c set c.pushNotified = true where ");
+		queryToExecute.append("c.contestId =:contestId");
+		Query query = session.createQuery(queryToExecute.toString());
+		query.setParameter("contestId", contestId);
+		query.executeUpdate();
+		
+	}
 }

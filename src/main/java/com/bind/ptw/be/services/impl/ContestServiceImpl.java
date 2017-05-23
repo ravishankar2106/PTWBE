@@ -1,9 +1,9 @@
 package com.bind.ptw.be.services.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -989,18 +990,17 @@ public class ContestServiceImpl implements ContestService{
 		} 
 	}
 
-	@Override
-	public BaseBean sendNotification(){
-		//sendNotification("Test message " + System.currentTimeMillis(), null, DBConstants.ONE_SIGNAL_SEGMENT_ALL);
+	
+	private BaseBean sendNotification(Integer[] users, String message){
 		try {
-			List<OneSignalUserRegistrationBean> userRegs = userDao.getOneSignalRegistrations(null);
+			List<OneSignalUserRegistrationBean> userRegs = userDao.getOneSignalRegistrations(users);
 			if(userRegs != null && !userRegs.isEmpty()){
 				String[] players = new String[userRegs.size()];
 				int counter = 0;
 				for (OneSignalUserRegistrationBean userReg : userRegs) {
 					players[counter++] = userReg.getOneSignalRegistrationId();
 				}
-				sendNotification("Testing with actuals", players, null);
+				sendNotification(message, players, null);
 			}
 		} catch (PTWException e) {
 			e.printStackTrace();
@@ -1008,7 +1008,72 @@ public class ContestServiceImpl implements ContestService{
 		return new BaseBean();
 		
 	}
-		
+	
+	@Override
+	@Scheduled(fixedDelay=1800000)
+	public void sendReminders(){
+		TournamentBean tournamentBean = new TournamentBean();
+		List<TournamentBean> tournaments = tournamentDao.getTournament(tournamentBean, true);
+		try{
+			Date now = new Date();
+			long nowDateInMillis = now.getTime();
+			Set<Integer> unAnsweredUsers = new HashSet<Integer>();
+			if(tournaments!=null && !tournaments.isEmpty()){
+				for (TournamentBean dbTournamentBean : tournaments) {
+					ContestBean queryContestBean = new ContestBean();
+					queryContestBean.setTournamentId(dbTournamentBean.getTournamentId());
+					List<ContestBean> contestBeanList = contestDao.getMatches(queryContestBean, true, true);
+					if(contestBeanList!= null && !contestBeanList.isEmpty()){
+						List<Integer> registeredUsers = userDao.getTournamentUsers(dbTournamentBean.getTournamentId());
+						for (ContestBean contestBean : contestBeanList) {
+							if(!contestBean.isPushNotified()){
+								Date cutoffTime = contestBean.getCutoffDate();
+								if(cutoffTime.after(now)){
+									long reminderTimeInMillis = 3600000;
+									if((cutoffTime.getTime() - nowDateInMillis) < reminderTimeInMillis){
+										List<QuestionBean> questionBean = contestDao.getQuestion(contestBean);
+										if(questionBean != null && !questionBean.isEmpty()){
+											QuestionBean question = questionBean.get(0);
+											List<Integer> usersAnswered = userDao.getUsersAnsweredForQuestion(question.getQuestionId());
+											Map<Integer, Integer> userAnsweredMap = convertToMap(usersAnswered);
+											for (Integer registeredUser : registeredUsers) {
+												if(!userAnsweredMap.containsKey(registeredUser)){
+													unAnsweredUsers.add(registeredUser);
+												}
+											}
+										}
+									}
+									contestDao.markPushNotified(contestBean.getContestId());
+								}
+							}
+						}
+						
+					}
+				}
+			}
+			if(!unAnsweredUsers.isEmpty()){
+				Integer[] unAnsweredUserArr  = new Integer[unAnsweredUsers.size()];
+				int index=0;
+				for (Integer unansweredUserId : unAnsweredUsers) {
+					unAnsweredUserArr[index++] = unansweredUserId;
+				}
+				sendNotification(unAnsweredUserArr, "Hurry!! Last few minutes before the cutoff time to answer today's contest.");
+			}
+		}catch(PTWException exception){
+			exception.printStackTrace();
+		}
+	}
+	
+	private Map<Integer, Integer> convertToMap(List<Integer> usersAnswered) {
+		Map<Integer, Integer> userMap = new HashMap<Integer, Integer>();
+		if(usersAnswered != null && !usersAnswered.isEmpty()){
+			for (Integer userId : usersAnswered) {
+				userMap.put(userId, userId);
+			}
+		}
+		return userMap;
+	}
+
 	private void sendNotification(String message, String[] players, String segmentName){
 		PushBean pushBean = new PushBean();
 		pushBean.setApp_id(env.getProperty("onesignal.appid"));
@@ -1018,9 +1083,9 @@ public class ContestServiceImpl implements ContestService{
 		pushBean.setInclude_player_ids(players);
 		pushBean.setIncluded_segments(segmentName);
 	
-		Map<String, String> dataBeanMap = new HashMap<String,String>();
+		/*Map<String, String> dataBeanMap = new HashMap<String,String>();
 		dataBeanMap.put("foo","val");
-		pushBean.setData(dataBeanMap);
+		pushBean.setData(dataBeanMap);*/
 		
 		OneSignalUtil.sendNotification(pushBean, env.getProperty("onesignal.auth"));
 	}

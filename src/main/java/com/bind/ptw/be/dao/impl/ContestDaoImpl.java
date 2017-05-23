@@ -370,6 +370,9 @@ public class ContestDaoImpl implements ContestDao{
 						retContestBean.setContestStatusId(contest.getContestStatus().getContestStatusId());
 						retContestBean.setBonusPoints(contest.getBonusPoints());
 						retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
+						if(contest.getPushNotified() != null && contest.getPushNotified()){
+							retContestBean.setPushNotified(true);
+						}
 					}
 					retContestBean.setContestTypeId(contest.getContestType().getContestTypeId());
 					retContestBean.setTournamentId(contest.getTournament().getTournamentId());
@@ -1417,4 +1420,14 @@ public class ContestDaoImpl implements ContestDao{
 		}
 	}
 	
+	@Override
+	public void markPushNotified(Integer contestId)throws PTWException{
+		ContestHome contestHome = new ContestHome(this.getSession());
+		try{
+			contestHome.updatePushStatus(contestId);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
 }

@@ -341,6 +341,25 @@ public class UserDaoImpl implements UserDao{
 	}
 
 	@Override
+	public List<Integer> getTournamentUsers(Integer tournamentId) throws PTWException{
+		List<Integer> userIds =null;
+		try{
+			UserTournamentRegistrationHome userTournamentHome = new UserTournamentRegistrationHome(this.getSession());
+			List<UserTournamentRegistration> userTournamentList = userTournamentHome.findByFilter(tournamentId, null);
+			if(userTournamentList != null && !userTournamentList.isEmpty()){
+				userIds = new ArrayList<Integer>();
+				for (UserTournamentRegistration userTournamentRegistration : userTournamentList) {
+					userIds.add(userTournamentRegistration.getUserId());
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return userIds;
+	}
+	
+	@Override
 	public UserGroupBean createUserGroup(UserGroupBean userGroupBean) throws PTWException {
 		UserGroupHome userGroupHome = new UserGroupHome(this.getSession());
 		try{
@@ -810,5 +829,17 @@ public class UserDaoImpl implements UserDao{
 			}
 		}
 		return answerCountMap;
+	}
+	
+	@Override
+	public List<Integer> getUsersAnsweredForQuestion(Integer questionId)throws PTWException{
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		try{
+			return answerHome.getUsersAnsweredForQuestion(questionId);
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
 	}
 }

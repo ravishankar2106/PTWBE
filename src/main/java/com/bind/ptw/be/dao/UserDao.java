@@ -53,4 +53,6 @@ public interface UserDao {
 	Integer[] getGroupUsers(UserGroupBean userGroupBean) throws PTWException;
 	List<UserScoreBoardBean> getUserPointsForQuestions(Integer[] userIds, Integer[] questionIds);
 	List<AnswerPulseBean> getAnswerStats(QuestionBean questionBean);
+	List<Integer> getTournamentUsers(Integer tournamentId) throws PTWException;
+	List<Integer> getUsersAnsweredForQuestion(Integer questionId) throws PTWException;
 }

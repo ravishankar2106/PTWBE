@@ -32,6 +32,7 @@ public class Contest {
 	private List<Question> questionList = new ArrayList<Question>(
 			0);
 	private Integer tocGroupId;
+	private Boolean pushNotified;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -143,4 +144,14 @@ public class Contest {
 	public void setTocGroupId(Integer tocGroupId) {
 		this.tocGroupId = tocGroupId;
 	}
+	
+	@Column(name = "PUSH_NOTIFIED")
+	public Boolean getPushNotified() {
+		return pushNotified;
+	}
+	public void setPushNotified(Boolean pushNotified) {
+		this.pushNotified = pushNotified;
+	}
+	
+	
 }

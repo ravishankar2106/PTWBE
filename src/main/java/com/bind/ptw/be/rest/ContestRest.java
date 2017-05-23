@@ -162,10 +162,10 @@ public class ContestRest {
 		return contestService.getProcessingContests();
 	}
 	
-	@GetMapping("/pushTest")
+	/*@GetMapping("/pushTest")
 	public BaseBean pushTest(){
 		return contestService.sendNotification();
-	}
+	}*/
 	
 	@PostMapping("/processFanGroup")
 	public BaseBean processFanGroup(@RequestParam Integer tournamentId){

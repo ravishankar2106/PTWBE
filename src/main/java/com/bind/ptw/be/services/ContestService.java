@@ -60,10 +60,11 @@ public interface ContestService {
 	LeaderBoardBeanList getGroupLeaderBoard(UserGroupBean userGroupBean);
 	
 	void createCodeRewardRecord(CodeMojoRewardBean rewardBean);
-	BaseBean sendNotification();
+	//BaseBean sendNotification();
 	void processFanGroupRanking(int tournamentId);
 	TournamentTAndCBean getContestTAndC(ContestBean contestBean);
 	BaseBean processPrizeContest();
 	AnswerPulseBeanList getAnswerPulse(QuestionBean questionBean);
+	void sendReminders();
 	
 }
