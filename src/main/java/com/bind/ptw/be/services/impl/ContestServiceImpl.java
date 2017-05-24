@@ -1042,8 +1042,9 @@ public class ContestServiceImpl implements ContestService{
 												}
 											}
 										}
+										contestDao.markPushNotified(contestBean.getContestId());
 									}
-									contestDao.markPushNotified(contestBean.getContestId());
+									
 								}
 							}
 						}

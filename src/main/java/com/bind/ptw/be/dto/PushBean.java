@@ -10,6 +10,7 @@ public class PushBean {
 	private String included_segments;
 	private String authParam;
 	private String[] include_player_ids;
+	private String icon = "ic_launcher.png";
 	
 	public Map<String, String> getContents() {
 		return contents;
@@ -47,6 +48,12 @@ public class PushBean {
 	}
 	public void setInclude_player_ids(String[] include_player_ids) {
 		this.include_player_ids = include_player_ids;
+	}
+	public String getIcon() {
+		return icon;
+	}
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 }

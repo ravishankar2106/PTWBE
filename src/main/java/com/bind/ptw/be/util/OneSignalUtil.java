@@ -26,7 +26,6 @@ public class OneSignalUtil {
 			
 			Gson gson = new Gson();
 			String payLoad = gson.toJson(pushBean);
-			System.out.println(payLoad);
 			/*String payLoad = "{"
                     +   "\"app_id\": \"9a1af85b-5d82-4807-b3a4-2be4a8ae6a5c\","
                     +   "\"included_segments\": [\"All\"],"

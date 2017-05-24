@@ -42,7 +42,7 @@ public class HibernateConfiguration {
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		hibernateProperties.put("hibernate.show_sql", false);
-		hibernateProperties.put("hibernate.hbm2ddl.auto", "update");
+		//hibernateProperties.put("hibernate.hbm2ddl.auto", "update");
 		hibernateProperties.put("connection.autoReconnect", true);
 		hibernateProperties.put("connection.autoReconnectForPools", true);
 		hibernateProperties.put("connection.is-connection-validation-required", true);
