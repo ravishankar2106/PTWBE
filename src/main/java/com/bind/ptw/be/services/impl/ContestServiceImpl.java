@@ -994,11 +994,16 @@ public class ContestServiceImpl implements ContestService{
 	private BaseBean sendNotification(Integer[] users, String message){
 		try {
 			List<OneSignalUserRegistrationBean> userRegs = userDao.getOneSignalRegistrations(users);
+			Set<String> uniqueIds = new HashSet<String>();
 			if(userRegs != null && !userRegs.isEmpty()){
-				String[] players = new String[userRegs.size()];
+				
 				int counter = 0;
 				for (OneSignalUserRegistrationBean userReg : userRegs) {
-					players[counter++] = userReg.getOneSignalRegistrationId();
+					uniqueIds.add(userReg.getOneSignalRegistrationId());
+				}
+				String[] players = new String[uniqueIds.size()];
+				for (String uniqueId : uniqueIds) {
+					players[counter++] = uniqueId;
 				}
 				sendNotification(message, players, null);
 			}
