@@ -18,12 +18,16 @@ import javax.persistence.Table;
 public class Match {
 	private Integer matchId;
 	private Tournament tournament;
+	private Integer tournamentId;
 	private Integer matchNo;
 	private Date matchDateTime;
 	private String venue;
 	private TournamentTeam teamA;
+	private Integer teamAId;
 	private TournamentTeam teamB;
+	private Integer teamBId;
 	private MatchStatus matchStatus;
+	private Integer matchStatusId;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -36,13 +40,22 @@ public class Match {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TOURNAMENT_ID", nullable = false)
+	@JoinColumn(name = "TOURNAMENT_ID", referencedColumnName = "TOURNAMENT_ID")
 	public Tournament getTournament() {
 		return this.tournament;
 	}
 
 	public void setTournament(Tournament tournament) {
 		this.tournament = tournament;
+	}
+	
+	@Column(name = "TOURNAMENT_ID", insertable = false, updatable = false)
+	public Integer getTournamentId() {
+		return tournamentId;
+	}
+	
+	public void setTournamentId(Integer tournamentId) {
+		this.tournamentId = tournamentId;
 	}
 	
 	@Column(name = "MATCH_NO")
@@ -70,7 +83,7 @@ public class Match {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TEAM_A", nullable = false)
+	@JoinColumn(name = "TEAM_A", referencedColumnName = "TOURNAMENT_TEAM_ID")
 	public TournamentTeam getTeamA() {
 		return teamA;
 	}
@@ -79,8 +92,15 @@ public class Match {
 		this.teamA = teamA;
 	}
 	
+	@Column(name = "TEAM_A", insertable = false, updatable = false)
+	public Integer getTeamAId() {
+		return teamAId;
+	}
+	public void setTeamAId(Integer teamAId) {
+		this.teamAId = teamAId;
+	}
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TEAM_B", nullable = false)
+	@JoinColumn(name = "TEAM_B", referencedColumnName = "TOURNAMENT_TEAM_ID")
 	public TournamentTeam getTeamB() {
 		return teamB;
 	}
@@ -89,8 +109,15 @@ public class Match {
 		this.teamB = teamB;
 	}
 	
+	@Column(name = "TEAM_B", insertable = false, updatable = false)
+	public Integer getTeamBId() {
+		return teamBId;
+	}
+	public void setTeamBId(Integer teamBId) {
+		this.teamBId = teamBId;
+	}
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MATCH_STATUS_ID", nullable = false)
+	@JoinColumn(name = "MATCH_STATUS_ID", referencedColumnName = "MATCH_STATUS_ID")
 	public MatchStatus getMatchStatus() {
 		return matchStatus;
 	}
@@ -98,5 +125,15 @@ public class Match {
 	public void setMatchStatus(MatchStatus matchStatus) {
 		this.matchStatus = matchStatus;
 	}
+	
+	@Column(name = "MATCH_STATUS_ID", insertable = false, updatable = false)
+	public Integer getMatchStatusId() {
+		return matchStatusId;
+	}
+	public void setMatchStatusId(Integer matchStatusId) {
+		this.matchStatusId = matchStatusId;
+	}
+	
+	
 	
 }

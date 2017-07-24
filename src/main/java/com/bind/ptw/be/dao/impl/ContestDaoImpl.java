@@ -89,12 +89,12 @@ public class ContestDaoImpl implements ContestDao{
 		try{
 			Tournament tournament = getTournament(matchBean.getTournamentId());
 			TournamentTeam teamA = getTournamentTeam(matchBean.getTeamA().getTournamentTeamId());
-			if(teamA == null || (!tournament.getTournamentId().equals(teamA.getTournament().getTournamentId()))){
+			if(teamA == null || (!tournament.getTournamentId().equals(teamA.getTournamentId()))){
 				throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Team A");
 			}
 			
 			TournamentTeam teamB = getTournamentTeam(matchBean.getTeamB().getTournamentTeamId());
-			if(teamB == null || (!tournament.getTournamentId().equals(teamB.getTournament().getTournamentId()))){
+			if(teamB == null || (!tournament.getTournamentId().equals(teamB.getTournamentId()))){
 				throw new PTWException(PTWConstants.ERROR_CODE_TEAM_ID_INVALID, PTWConstants.ERROR_DESC_FIELD_INVALID + "Team B");
 			}
 			MatchHome matchHome = new MatchHome(this.getSession());
@@ -155,7 +155,7 @@ public class ContestDaoImpl implements ContestDao{
 					MatchBean retMatchBean = new MatchBean();
 					retMatchBean.setMatchId(match.getMatchId());
 					retMatchBean.setMatchNo(match.getMatchNo());
-					retMatchBean.setTournamentId(match.getTournament().getTournamentId());
+					retMatchBean.setTournamentId(match.getTournamentId());
 					retMatchBean.setVenue(match.getVenue());
 					retMatchBean.setMatchDateTime(match.getMatchDateTime());
 					retMatchBean.setMatchDateTimeStr(StringUtil.convertDateTImeToString(match.getMatchDateTime()));
@@ -256,7 +256,7 @@ public class ContestDaoImpl implements ContestDao{
 			if(!StringUtil.isEmptyNull(contestBean.getMatchId())){
 				MatchHome matchHome = new MatchHome(this.getSession());
 				Match match = matchHome.findById(contestBean.getMatchId());
-				if(!contestBean.getTournamentId().equals(match.getTournament().getTournamentId())){
+				if(!contestBean.getTournamentId().equals(match.getTournamentId())){
 					throw new PTWException(PTWConstants.ERROR_CODE_CONTEST_MATCH_INVALID, PTWConstants.ERROR_DESC_CONTEST_MATCH_INVALID);
 				}
 				match.setMatchId(contestBean.getMatchId());
@@ -339,12 +339,12 @@ public class ContestDaoImpl implements ContestDao{
 		retContestBean.setBonusPoints(contest.getBonusPoints());
 		retContestBean.setContestTypeId(contest.getContestType().getContestTypeId());
 		retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
-		retContestBean.setTournamentId(contest.getTournament().getTournamentId());
-		Match match = contest.getMatch();
-		if(match!=null){
-			retContestBean.setMatchId(match.getMatchId());
+		retContestBean.setTournamentId(contest.getTournamentId());
+		Integer matchId = contest.getMatchId();
+		if(matchId!=null){
+			retContestBean.setMatchId(matchId);
 		}
-		retContestBean.setContestStatusId(contest.getContestStatus().getContestStatusId());
+		retContestBean.setContestStatusId(contest.getContestStatusId());
 		return retContestBean;
 	}
 	
@@ -367,7 +367,7 @@ public class ContestDaoImpl implements ContestDao{
 						retContestBean.setPublishEndDateStr(StringUtil.convertDateTImeToString(contest.getPublishEndDateTime()));
 						retContestBean.setCutoffDate(contest.getCutoffDateTime());
 						retContestBean.setCutoffDateStr(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
-						retContestBean.setContestStatusId(contest.getContestStatus().getContestStatusId());
+						retContestBean.setContestStatusId(contest.getContestStatusId());
 						retContestBean.setBonusPoints(contest.getBonusPoints());
 						retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
 						if(contest.getPushNotified() != null && contest.getPushNotified()){
@@ -375,7 +375,7 @@ public class ContestDaoImpl implements ContestDao{
 						}
 					}
 					retContestBean.setContestTypeId(contest.getContestType().getContestTypeId());
-					retContestBean.setTournamentId(contest.getTournament().getTournamentId());
+					retContestBean.setTournamentId(contest.getTournamentId());
 					
 					if(contest.getMatch() != null){
 						Match match = contest.getMatch();
@@ -568,7 +568,7 @@ public class ContestDaoImpl implements ContestDao{
 		questionBean.setQuestionId(question.getQuestionId());
 		questionBean.setQuestion(question.getQuestionDescription());
 		questionBean.setAnswerCount(question.getAnswerCount());
-		questionBean.setContestId(question.getContest().getContestId());
+		questionBean.setContestId(question.getContestId());
 		questionBean.setAnswerTypeId(question.getAnswerType().getAnswerTypeId());
 		questionBean.setAnswerType(question.getAnswerType().getAnswerTypeName());
 		return questionBean;
@@ -782,7 +782,7 @@ public class ContestDaoImpl implements ContestDao{
 		try{
 			ContestHome contestHome = new ContestHome(this.getSession());
 			Contest contest = contestHome.findById(contestId);
-			Integer tournamentId = contest.getTournament().getTournamentId();
+			Integer tournamentId = contest.getTournamentId();
 			UserAnswerStatsHome userAnswerStatsHome = new UserAnswerStatsHome(this.getSession());
 			List<UserAnswerStats> userAnswerStats = userAnswerStatsHome.findAnswerStatsForUser(userId, tournamentId);
 			if(userAnswerStats != null && !userAnswerStats.isEmpty()){
@@ -864,7 +864,7 @@ public class ContestDaoImpl implements ContestDao{
 						for (UserAnswer userAnswer : dbAnswers) {
 							AnswerBean answerBean = new AnswerBean();
 							answerBean.setAnswerId(userAnswer.getUserAnswerId());
-							answerBean.setAnswerOptionId(userAnswer.getAnswerOption().getAnswerOptionId());
+							answerBean.setAnswerOptionId(userAnswer.getAnswerOptionId());
 							answerBean.setPointsScored(userAnswer.getPointsScored());
 							if(!StringUtil.isEmptyNull(userAnswer.getPointsScored())){
 								matchPoints += userAnswer.getPointsScored();
@@ -915,7 +915,7 @@ public class ContestDaoImpl implements ContestDao{
 					UserSelectedAnswerBean dbUserSelectedAnswerBean = new UserSelectedAnswerBean();
 					dbUserSelectedAnswerBean.setUserAnswerId(userAnswer.getUserAnswerId());
 					dbUserSelectedAnswerBean.setUserId(userAnswer.getUserId());
-					dbUserSelectedAnswerBean.setSelectedAnswerOptionId(userAnswer.getAnswerOption().getAnswerOptionId());
+					dbUserSelectedAnswerBean.setSelectedAnswerOptionId(userAnswer.getAnswerOptionId());
 					dbUserSelectedAnswerBean.setQuestionId(userAnswer.getQuestionId());
 					retUserAnswerBeanList.add(dbUserSelectedAnswerBean);
 				}
@@ -1165,8 +1165,8 @@ public class ContestDaoImpl implements ContestDao{
 					UserGroupBean retUserGroupBean = new UserGroupBean();
 					retUserGroupBean.setGroupId(userGroup.getUserGroupId());
 					retUserGroupBean.setGroupName(userGroup.getUserGroupName());
-					retUserGroupBean.setTournamentId(userGroup.getTournament().getTournamentId());
-					retUserGroupBean.setOwnerId(userGroup.getOwnerUser().getUserId());
+					retUserGroupBean.setTournamentId(userGroup.getTournamentId());
+					retUserGroupBean.setOwnerId(userGroup.getOwnerUserId());
 					retUserGroupBean.setGroupCode(userGroup.getUserGroupCode());
 					retUserGroupBean.setPrizeGroupFlag(userGroup.getPrizeIncludedFlag());
 					retUserGroups.add(retUserGroupBean);

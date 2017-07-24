@@ -18,8 +18,11 @@ public class Team {
 	private String teamName;
 	private String teamShortName;
 	private Country country;
+	private Integer countryId;
 	private TeamType teamType;
+	private Integer teamTypeId;
 	private SportType sportType;
+	private Integer sportTypeId;
 	
 	
 	@Id
@@ -49,7 +52,7 @@ public class Team {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "COUNTRY_ID", nullable = true)
+	@JoinColumn(name = "COUNTRY_ID", referencedColumnName = "COUNTRY_ID")
 	public Country getCountry() {
 		return country;
 	}
@@ -57,8 +60,15 @@ public class Team {
 		this.country = country;
 	}
 	
+	@Column(name = "COUNTRY_ID", insertable = false, updatable = false)
+	public Integer getCountryId() {
+		return countryId;
+	}
+	public void setCountryId(Integer countryId) {
+		this.countryId = countryId;
+	}
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TEAM_TYPE_ID", nullable = true)
+	@JoinColumn(name = "TEAM_TYPE_ID", referencedColumnName = "TEAM_TYPE_ID")
 	public TeamType getTeamType() {
 		return teamType;
 	}
@@ -66,13 +76,28 @@ public class Team {
 		this.teamType = teamType;
 	}
 	
+	@Column(name = "TEAM_TYPE_ID", insertable = false, updatable = false)
+	public Integer getTeamTypeId() {
+		return teamTypeId;
+	}
+	public void setTeamTypeId(Integer teamTypeId) {
+		this.teamTypeId = teamTypeId;
+	}
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SPORT_TYPE_ID", nullable = true)
+	@JoinColumn(name = "SPORT_TYPE_ID", referencedColumnName = "SPORT_TYPE_ID")
 	public SportType getSportType() {
 		return sportType;
 	}
 	public void setSportType(SportType sportType) {
 		this.sportType = sportType;
+	}
+	
+	@Column(name = "SPORT_TYPE_ID", insertable = false, updatable = false)
+	public Integer getSportTypeId() {
+		return sportTypeId;
+	}
+	public void setSportTypeId(Integer sportTypeId) {
+		this.sportTypeId = sportTypeId;
 	}
 	
 	

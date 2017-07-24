@@ -22,12 +22,16 @@ public class Contest {
 	private Integer contestId;
 	private String contestName;
 	private Match match;
+	private Integer matchId;
 	private Tournament tournament;
+	private Integer tournamentId;
 	private ContestType contestType;
+	private Integer contestTypeId;
 	private Date publishStartDateTime;
 	private Date publishEndDateTime;
 	private Date cutoffDateTime;
 	private ContestStatus contestStatus;
+	private Integer contestStatusId;
 	private Integer bonusPoints;
 	private List<Question> questionList = new ArrayList<Question>(
 			0);
@@ -54,7 +58,7 @@ public class Contest {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TOURNAMENT_ID", nullable = true)
+	@JoinColumn(name = "TOURNAMENT_ID", referencedColumnName = "TOURNAMENT_ID")
 	public Tournament getTournament() {
 		return tournament;
 	}
@@ -63,8 +67,16 @@ public class Contest {
 		this.tournament = tournament;
 	}
 	
+	@Column(name = "TOURNAMENT_ID", insertable = false, updatable = false)
+	public Integer getTournamentId() {
+		return tournamentId;
+	}
+	public void setTournamentId(Integer tournamentId) {
+		this.tournamentId = tournamentId;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TOURNAMENT_MATCH_MASTER_ID", nullable = true)
+	@JoinColumn(name = "TOURNAMENT_MATCH_MASTER_ID", referencedColumnName = "TOURNAMENT_MATCH_MASTER_ID")
 	public Match getMatch() {
 		return match;
 	}
@@ -73,8 +85,16 @@ public class Contest {
 		this.match = match;
 	}
 	
+	@Column(name = "TOURNAMENT_MATCH_MASTER_ID", insertable = false, updatable = false)
+	public Integer getMatchId() {
+		return matchId;
+	}
+	public void setMatchId(Integer matchId) {
+		this.matchId = matchId;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CONTEST_TYPE_ID", nullable = true)
+	@JoinColumn(name = "CONTEST_TYPE_ID", referencedColumnName = "CONTEST_TYPE_ID")
 	public ContestType getContestType() {
 		return contestType;
 	}
@@ -82,6 +102,15 @@ public class Contest {
 	public void setContestType(ContestType contestType) {
 		this.contestType = contestType;
 	}
+	
+	@Column(name = "CONTEST_TYPE_ID", insertable = false, updatable = false)
+	public Integer getContestTypeId() {
+		return contestTypeId;
+	}
+	public void setContestTypeId(Integer contestTypeId) {
+		this.contestTypeId = contestTypeId;
+	}
+	
 	
 	@Column(name = "PUBLISH_START_DATE_TIME")
 	public Date getPublishStartDateTime() {
@@ -108,13 +137,21 @@ public class Contest {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CONTEST_STATUS_ID", nullable = true)
+	@JoinColumn(name = "CONTEST_STATUS_ID", referencedColumnName = "CONTEST_STATUS_ID")
 	public ContestStatus getContestStatus() {
 		return contestStatus;
 	}
 	
 	public void setContestStatus(ContestStatus contestStatus) {
 		this.contestStatus = contestStatus;
+	}
+	
+	@Column(name = "CONTEST_STATUS_ID", insertable = false, updatable = false)
+	public Integer getContestStatusId() {
+		return contestStatusId;
+	}
+	public void setContestStatusId(Integer contestStatusId) {
+		this.contestStatusId = contestStatusId;
 	}
 	
 	@Column(name = "BONUS_POINTS")

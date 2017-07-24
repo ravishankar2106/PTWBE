@@ -117,8 +117,8 @@ public class UserDaoImpl implements UserDao{
 					retrievedUserBean.setTeamName(user.getTeamName());
 					retrievedUserBean.setEmail(user.getEmailId());
 					retrievedUserBean.setPhone(user.getPhone());
-					retrievedUserBean.setUserStatusId(user.getUserStatus().getUserStatusId());
-					retrievedUserBean.setCityId(user.getCity().getCityId());
+					retrievedUserBean.setUserStatusId(user.getUserStatusId());
+					retrievedUserBean.setCityId(user.getCityId());
 					retrievedUserBean.setPushRegistered(user.getPushRegistered());
 				}
 				retrievedUserBeanList.add(retrievedUserBean);
@@ -171,7 +171,7 @@ public class UserDaoImpl implements UserDao{
 			resultConfirmationBean.setConfirmationCode(resultConfirmation.getConfirmationCode());
 			resultConfirmationBean.setEmail(resultConfirmation.getEmailId());
 			resultConfirmationBean.setRetryCount(resultConfirmation.getRetryCount());
-			resultConfirmationBean.setUserId(resultConfirmation.getUser().getUserId());
+			resultConfirmationBean.setUserId(resultConfirmation.getUserId());
 		}
 		return resultConfirmationBean;
 	}
@@ -486,9 +486,9 @@ public class UserDaoImpl implements UserDao{
 	private UserGroupBean getUserGroupBean(UserGroup userGroup) {
 		UserGroupBean userGroupBean = new UserGroupBean();
 		userGroupBean.setGroupId(userGroup.getUserGroupId());
-		userGroupBean.setTournamentId(userGroup.getTournament().getTournamentId());
+		userGroupBean.setTournamentId(userGroup.getTournamentId());
 		userGroupBean.setGroupCode(userGroup.getUserGroupCode());
-		userGroupBean.setOwnerId(userGroup.getOwnerUser().getUserId());
+		userGroupBean.setOwnerId(userGroup.getOwnerUserId());
 		userGroupBean.setGroupName(userGroup.getUserGroupName());
 		userGroupBean.setPrizeGroupFlag(userGroup.getPrizeIncludedFlag());
 		return userGroupBean;
@@ -699,7 +699,7 @@ public class UserDaoImpl implements UserDao{
 				for (OneSignalUserRegistration oneSignalUserRegistration : registrations) {
 					OneSignalUserRegistrationBean response = new OneSignalUserRegistrationBean();
 					response.setOneSignalRegistrationId(oneSignalUserRegistration.getOneSignalRegistrationId());
-					response.setUserId(oneSignalUserRegistration.getUsers().getUserId());
+					response.setUserId(oneSignalUserRegistration.getUserId());
 					responses.add(response);
 				}
 			}
