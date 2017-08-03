@@ -3,7 +3,9 @@ package com.bind.ptw.be.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,10 +23,8 @@ public class Question {
 	
 	private Integer questionId;
 	private Contest contest;
-	private Integer contestId;
 	private Integer questionSlNo;
 	private AnswerType answerType;
-	private Integer answerTypeId;
 	private String questionDescription;
 	private Integer answerCount;
 	private List<AnswerOption> answerOptions = new ArrayList<AnswerOption>(
@@ -41,7 +41,7 @@ public class Question {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CONTEST_ID", referencedColumnName = "CONTEST_ID")
+	@JoinColumn(name = "CONTEST_ID", nullable = true)
 	public Contest getContest() {
 		return contest;
 	}
@@ -50,13 +50,6 @@ public class Question {
 		this.contest = contest;
 	}
 	
-	@Column(name = "CONTEST_ID", insertable = false, updatable = false)
-	public Integer getContestId() {
-		return contestId;
-	}
-	public void setContestId(Integer contestId) {
-		this.contestId = contestId;
-	}
 	@Column(name = "QUESTION_SL_NO")
 	public Integer getQuestionSlNo() {
 		return questionSlNo;
@@ -67,7 +60,7 @@ public class Question {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ANSWER_TYPE_ID", referencedColumnName = "ANSWER_TYPE_ID")
+	@JoinColumn(name = "ANSWER_TYPE_ID", nullable = true)
 	public AnswerType getAnswerType() {
 		return answerType;
 	}
@@ -75,20 +68,11 @@ public class Question {
 	public void setAnswerType(AnswerType answerType) {
 		this.answerType = answerType;
 	}
-
-	@Column(name = "ANSWER_TYPE_ID", insertable = false, updatable = false)
-	public Integer getAnswerTypeId() {
-		return answerTypeId;
-	}
-	public void setAnswerTypeId(Integer answerTypeId) {
-		this.answerTypeId = answerTypeId;
-	}
 	
 	@Column(name = "QUESTION_DESCRIPTION")
 	public String getQuestionDescription() {
 		return questionDescription;
 	}
-	
 	public void setQuestionDescription(String questionDescription) {
 		this.questionDescription = questionDescription;
 	}

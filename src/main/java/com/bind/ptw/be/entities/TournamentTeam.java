@@ -16,9 +16,7 @@ import javax.persistence.Table;
 public class TournamentTeam {
 	private Integer tournamentTeamId;
 	private Tournament tournament;
-	private Integer tournamentId;
 	private Team team;
-	private Integer teamId;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -33,7 +31,7 @@ public class TournamentTeam {
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TOURNAMENT_ID", referencedColumnName = "TOURNAMENT_ID")
+	@JoinColumn(name = "TOURNAMENT_ID", nullable = false)
 	public Tournament getTournament() {
 		return tournament;
 	}
@@ -42,32 +40,14 @@ public class TournamentTeam {
 		this.tournament = tournament;
 	}
 	
-	@Column(name = "TOURNAMENT_ID", insertable = false, updatable = false)	
-	public Integer getTournamentId() {
-		return tournamentId;
-	}
-
-	public void setTournamentId(Integer tournamentId) {
-		this.tournamentId = tournamentId;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TEAM_ID", referencedColumnName = "TEAM_ID")
+	@JoinColumn(name = "TEAM_ID", nullable = false)
 	public Team getTeam() {
 		return team;
 	}
 	
 	public void setTeam(Team team) {
 		this.team = team;
-	}
-	
-	@Column(name = "TEAM_ID", insertable = false, updatable = false)
-	public Integer getTeamId() {
-		return teamId;
-	}
-
-	public void setTeamId(Integer teamId) {
-		this.teamId = teamId;
 	}
 	
 	

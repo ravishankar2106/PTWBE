@@ -16,9 +16,7 @@ import javax.persistence.Table;
 public class UserGroup {
 	private Integer userGroupId;
 	private Tournament tournament;
-	private Integer tournamentId;
 	private Users ownerUser;
-	private Integer ownerUserId;
 	private String userGroupName;
 	private Integer userGroupCode;
 	private Long groupPoints;
@@ -36,7 +34,7 @@ public class UserGroup {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TOURNAMENT_ID", columnDefinition = "TOURNAMENT_ID")
+	@JoinColumn(name = "TOURNAMENT_ID", nullable = true)
 	public Tournament getTournament() {
 		return tournament;
 	}
@@ -44,13 +42,6 @@ public class UserGroup {
 		this.tournament = tournament;
 	}
 	
-	@Column(name = "TOURNAMENT_ID", insertable = false, updatable = false)	
-	public Integer getTournamentId() {
-		return tournamentId;
-	}
-	public void setTournamentId(Integer tournamentId) {
-		this.tournamentId = tournamentId;
-	}
 	@Column(name = "USER_GROUP_NAME")
 	public String getUserGroupName() {
 		return userGroupName;
@@ -60,7 +51,7 @@ public class UserGroup {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "OWNER_USER_ID", referencedColumnName = "USER_ID")
+	@JoinColumn(name = "OWNER_USER_ID", nullable = true)
 	public Users getOwnerUser() {
 		return ownerUser;
 	}
@@ -68,13 +59,6 @@ public class UserGroup {
 		this.ownerUser = ownerUser;
 	}
 	
-	@Column(name = "OWNER_USER_ID", insertable = false, updatable = false)
-	public Integer getOwnerUserId() {
-		return ownerUserId;
-	}
-	public void setOwnerUserId(Integer ownerUserId) {
-		this.ownerUserId = ownerUserId;
-	}
 	@Column(name = "USER_GROUP_CODE")
 	public Integer getUserGroupCode() {
 		return userGroupCode;

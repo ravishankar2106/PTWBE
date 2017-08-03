@@ -17,7 +17,6 @@ public class AnswerOption {
 	
 	private Integer answerOptionId;
 	private Question question;
-	private Integer questionId;
 	private String answerOptionStr;
 	private Boolean correctAnswerFlag;
 	private Integer points;
@@ -33,21 +32,13 @@ public class AnswerOption {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CONTEST_QUESTION_ID", referencedColumnName = "CONTEST_QUESTION_ID")
+	@JoinColumn(name = "CONTEST_QUESTION_ID", nullable = true)
 	public Question getQuestion() {
 		return question;
 	}
 	
 	public void setQuestion(Question question) {
 		this.question = question;
-	}
-	
-	@Column(name = "CONTEST_QUESTION_ID", insertable = false, updatable = false)
-	public Integer getQuestionId() {
-		return questionId;
-	}
-	public void setQuestionId(Integer questionId) {
-		this.questionId = questionId;
 	}
 	
 	@Column(name = "ANSWER_OPTION_STR")

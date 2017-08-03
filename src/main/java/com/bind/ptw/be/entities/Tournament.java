@@ -29,9 +29,7 @@ public class Tournament {
 	private Date publishDate;
 	private Boolean archievedFlag;
 	private TeamType teamType;
-	private Integer teamTypeId;
 	private SportType sportType;
-	private Integer sportTypeId;
 	private Set<Match> tournamentMatches = new LinkedHashSet<Match>(
 			0);
 	private Integer tocGroupId;
@@ -104,7 +102,7 @@ public class Tournament {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TEAM_TYPE_ID", referencedColumnName = "TEAM_TYPE_ID")
+	@JoinColumn(name = "TEAM_TYPE_ID", nullable = true)
 	public TeamType getTeamType() {
 		return teamType;
 	}
@@ -113,16 +111,8 @@ public class Tournament {
 		this.teamType = teamType;
 	}
 	
-	@Column(name = "TEAM_TYPE_ID", insertable = false, updatable = false)
-	public Integer getTeamTypeId() {
-		return teamTypeId;
-	}
-	public void setTeamTypeId(Integer teamTypeId) {
-		this.teamTypeId = teamTypeId;
-	}
-	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SPORT_TYPE_ID", referencedColumnName = "SPORT_TYPE_ID")
+	@JoinColumn(name = "SPORT_TYPE_ID", nullable = true)
 	public SportType getSportType() {
 		return sportType;
 	}
@@ -131,13 +121,6 @@ public class Tournament {
 		this.sportType = sportType;
 	}
 	
-	@Column(name = "SPORT_TYPE_ID", insertable = false, updatable = false)
-	public Integer getSportTypeId() {
-		return sportTypeId;
-	}
-	public void setSportTypeId(Integer sportTypeId) {
-		this.sportTypeId = sportTypeId;
-	}
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament")
 	public Set<Match> getTournamentMatches() {
 		return this.tournamentMatches;

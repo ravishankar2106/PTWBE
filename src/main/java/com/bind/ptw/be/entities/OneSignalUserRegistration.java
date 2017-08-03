@@ -21,11 +21,8 @@ public class OneSignalUserRegistration {
 	private Integer oneSignalUserRegistraionId;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	@JoinColumn(name = "USER_ID", nullable = true)
 	private Users user;
-	
-	@Column(name = "CONTEST_QUESTION_ID", insertable = false, updatable = false)
-	private Integer userId;
 	
 	@Column(name = "ONE_SIGNAL_REGISTRATION_ID", nullable = true)
 	private String oneSignalRegistrationId;
@@ -46,12 +43,6 @@ public class OneSignalUserRegistration {
 		this.user = user;
 	}
 	
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
 	public String getOneSignalRegistrationId() {
 		return oneSignalRegistrationId;
 	}

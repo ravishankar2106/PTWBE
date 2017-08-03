@@ -101,8 +101,8 @@ public class TournamentDaoImpl implements TournamentDao{
 				resultTournamentBean.setEndDateStr(StringUtil.convertDateToString(tournament.getEndDate()));
 				resultTournamentBean.setPublishDate(tournament.getPublishDate());
 				resultTournamentBean.setPublishDateStr(StringUtil.convertDateToString(tournament.getPublishDate()));
-				resultTournamentBean.setSportTypeId(tournament.getSportTypeId());
-				resultTournamentBean.setTeamTypeId(tournament.getTeamTypeId());
+				resultTournamentBean.setSportTypeId(tournament.getSportType().getSportTypeId());
+				resultTournamentBean.setTeamTypeId(tournament.getTeamType().getTeamTypeId());
 				resultTournamentBean.setTournamentVenue(tournament.getTournamentVenue());
 				resultTournamentBean.setTocId(tournament.getTocGroupId());
 				resultTournamentBeanList.add(resultTournamentBean);
