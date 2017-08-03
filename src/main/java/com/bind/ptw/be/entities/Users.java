@@ -24,7 +24,9 @@ public class Users {
 	private boolean adminFlag;
 	private String randomPwd;
 	private UserStatus userStatus;
+	private Integer userStatusId;
 	private City city;
+	private Integer cityId;
 	private boolean pushRegistered;
 	
 	@Id
@@ -110,7 +112,7 @@ public class Users {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_STATUS_ID", nullable = true)
+	@JoinColumn(name = "USER_STATUS_ID", referencedColumnName = "USER_STATUS_ID")
 	public UserStatus getUserStatus() {
 		return userStatus;
 	}
@@ -119,8 +121,15 @@ public class Users {
 		this.userStatus = userStatus;
 	}
 	
+	@Column(name = "USER_STATUS_ID", insertable = false, updatable = false)		
+	public Integer getUserStatusId() {
+		return userStatusId;
+	}
+	public void setUserStatusId(Integer userStatusId) {
+		this.userStatusId = userStatusId;
+	}
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CITY_ID", nullable = true)
+	@JoinColumn(name = "CITY_ID", referencedColumnName = "CITY_ID")
 	public City getCity() {
 		return city;
 	}
@@ -128,4 +137,14 @@ public class Users {
 	public void setCity(City city) {
 		this.city = city;
 	}
+	
+	@Column(name = "CITY_ID", insertable = false, updatable = false)
+	public Integer getCityId() {
+		return cityId;
+	}
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
+	}
+	
+	
 }

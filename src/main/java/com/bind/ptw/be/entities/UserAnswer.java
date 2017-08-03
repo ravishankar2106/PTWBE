@@ -21,6 +21,7 @@ public class UserAnswer {
 	private Integer userId;
 	private Integer questionId;
 	private AnswerOption answerOption;
+	private Integer answerOptionId;
 	private Date answeredDateTime;
 	private Integer pointsScored;
 		
@@ -52,7 +53,7 @@ public class UserAnswer {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SELECTED_ANSWER_OPTION_ID", nullable = false)
+	@JoinColumn(name = "SELECTED_ANSWER_OPTION_ID", referencedColumnName = "ANSWER_OPTIONS_ID")
 	public AnswerOption getAnswerOption() {
 		return answerOption;
 	}
@@ -61,6 +62,13 @@ public class UserAnswer {
 		this.answerOption = answerOption;
 	}
 	
+	@Column(name = "SELECTED_ANSWER_OPTION_ID", insertable = false, updatable = false)	
+	public Integer getAnswerOptionId() {
+		return answerOptionId;
+	}
+	public void setAnswerOptionId(Integer answerOptionId) {
+		this.answerOptionId = answerOptionId;
+	}
 	@Column(name = "ANSWERED_DATE_TIME")
 	public Date getAnsweredDateTime() {
 		return answeredDateTime;

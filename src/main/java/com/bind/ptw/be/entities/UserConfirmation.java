@@ -18,6 +18,7 @@ import javax.persistence.Table;
 public class UserConfirmation {
 	private Integer userConfirmationPendingId;
 	private Users user;
+	private Integer userId;
 	private Integer confirmationCode;
 	private Date createdDate;
 	private Integer retryCount;
@@ -34,7 +35,7 @@ public class UserConfirmation {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID", nullable = true)
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	public Users getUser() {
 		return user;
 	}
@@ -42,6 +43,13 @@ public class UserConfirmation {
 		this.user = user;
 	}
 	
+	@Column(name = "USER_ID", insertable = false, updatable = false)
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 	@Column(name = "CONFIRMATION_CODE")
 	public Integer getConfirmationCode() {
 		return confirmationCode;

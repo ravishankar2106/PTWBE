@@ -17,7 +17,9 @@ public class TournTeamPlayer {
 	
 	private Integer tournTeamPlayerId;
 	private TournamentTeam tournamentTeam;
+	private Integer tournamentteamId;
 	private Player player;
+	private Integer playerId;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -32,7 +34,7 @@ public class TournTeamPlayer {
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TOURNAMENT_TEAM_ID", nullable = false)
+	@JoinColumn(name = "TOURNAMENT_TEAM_ID", referencedColumnName = "TOURNAMENT_TEAM_ID")
 	public TournamentTeam getTournamentTeam() {
 		return tournamentTeam;
 	}
@@ -41,14 +43,32 @@ public class TournTeamPlayer {
 		this.tournamentTeam = tournamentTeam;
 	}
 	
+	@Column(name = "TOURNAMENT_TEAM_ID", insertable = false, updatable = false)
+	public Integer getTournamentteamId() {
+		return tournamentteamId;
+	}
+
+	public void setTournamentteamId(Integer tournamentteamId) {
+		this.tournamentteamId = tournamentteamId;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PLAYER_ID", nullable = false)
+	@JoinColumn(name = "PLAYER_ID", referencedColumnName = "PLAYER_ID")
 	public Player getPlayer() {
 		return player;
 	}
 	
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	@Column(name = "PLAYER_ID", insertable = false, updatable = false)
+	public Integer getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(Integer playerId) {
+		this.playerId = playerId;
 	}
 	
 	
