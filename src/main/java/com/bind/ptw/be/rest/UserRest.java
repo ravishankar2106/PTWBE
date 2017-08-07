@@ -112,6 +112,11 @@ public class UserRest {
 		return contestService.getOngoingContests(contestBean);
 	}
 	
+	@GetMapping("/ongoingContest")
+	public ContestBeanList getOngoingContest(){
+		return contestService.getActiveContests();
+	}
+	
 	@PostMapping("/submitAnswer")
 	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
 		return contestService.submitUserAnswer(userContestAsnwer);

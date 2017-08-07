@@ -68,6 +68,8 @@ import com.bind.ptw.be.entities.UserGroupMapping;
 import com.bind.ptw.be.entities.UserGroupMappingHome;
 import com.bind.ptw.be.entities.UserScoreBoard;
 import com.bind.ptw.be.entities.UserScoreBoardHome;
+import com.bind.ptw.be.entities.UserTournamentRegistration;
+import com.bind.ptw.be.entities.UserTournamentRegistrationHome;
 import com.bind.ptw.be.entities.Users;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
@@ -293,7 +295,7 @@ public class ContestDaoImpl implements ContestDao{
 			if(contest == null){
 				throw new PTWException(PTWConstants.ERROR_CODE_INVALID_CONTEST, PTWConstants.ERROR_DESC_INVALID_CONTEST);
 			}
-			retContestBean = createContestBean(contest);
+			retContestBean = createContestBean(contest, false);
 		}catch(PTWException exception){
 			throw exception;
 		}catch(Exception exception){
@@ -312,7 +314,7 @@ public class ContestDaoImpl implements ContestDao{
 			if(contestList != null && !contestList.isEmpty()){
 				retContestBeanList = new ArrayList<ContestBean>();
 				for (Contest contest : contestList) {
-					ContestBean dbContestBean = createContestBean(contest);
+					ContestBean dbContestBean = createContestBean(contest, false);
 					retContestBeanList.add(dbContestBean);
 				}
 				
@@ -325,17 +327,26 @@ public class ContestDaoImpl implements ContestDao{
 		return retContestBeanList;
 	}
 
-	private ContestBean createContestBean(Contest contest) {
+	private ContestBean createContestBean(Contest contest, boolean includeMatchDetails) {
 		ContestBean retContestBean;
 		retContestBean = new ContestBean();
 		retContestBean.setContestId(contest.getContestId());
-		retContestBean.setContestName(contest.getContestName());
-		retContestBean.setPublishStartDate(contest.getPublishStartDateTime());
-		retContestBean.setPublishStartDateStr(StringUtil.convertDateTImeToString(contest.getPublishStartDateTime()));
-		retContestBean.setPublishEndDate(contest.getPublishEndDateTime());
-		retContestBean.setPublishEndDateStr(StringUtil.convertDateTImeToString(contest.getPublishEndDateTime()));
-		retContestBean.setCutoffDate(contest.getCutoffDateTime());
+		
 		retContestBean.setCutoffDateStr(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
+		if(!includeMatchDetails){
+			retContestBean.setPublishStartDate(contest.getPublishStartDateTime());
+			retContestBean.setPublishStartDateStr(StringUtil.convertDateTImeToString(contest.getPublishStartDateTime()));
+			retContestBean.setPublishEndDateStr(StringUtil.convertDateTImeToString(contest.getPublishEndDateTime()));
+			retContestBean.setPublishEndDate(contest.getPublishEndDateTime());
+			retContestBean.setCutoffDate(contest.getCutoffDateTime());
+			retContestBean.setContestName(contest.getContestName());
+		}else{
+			StringBuilder contestNameBuilder = new StringBuilder();
+			contestNameBuilder.append(contest.getTournament().getTournamentDescription());
+			contestNameBuilder.append(" : ");
+			contestNameBuilder.append(contest.getContestName());
+			retContestBean.setContestName(contestNameBuilder.toString());
+		}
 		retContestBean.setBonusPoints(contest.getBonusPoints());
 		retContestBean.setContestTypeId(contest.getContestType().getContestTypeId());
 		retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
@@ -343,6 +354,26 @@ public class ContestDaoImpl implements ContestDao{
 		Integer matchId = contest.getMatchId();
 		if(matchId!=null){
 			retContestBean.setMatchId(matchId);
+			if(includeMatchDetails){
+				Match match = contest.getMatch();
+				retContestBean.setMatchDateStr(StringUtil.convertDateTImeToString(match.getMatchDateTime()));
+				StringBuilder matchDisplayNameBuilder = new StringBuilder();
+				matchDisplayNameBuilder.append(match.getTeamA().getTeam().getTeamShortName());
+				matchDisplayNameBuilder.append("-");
+				matchDisplayNameBuilder.append(match.getTeamB().getTeam().getTeamShortName());
+				matchDisplayNameBuilder.append("-Venue: ");
+				matchDisplayNameBuilder.append(match.getVenue());
+				matchDisplayNameBuilder.append(" At ");
+				matchDisplayNameBuilder.append(StringUtil.convertDateTImeToString(match.getMatchDateTime()));
+				retContestBean.setMatchDisplayName(matchDisplayNameBuilder.toString());
+			}else{
+				if(includeMatchDetails){
+					StringBuilder matchDisplayNameBuilder = new StringBuilder();
+					matchDisplayNameBuilder.append("Contest Cuoff Time is: ");
+					matchDisplayNameBuilder.append(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
+					retContestBean.setMatchDisplayName(matchDisplayNameBuilder.toString());
+				}
+			}
 		}
 		retContestBean.setContestStatusId(contest.getContestStatusId());
 		return retContestBean;
@@ -939,18 +970,19 @@ public class ContestDaoImpl implements ContestDao{
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
-		
-		
 	}
 
 	@Override
 	public void updateUserScoreBoard(List<UserScoreBoardBean> userScoreBoardBeanList) throws PTWException {
 		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(this.getSession());
+		UserTournamentRegistrationHome userTournamentHome = new UserTournamentRegistrationHome(this.getSession());
 		try{
 			for (UserScoreBoardBean userScoreBoardBean : userScoreBoardBeanList) {
+				int tournamentId = userScoreBoardBean.getTournamentId();
+				int userId = userScoreBoardBean.getUserId();
 				Integer user[] = new Integer[1];
-				user[0] = userScoreBoardBean.getUserId();
-				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(userScoreBoardBean.getTournamentId(), user , null, false);
+				user[0] = userId;
+				List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(tournamentId, user , null, false);
 				if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
 					UserScoreBoard userScoreBoard = userScoreBoardList.get(0);
 					Integer currentPoints = userScoreBoard.getTotalPoints();
@@ -960,13 +992,30 @@ public class ContestDaoImpl implements ContestDao{
 					}
 					userScoreBoard.setTotalPoints(newPoints);	
 					userScoreBoardHome.merge(userScoreBoard);
+				}else{
+					UserScoreBoard userScoreBoard = new UserScoreBoard();
+					userScoreBoard.setTournamentId(tournamentId);
+					Users newUser = new Users();
+					newUser.setUserId(userId);
+					userScoreBoard.setUser(newUser);
+					userScoreBoard.setTotalPoints(userScoreBoardBean.getPointsScored());
+					userScoreBoardHome.persist(userScoreBoard);
+					List<UserTournamentRegistration> userRegistrations = userTournamentHome.findByFilter(userScoreBoardBean.getTournamentId(), userScoreBoardBean.getUserId());
+					if(userRegistrations == null || userRegistrations.isEmpty()){
+						UserTournamentRegistration userTournamentRegistration = new UserTournamentRegistration();
+						userTournamentRegistration.setUserId(userId);
+						Tournament tournament = new Tournament();
+						tournament.setTournamentId(tournamentId);
+						userTournamentRegistration.setTournament(tournament);
+						userTournamentHome.persist(userTournamentRegistration);
+					}
+					
 				}
 			}
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
-		
 	}
 	
 	@Override
@@ -1184,11 +1233,11 @@ public class ContestDaoImpl implements ContestDao{
 		ContestHome contestHome = new ContestHome(this.getSession());
 		List<ContestBean> retContestBeanList = null;
 		try{
-			List<Contest> contestList = contestHome.findRunningContest();
+			List<Contest> contestList = contestHome.findRunningContest(true);
 			if(contestList != null && !contestList.isEmpty()){
 				retContestBeanList = new ArrayList<ContestBean>();
 				for (Contest contest : contestList) {
-					ContestBean dbContestBean = createContestBean(contest);
+					ContestBean dbContestBean = createContestBean(contest, false);
 					retContestBeanList.add(dbContestBean);
 				}
 				
@@ -1429,5 +1478,28 @@ public class ContestDaoImpl implements ContestDao{
 			e.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
+	}
+
+	@Override
+	public List<ContestBean> getActiveContests()throws PTWException {
+		
+		ContestHome contestHome = new ContestHome(this.getSession());
+		List<ContestBean> retContestBeanList = null;
+		try{
+			List<Contest> contestList = contestHome.findRunningContest(false);
+			if(contestList != null && !contestList.isEmpty()){
+				retContestBeanList = new ArrayList<ContestBean>();
+				for (Contest contest : contestList) {
+					ContestBean dbContestBean = createContestBean(contest, true);
+					retContestBeanList.add(dbContestBean);
+				}
+				
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retContestBeanList;
+	
 	}
 }

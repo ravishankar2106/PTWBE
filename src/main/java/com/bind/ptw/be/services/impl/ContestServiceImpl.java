@@ -1193,6 +1193,19 @@ public class ContestServiceImpl implements ContestService{
 			}
 		}
 	}
+
+	@Override
+	public ContestBeanList getActiveContests() {
+		ContestBeanList retContestBeanList = new ContestBeanList();
+		try{
+			List<ContestBean> contestBeanList = contestDao.getActiveContests();
+			retContestBeanList.setContestBeanList(contestBeanList);
+		}catch(PTWException exception){
+			retContestBeanList.setResultCode(exception.getCode());
+			retContestBeanList.setResultDescription(exception.getDescription());
+		}
+		return retContestBeanList;
+	}
 	
 	
 }

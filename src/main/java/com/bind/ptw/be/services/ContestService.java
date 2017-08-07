@@ -66,5 +66,6 @@ public interface ContestService {
 	BaseBean processPrizeContest();
 	AnswerPulseBeanList getAnswerPulse(QuestionBean questionBean);
 	void sendReminders();
+	ContestBeanList getActiveContests();
 	
 }

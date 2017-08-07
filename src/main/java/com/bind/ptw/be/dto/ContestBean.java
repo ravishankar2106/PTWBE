@@ -15,6 +15,7 @@ public class ContestBean extends BaseBean implements Serializable{
 	private String contestName;
 	private Integer tournamentId;
 	private Integer matchId;
+	private String matchDateStr;
 	private String matchDisplayName;
 	private Integer contestTypeId;
 	private String contestTypeName;
@@ -60,6 +61,12 @@ public class ContestBean extends BaseBean implements Serializable{
 	}
 	public void setMatchId(Integer matchId) {
 		this.matchId = matchId;
+	}
+	public String getMatchDateStr() {
+		return matchDateStr;
+	}
+	public void setMatchDateStr(String matchDateStr) {
+		this.matchDateStr = matchDateStr;
 	}
 	public String getMatchDisplayName() {
 		return matchDisplayName;

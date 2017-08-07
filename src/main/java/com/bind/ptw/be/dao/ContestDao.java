@@ -79,6 +79,7 @@ public interface ContestDao {
 	List<PrizeContestWinnerBean> getPrizeWinners(PrizeContestBean prizeContestBean)throws PTWException;
 	void removePrizeWinners(PrizeContestBean prizeContestBean) throws PTWException;
 	void markPushNotified(Integer contestId) throws PTWException;
+	List<ContestBean> getActiveContests() throws PTWException;
 	
 	
 }
