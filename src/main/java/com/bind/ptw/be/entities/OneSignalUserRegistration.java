@@ -24,7 +24,7 @@ public class OneSignalUserRegistration {
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private Users user;
 	
-	@Column(name = "CONTEST_QUESTION_ID", insertable = false, updatable = false)
+	@Column(name = "USER_ID", insertable = false, updatable = false)
 	private Integer userId;
 	
 	@Column(name = "ONE_SIGNAL_REGISTRATION_ID", nullable = true)
