@@ -21,6 +21,7 @@ import com.bind.ptw.be.util.PTWException;
 public interface UserDao {
 	
 	UserBean save(UserBean userBean);
+	UserBean getUser(String login);
 	void updateUser(UserBean userBean);
 	void updateUserStatus(UserBean userBean);
 	List<UserBean> getUsers(UserBean userBean, Boolean adminFlag);

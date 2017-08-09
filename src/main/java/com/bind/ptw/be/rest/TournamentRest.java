@@ -14,7 +14,6 @@ import com.bind.ptw.be.dto.CountryBeanList;
 import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.PlayerBeanList;
 import com.bind.ptw.be.dto.SportTypeCountryList;
-import com.bind.ptw.be.dto.TermsBean;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamPlayerList;

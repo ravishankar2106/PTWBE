@@ -842,4 +842,17 @@ public class UserDaoImpl implements UserDao{
 		}
 		
 	}
+
+	@Override
+	public UserBean getUser(String login) {
+		UserHome userHome = new UserHome(getSession());
+		UserBean bean = new UserBean();
+		bean.setUserLoginId(login);
+		List<Users> users = userHome.findUsersByFilters(bean, null);
+		if (users != null && !users.isEmpty()) {
+			bean.setPassword(users.get(0).getPassword());
+			bean.setAdmin(users.get(0).isAdminFlag());
+		} else return null;
+		return bean;
+	}
 }

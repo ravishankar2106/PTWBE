@@ -9,17 +9,17 @@ import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserGroupBean;
 
 public class UserHome {
-	
+
 	private Session session;
-	
+
 	public UserHome(Session session){
 		this.session = session;
 	}
-	
+
 	public void save(Users user){
 		session.save(user);
 	}
-	
+
 	public void remove(Users persistentInstance) {
 		try {
 			session.delete(persistentInstance);
@@ -47,13 +47,13 @@ public class UserHome {
 	}
 
 	public List<Users> findUsersByFilters( UserBean userRequest, Boolean adminFlag) {
-		
+
 		Query query = null;
-		
+
 		try{
 			StringBuilder queryToExecute = new StringBuilder();
 			queryToExecute.append(QueryConstants.RETRIEVE_USERS);
-			
+
 			if( userRequest != null ) {
 				if(userRequest.getUserId()!= null){
 					queryToExecute.append("AND userId =:userId ");
@@ -73,12 +73,14 @@ public class UserHome {
 				if(userRequest.getPhone() != null){
 					queryToExecute.append("AND phone =:phone ");
 				}
-				queryToExecute.append("AND adminFlag is ");
-				queryToExecute.append(adminFlag);
+				if (adminFlag != null) {
+					queryToExecute.append("AND adminFlag is ");
+					queryToExecute.append(adminFlag);
+				}
 			}
 
 			query = session.createQuery(queryToExecute.toString());
-			
+
 			if(userRequest != null){
 				if(userRequest.getUserId()!= null){
 					query.setParameter("userId", userRequest.getUserId());
@@ -86,37 +88,37 @@ public class UserHome {
 				if(userRequest.getUserLoginId() != null){
 					query.setParameter("userLoginId", userRequest.getUserLoginId());
 				}
-				
+
 				if(userRequest.getPassword() != null){
 					query.setParameter("userPassword", userRequest.getPassword());
 				}
-				
+
 				if(userRequest.getTeamName() != null){
 					query.setParameter("teamName", userRequest.getTeamName());
 				}
-				
+
 				if(userRequest.getEmail() != null){
 					query.setParameter("emailId", userRequest.getEmail());
 				}
-				
+
 				if(userRequest.getPhone() != null){
 					query.setParameter("phone", userRequest.getPhone());
 				}
 			}
-			
-			
-		
+
+
+
 		}catch(RuntimeException e){
 			throw e;
 		}
-		
+
 		return query.list();
 	}
-	
+
 	public List<Users> findUsersByGroup( UserGroupBean userGroupRequest ) {
-		
+
 		Query query = null;
-		
+
 		try{
 			StringBuilder queryToExecuteBuilder = new StringBuilder();
 			queryToExecuteBuilder.append(QueryConstants.RETRIEVE_USERS);
@@ -126,24 +128,24 @@ public class UserHome {
 				queryToExecuteBuilder.append("select ugm.userId from UserGroupMapping ugm where ugm.userGroupId =:groupId");
 				queryToExecuteBuilder.append(")");
 			}
-            
+
 			query = session.createQuery(queryToExecuteBuilder.toString());
 			if(userGroupRequest != null){	
 				query.setParameter("groupId", userGroupRequest.getGroupId());
 			}
-		
+
 		}catch(RuntimeException e){
 			throw e;
 		}
-		
+
 		return query.list();
 	}
-	
+
 	public List<City> getCities(){
 		Query query = session.createQuery(QueryConstants.RETRIEVE_CITIES);
 		return query.list();
 	}
-	
+
 	public City findByCityId(int cityId) {
 		try {
 			City instance = (City)session.get(City.class, cityId);

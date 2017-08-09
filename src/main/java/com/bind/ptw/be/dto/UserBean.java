@@ -17,10 +17,24 @@ public class UserBean extends BaseBean implements Serializable{
 	private String email;
 	private String phone;
 	private String token;
+	private String refreshToken;
 	private Integer userStatusId;
 	private Integer cityId;
 	private boolean pushRegistered;
+	private boolean isAdmin;
 	
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 	public Integer getUserId() {
 		return userId;
 	}

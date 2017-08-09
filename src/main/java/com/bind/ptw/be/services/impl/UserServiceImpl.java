@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +56,9 @@ public class UserServiceImpl implements UserService{
 	UserDao userDao;
 	
 	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
 	HibernateTemplate hibernateTemplate;
 	
 	public UserBean createUser(UserBean registerUser){
@@ -62,6 +66,7 @@ public class UserServiceImpl implements UserService{
 		try{
 			logger.debug("Entering register User");
 			UserBeanValidator.validateRegisterUser(registerUser, userDao);
+			registerUser.setPassword(passwordEncoder.encode(registerUser.getPassword()));
 			userResponse = userDao.save(registerUser);
 			registerUser.setUserId(userResponse.getUserId());
 			createUserToken(registerUser);
