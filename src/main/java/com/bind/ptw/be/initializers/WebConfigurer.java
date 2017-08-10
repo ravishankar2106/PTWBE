@@ -11,9 +11,12 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomi
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.bind.ptw.be.util.CorsHelper;
 
@@ -24,7 +27,8 @@ import com.bind.ptw.be.util.CorsHelper;
  * Configuration of web application with Servlet 3.0 APIs.
  */
 @Configuration
-public class WebConfigurer implements ServletContextInitializer,
+@Import(SwaggerConfig.class)
+public class WebConfigurer extends WebMvcConfigurerAdapter implements ServletContextInitializer,
 EmbeddedServletContainerCustomizer {
 
 	/** The log. */
@@ -32,6 +36,14 @@ EmbeddedServletContainerCustomizer {
 
 	@Autowired
 	CorsHelper corsHelper;
+	
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("swagger-ui.html")
+		.addResourceLocations("classpath:/META-INF/resources/");
+		registry.addResourceHandler("/webjars/**")
+		.addResourceLocations("classpath:/META-INF/resources/webjars/");
+	}
 
 	/**
 	 * Cors filter.

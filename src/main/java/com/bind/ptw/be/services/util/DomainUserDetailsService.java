@@ -46,7 +46,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 		if (userFromDatabase.isAdmin())authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		else authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-		return new org.springframework.security.core.userdetails.User(userFromDatabase.getUserName(),
+		return new org.springframework.security.core.userdetails.User(userFromDatabase.getUserLoginId(),
 				userFromDatabase.getPassword(), authorities);
 
 	}

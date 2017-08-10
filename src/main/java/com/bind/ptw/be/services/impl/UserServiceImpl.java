@@ -131,6 +131,7 @@ public class UserServiceImpl implements UserService{
 		try{
 			MailConfiguration config = EmailUtil.getMailConfiguration(env);
 			UserBeanValidator.validateAuthenticateUser(authUser);
+			authUser.setPassword(null);
 			List<UserBean> retrievedUsers = userDao.getUsers(authUser, adminFlag);
 			if(retrievedUsers == null || retrievedUsers.isEmpty()){
 				throw new PTWException(PTWConstants.ERROR_CODE_USER_PWD_NOT_FOUND, PTWConstants.ERROR_DESC_USER_PWD_NOT_FOUND);
