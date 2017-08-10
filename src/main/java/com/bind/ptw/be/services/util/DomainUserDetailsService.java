@@ -14,8 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.UserBean;
+import com.bind.ptw.be.services.UserService;
 
 
 
@@ -28,7 +28,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 	private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
 
 	@Autowired
-	UserDao userDao;
+	UserService userService;
 
 	public DomainUserDetailsService() {
 	}
@@ -37,7 +37,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(final String login) {
 		log.debug("Authenticating {}", login);
 		String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-		UserBean userFromDatabase = userDao.getUser(lowercaseLogin);
+		UserBean userFromDatabase = userService.getUser(lowercaseLogin);
 
 		if (null == userFromDatabase) {
 			throw new UsernameNotFoundException("PTW Can't identify the user, may be you are trying wrong credentials !");

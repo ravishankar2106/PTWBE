@@ -610,4 +610,9 @@ public class UserServiceImpl implements UserService{
 		return userClub;
 	}
 
+	@Override
+	public UserBean getUser(String login) {
+		return userDao.getUser(login);
+	}
+
 }

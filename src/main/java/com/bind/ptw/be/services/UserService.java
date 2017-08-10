@@ -18,6 +18,7 @@ import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 
 public interface UserService {
 	UserBean createUser(UserBean inputUserDto);
+	UserBean getUser(String login);
 	UserBean authenticateUser(UserBean authUser, Boolean adminFlag);
 	UserConfirmationBean confirmUser(UserConfirmationBean userConfirmationBean);
 	CityBeanList getCities();
