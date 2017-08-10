@@ -1,8 +1,15 @@
 package com.bind.ptw.be.rest;
 
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +22,8 @@ import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserPasswordBean;
+import com.bind.ptw.be.security.JwtConfigurer;
+import com.bind.ptw.be.security.TokenProvider;
 import com.bind.ptw.be.services.UserService;
 
 @EnableAutoConfiguration
@@ -26,15 +35,41 @@ public class UserAutRest {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	TokenProvider tokenProvider;
+	
 	@PostMapping("/register")
-	public UserBean registerUser(@RequestBody UserBean inputUser){
+	public UserBean registerUser(@RequestBody UserBean inputUser, HttpServletResponse httpResponse){
 		UserBean returnUserBean = userService.createUser(inputUser);
+		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(inputUser.getUserLoginId(), inputUser.getPassword());
+		Authentication authentication = this.authenticationManager.authenticate(authToken);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String jwt = tokenProvider.createToken(authentication, false);
+		returnUserBean.setToken(jwt);
+		returnUserBean.setRefreshToken(tokenProvider.createToken(authentication, true));
+		httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
 		return returnUserBean;
 	}
 	
 	@PostMapping("/login")
-    public UserBean authenticate(@RequestBody UserBean request) {
+    public UserBean authenticate(@RequestBody UserBean request, HttpServletResponse httpResponse) {
+		String rawPassword = request.getPassword();
 		UserBean response = userService.authenticateUser(request, false);
+		try {
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(request.getUserLoginId(), rawPassword);
+			Authentication authentication = this.authenticationManager.authenticate(authToken);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			String jwt = tokenProvider.createToken(authentication, false);
+			response.setToken(jwt);
+			response.setRefreshToken(tokenProvider.createToken(authentication, true));
+			httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+		} catch(AuthenticationException ex) {
+			ex.printStackTrace();
+			response = null;
+		}
         return response;
     }
 	

@@ -70,18 +70,7 @@ public class UserRest {
 	
 	@PostMapping(value = "/login")
 	public UserBean authenticate(@RequestBody @Valid UserBean request, HttpServletResponse httpResponse) {
-		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(request.getUserLoginId(), request.getPassword());
 		UserBean response = userService.authenticateUser(request, false);
-		try {
-			Authentication authentication = this.authenticationManager.authenticate(authToken);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			String jwt = tokenProvider.createToken(authentication, false);
-			response.setToken(jwt);
-			response.setRefreshToken(tokenProvider.createToken(authentication, true));
-			httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
-		} catch(AuthenticationException ex) {
-			response = null;
-		}
 		return response;
 	}
 	
