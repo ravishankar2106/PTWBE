@@ -28,17 +28,17 @@ public class AdminRest {
 	@Autowired
 	UserService userService;
 	
-	@Autowired
+	/*@Autowired
 	AuthenticationManager authenticationManager;
 	
 	@Autowired
 	TokenProvider tokenProvider;
-
+*/
 	@PostMapping(value = "/login")
 	public UserBean authenticate(@RequestBody @Valid UserBean request, HttpServletResponse httpResponse) {
-		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(request.getUserLoginId(), request.getPassword());
+		// authToken = new UsernamePasswordAuthenticationToken(request.getUserLoginId(), request.getPassword());
 		UserBean response = userService.authenticateUser(request, true);
-		try {
+		/*try {
 			Authentication authentication = this.authenticationManager.authenticate(authToken);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			String jwt = tokenProvider.createToken(authentication, false);
@@ -47,7 +47,7 @@ public class AdminRest {
 			httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
 		} catch(AuthenticationException ex) {
 			response = null;
-		}
+		}*/
 		return response;
 	}
 	

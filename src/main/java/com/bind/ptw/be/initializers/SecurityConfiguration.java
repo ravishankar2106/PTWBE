@@ -122,9 +122,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .frameOptions().disable().and().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
         .antMatchers("/admin/login").permitAll()
-        .antMatchers("/user/login").permitAll()
-        .antMatchers("/user/register").permitAll()
-        .antMatchers("/**").authenticated()
+        .antMatchers("/user/**").permitAll()
+        .antMatchers("/p2wreward/**").permitAll()
+        .antMatchers("/contest/**").permitAll()
+        .antMatchers("/tournament/**").permitAll()
+       // .antMatchers("/user/register").permitAll()
+        
+        .antMatchers("/userauth/login").permitAll()
+        .antMatchers("/userauth/register").permitAll()
+        .antMatchers("/userauth/resetPassword").permitAll()
+        .antMatchers("/userauth/cities").permitAll()
+        
+        .antMatchers("/userauth/**").authenticated()
         .and()
         .apply(securityConfigurerAdapter());
 
