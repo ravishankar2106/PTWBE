@@ -33,6 +33,7 @@ public class HibernateConfiguration {
 		return new HibernateTemplate(sessionFactory());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Bean
 	public SessionFactory sessionFactory() {
 

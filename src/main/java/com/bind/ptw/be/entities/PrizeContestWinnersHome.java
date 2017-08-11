@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import com.bind.ptw.be.dto.PrizeContestBean;
 
+@SuppressWarnings("unchecked")
 public class PrizeContestWinnersHome {
 
 	private Session session;

@@ -51,6 +51,7 @@ public class MatchHome {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Match> findMatchByFilter(MatchBean matchBean){
 		Query query = null;
 		

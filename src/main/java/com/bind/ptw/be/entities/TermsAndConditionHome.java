@@ -5,7 +5,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-
+@SuppressWarnings("unchecked")
 public class TermsAndConditionHome {
 
 	private Session session;

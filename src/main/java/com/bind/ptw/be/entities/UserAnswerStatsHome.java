@@ -5,9 +5,9 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.util.StringUtil;
 
+@SuppressWarnings("unchecked")
 public class UserAnswerStatsHome {
 
 	private Session session;

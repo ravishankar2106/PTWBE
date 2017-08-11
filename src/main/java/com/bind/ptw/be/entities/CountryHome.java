@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.util.StringUtil;
 
+@SuppressWarnings("unchecked")
 public class CountryHome {
 
 	private Session session;

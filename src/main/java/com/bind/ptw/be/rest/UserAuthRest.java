@@ -29,7 +29,7 @@ import com.bind.ptw.be.services.UserService;
 @EnableAutoConfiguration
 @RestController
 @RequestMapping("/userauth")
-public class UserAutRest {
+public class UserAuthRest {
 	
 	
 	@Autowired

@@ -1,13 +1,11 @@
 package com.bind.ptw.be.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-
+@SuppressWarnings("unchecked")
 public class UserBonusPointHome {
 
 	private Session session;

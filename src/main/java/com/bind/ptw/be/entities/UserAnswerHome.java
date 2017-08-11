@@ -9,7 +9,7 @@ import org.hibernate.Session;
 
 import com.bind.ptw.be.util.StringUtil;
 
-
+@SuppressWarnings("unchecked")
 public class UserAnswerHome {
 
 	private Session session;

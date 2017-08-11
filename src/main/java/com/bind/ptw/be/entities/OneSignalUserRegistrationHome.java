@@ -40,6 +40,7 @@ public class OneSignalUserRegistrationHome {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<OneSignalUserRegistration> findOneSignalUserRegistrationByFilter(Integer userId, String oneSignalRegistrationId, Integer[] userIds){
 		Query query = null;
 		

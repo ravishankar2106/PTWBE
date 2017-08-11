@@ -9,6 +9,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.util.StringUtil;
 
+@SuppressWarnings("unchecked")
 public class QuestionHome {
 
 	private Session session;

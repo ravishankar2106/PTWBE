@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserGroupBean;
 
+@SuppressWarnings("unchecked")
 public class UserHome {
 
 	private Session session;

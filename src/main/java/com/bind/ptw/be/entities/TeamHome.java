@@ -5,10 +5,10 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.bind.ptw.be.dto.CountryBean;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.util.StringUtil;
 
+@SuppressWarnings("unchecked")
 public class TeamHome {
 
 	private Session session;

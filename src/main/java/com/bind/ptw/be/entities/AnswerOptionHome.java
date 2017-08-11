@@ -59,6 +59,7 @@ public class AnswerOptionHome {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<AnswerOption> findAnswerOptionByFilter(QuestionBean questionBean){
 		Query query = null;
 		
@@ -84,6 +85,7 @@ public class AnswerOptionHome {
 		return query.list();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<AnswerType> getAnswerType(){
 		Query query = null;
 		

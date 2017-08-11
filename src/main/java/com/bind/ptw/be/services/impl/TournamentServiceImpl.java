@@ -15,7 +15,6 @@ import com.bind.ptw.be.dto.PlayerBean;
 import com.bind.ptw.be.dto.PlayerBeanList;
 import com.bind.ptw.be.dto.SportTypeBean;
 import com.bind.ptw.be.dto.SportTypeCountryList;
-import com.bind.ptw.be.dto.TermsBean;
 import com.bind.ptw.be.dto.TeamBean;
 import com.bind.ptw.be.dto.TeamBeanList;
 import com.bind.ptw.be.dto.TeamPlayerBean;
@@ -33,7 +32,6 @@ import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.util.TournamentBeanValidator;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
-import com.bind.ptw.be.util.StringUtil;
 
 @Service("tournamentService")
 @Transactional

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate4.HibernateTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +36,6 @@ import com.bind.ptw.be.services.util.UserBeanValidator;
 import com.bind.ptw.be.util.DBConstants;
 import com.bind.ptw.be.util.EmailContent;
 import com.bind.ptw.be.util.EmailUtil;
-import com.bind.ptw.be.util.MailConfiguration;
 import com.bind.ptw.be.util.PTWConstants;
 import com.bind.ptw.be.util.PTWException;
 import com.bind.ptw.be.util.StringUtil;
@@ -56,9 +54,6 @@ public class UserServiceImpl implements UserService{
 	UserDao userDao;
 	
 	@Autowired
-	PasswordEncoder passwordEncoder;
-	
-	@Autowired
 	HibernateTemplate hibernateTemplate;
 	
 	public UserBean createUser(UserBean registerUser){
@@ -66,7 +61,6 @@ public class UserServiceImpl implements UserService{
 		try{
 			logger.debug("Entering register User");
 			UserBeanValidator.validateRegisterUser(registerUser, userDao);
-			registerUser.setPassword(passwordEncoder.encode(registerUser.getPassword()));
 			userResponse = userDao.save(registerUser);
 			registerUser.setUserId(userResponse.getUserId());
 			createUserToken(registerUser);
@@ -129,9 +123,8 @@ public class UserServiceImpl implements UserService{
 	public UserBean authenticateUser(UserBean authUser, Boolean adminFlag){
 		UserBean userResponse;
 		try{
-			MailConfiguration config = EmailUtil.getMailConfiguration(env);
+			//MailConfiguration config = EmailUtil.getMailConfiguration(env);
 			UserBeanValidator.validateAuthenticateUser(authUser);
-			authUser.setPassword(null);
 			List<UserBean> retrievedUsers = userDao.getUsers(authUser, adminFlag);
 			if(retrievedUsers == null || retrievedUsers.isEmpty()){
 				throw new PTWException(PTWConstants.ERROR_CODE_USER_PWD_NOT_FOUND, PTWConstants.ERROR_DESC_USER_PWD_NOT_FOUND);

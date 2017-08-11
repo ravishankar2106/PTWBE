@@ -6,10 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +38,6 @@ import com.bind.ptw.be.dto.UserGroupInvitationBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
-import com.bind.ptw.be.security.JwtConfigurer;
 import com.bind.ptw.be.security.TokenProvider;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.TournamentService;
@@ -80,12 +75,6 @@ public class UserRest {
 		UserBean returnUserBean = userService.createUser(inputUser);
 		return returnUserBean;
 	}
-	
-	/*@PostMapping("/login")
-    public UserBean authenticate(@RequestBody UserBean request) {
-		UserBean response = userService.authenticateUser(request, false);
-        return response;
-    }*/
 	
 	@PostMapping("/confirmUser")
 	public UserConfirmationBean confirmUser(@RequestBody UserConfirmationBean userConfirmationBean){

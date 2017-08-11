@@ -1,8 +1,6 @@
 package com.bind.ptw.be.dto;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 public class PrizeContestWinnerBean extends BaseBean implements Serializable{
 	

@@ -11,7 +11,6 @@ import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.bind.ptw.be.dao.UserDao;
@@ -433,7 +432,6 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public void addUserToSystemGroup(UserGroupBean userGroupBean) throws PTWException{
 		try{
-			UserGroupInvitationHome userGroupInvitationHome = new UserGroupInvitationHome(getSession());
 			createUserGroupMapping(userGroupBean.getUserId(), userGroupBean.getGroupId(), userGroupBean.getTournamentId());
 		}catch(Exception exception){
 			exception.printStackTrace();
@@ -771,6 +769,7 @@ public class UserDaoImpl implements UserDao{
 			userScoreBoardBeanList = new ArrayList<UserScoreBoardBean>();
 			for (Object object : objMap) {
 				UserScoreBoardBean userScore = new UserScoreBoardBean();
+				@SuppressWarnings("rawtypes")
 				Map userScoreMap = (Map)object;
 				BigDecimal pointsDec = (BigDecimal)userScoreMap.get("POINTS");
 				int points = 0;
@@ -819,6 +818,7 @@ public class UserDaoImpl implements UserDao{
 		Map<Integer, Integer> answerCountMap = new HashMap<Integer, Integer>();
 		if(objMap != null && !objMap.isEmpty()){
 			for (Object object : objMap) {
+				@SuppressWarnings("rawtypes")
 				Map userScoreMap = (Map)object;
 				Integer answerOptionId = (Integer)userScoreMap.get("ANSWER_OPTION_ID");
 				BigInteger countDec = (BigInteger)userScoreMap.get("STATS_COUNT");

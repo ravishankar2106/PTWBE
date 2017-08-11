@@ -51,6 +51,7 @@ public class PlayerHome {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Player> findPlayerByFilter(PlayerBean playerBean){
 		Query query = null;
 		

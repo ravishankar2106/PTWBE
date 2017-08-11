@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.util.StringUtil;
 
+@SuppressWarnings("unchecked")
 public class TournamentTeamHome {
 
 	private Session session;

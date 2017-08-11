@@ -13,6 +13,7 @@ import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.util.StringUtil;
 
+@SuppressWarnings("unchecked")
 public class ContestHome {
 
 	private Session session;

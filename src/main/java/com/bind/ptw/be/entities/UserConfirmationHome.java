@@ -7,6 +7,7 @@ import org.hibernate.Session;
 
 import com.bind.ptw.be.dto.UserConfirmationBean;
 
+@SuppressWarnings("unchecked")
 public class UserConfirmationHome {
 	
 	private Session session;

@@ -8,7 +8,7 @@ import org.hibernate.Session;
 import com.bind.ptw.be.dto.TeamTypeBean;
 import com.bind.ptw.be.util.StringUtil;
 
-
+@SuppressWarnings("unchecked")
 public class TeamPlayerHome {
 
 	private Session session;

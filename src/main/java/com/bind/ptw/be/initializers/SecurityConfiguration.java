@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
@@ -24,6 +23,7 @@ import org.springframework.web.filter.CorsFilter;
 import com.bind.ptw.be.security.JwtConfigurer;
 import com.bind.ptw.be.security.TokenProvider;
 import com.bind.ptw.be.security.utils.Http401UnauthorizedEntryPoint;
+import com.bind.ptw.be.security.utils.PTWPasswordEncoder;
 
 
 
@@ -91,7 +91,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
    */
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
+    return new PTWPasswordEncoder();
   }
 
   /* (non-Javadoc)

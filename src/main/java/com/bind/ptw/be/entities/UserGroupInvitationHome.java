@@ -8,7 +8,7 @@ import org.hibernate.Session;
 import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.util.StringUtil;
 
-
+@SuppressWarnings("unchecked")
 public class UserGroupInvitationHome {
 
 	private Session session;
