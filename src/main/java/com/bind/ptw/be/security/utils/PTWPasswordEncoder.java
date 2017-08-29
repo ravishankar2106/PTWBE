@@ -18,7 +18,7 @@ public class PTWPasswordEncoder implements PasswordEncoder {
 		return encoded.equalsIgnoreCase(encodedPassword);
 	}
 	
-	public static void main(String args[]) {
+	/*public static void main(String args[]) {
 		System.out.println(org.apache.commons.codec.digest.DigestUtils.sha256Hex("password123"));
-	}
+	}*/
 }

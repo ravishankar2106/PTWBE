@@ -18,12 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBeanList;
+import com.bind.ptw.be.dto.ContestBean;
+import com.bind.ptw.be.dto.ContestBeanList;
+import com.bind.ptw.be.dto.LeaderBoardBeanList;
+import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
+import com.bind.ptw.be.dto.QuestionBeanList;
+import com.bind.ptw.be.dto.TournamentBean;
+import com.bind.ptw.be.dto.TournamentBeanList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.security.JwtConfigurer;
 import com.bind.ptw.be.security.TokenProvider;
+import com.bind.ptw.be.services.ContestService;
+import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.UserService;
 
 @EnableAutoConfiguration
@@ -34,6 +44,12 @@ public class UserAuthRest {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	TournamentService tournamentService;
+	
+	@Autowired
+	ContestService contestService;
 	
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -100,6 +116,36 @@ public class UserAuthRest {
 	@PostMapping("/registerToPush")
 	public BaseBean registerUserToPush(@RequestBody OneSignalUserRegistrationBean registrationBean){
 		return userService.registerUserToPush(registrationBean);
+	}
+	
+	@GetMapping("/getOngoingContest")
+	public ContestBeanList getOngoingContest(){
+		return contestService.getOngoingContests(new ContestBean());
+	}
+	
+	@PostMapping("/getOngoingTournament")
+	public TournamentBeanList getOngoingTournament (@RequestBody TournamentBean tournamentBean){
+		return tournamentService.getOngoingTournament(tournamentBean);
+	}
+	
+	@PostMapping("/submitAnswer")
+	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
+		return contestService.submitUserAnswer(userContestAsnwer);
+	}
+	
+	@PostMapping("/getMatchContest")
+	public ContestBeanList getMatchContest(@RequestBody MatchBean matchBean){
+		return contestService.getMatchContest(matchBean);
+	}
+	
+	@PostMapping("/getMatchQuestion")
+	public QuestionBeanList getMatchQuestion(@RequestBody MatchBean matchBean){
+		return contestService.getMatchQuestions(matchBean);
+	}
+	
+	@PostMapping("/getLeaderBoard")
+	public LeaderBoardBeanList getLeaderBoard(@RequestBody LeaderBoardBeanList leaderBoardRequest){
+		return contestService.getLeaderBoard(leaderBoardRequest);
 	}
 	
 }

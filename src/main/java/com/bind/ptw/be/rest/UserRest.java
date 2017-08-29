@@ -100,11 +100,11 @@ public class UserRest {
 		return response;
 	}
 	
-	@PostMapping("/getOngoingTournament")
+	/*@PostMapping("/getOngoingTournament")
 	public TournamentBeanList getOngoingTournament (@RequestBody TournamentBean tournamentBean){
 		return tournamentService.getOngoingTournament(tournamentBean);
 	}
-	
+	*/
 	@PostMapping("/registerToTournament")
 	public BaseBean registerUserToTournament (@RequestBody UserTournmentRegisterBean userTournament){
 		return userService.registerUserToTournament(userTournament);
@@ -116,20 +116,15 @@ public class UserRest {
 	}
 	
 	
-	@PostMapping("/getOngoingContest")
+	/*@PostMapping("/getOngoingContest")
 	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
 		return contestService.getOngoingContests(contestBean);
-	}
-	
-	@GetMapping("/ongoingContest")
-	public ContestBeanList getOngoingContest(){
-		return contestService.getActiveContests();
 	}
 	
 	@PostMapping("/submitAnswer")
 	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
 		return contestService.submitUserAnswer(userContestAsnwer);
-	}
+	}*/
 	
 	@PostMapping("/getSubmittedAnswer")
 	public UserContestAnswer getUserAnswer(@RequestBody UserContestAnswer userContestBean){
@@ -141,7 +136,7 @@ public class UserRest {
 		return contestService.getMatches(matchBean);
 	}
 	
-	@PostMapping("/getMatchContest")
+	/*@PostMapping("/getMatchContest")
 	public ContestBeanList getMatchContest(@RequestBody MatchBean matchBean){
 		return contestService.getMatchContest(matchBean);
 	}
@@ -154,7 +149,7 @@ public class UserRest {
 	@PostMapping("/getLeaderBoard")
 	public LeaderBoardBeanList getLeaderBoard(@RequestBody LeaderBoardBeanList leaderBoardRequest){
 		return contestService.getLeaderBoard(leaderBoardRequest);
-	}
+	}*/
 	
 	@PostMapping("/createUserLeague")
 	public UserGroupBean createUserGroup(@RequestBody UserGroupBean userGroupBean){

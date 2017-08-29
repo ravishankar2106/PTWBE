@@ -41,11 +41,11 @@ public class TokenProvider {
 	private static final String SCOPES = "scopes";
 
 	/** The token validity in milliseconds. */
-	@Value("${security.authentication.jwt.tokenValidity: 86400}")
+	@Value("${security.authentication.jwt.tokenValidity: 86400000}")
 	private Long tokenValidityInMilliseconds;
 
 	/** The token validity in milliseconds for remember me. */
-	@Value("${security.authentication.jwt.tokenValidityRememberMe: 254600}")
+	@Value("${security.authentication.jwt.tokenValidityRememberMe: 86400000}")
 	private Long tokenValidityInMillisecondsForRememberMe;
 
 	@Value("${security.authentication.jwt.secret: fe717189668e381314aa57f997286f8f51dbfe9c}")

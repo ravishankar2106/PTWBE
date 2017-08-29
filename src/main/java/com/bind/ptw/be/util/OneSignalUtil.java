@@ -51,7 +51,6 @@ public class OneSignalUtil {
 			    jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
 			    scanner.close();
 			}
-			System.out.println("jsonResponse:\n" + jsonResponse);
 		}catch(Exception exception){
 			exception.printStackTrace();
 		}

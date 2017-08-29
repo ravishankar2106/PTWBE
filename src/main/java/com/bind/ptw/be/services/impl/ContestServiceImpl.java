@@ -210,15 +210,17 @@ public class ContestServiceImpl implements ContestService{
 			}*/
 			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, true, false);
 			if(contestBeanList != null && !contestBeanList.isEmpty()){
-				for (ContestBean retContestBean : contestBeanList) {
-					List<QuestionBean> questionList = contestDao.getQuestion(retContestBean);
-					if(questionList != null && !questionList.isEmpty()){
-						for (QuestionBean questionBean : questionList) {
-							List<AnswerOptionBean> answers = contestDao.getAnswersForQuestion(questionBean);
-							questionBean.setAnswerOptionList(answers);
+				if(!StringUtil.isEmptyNull(contestBean.getTournamentId())){
+					for (ContestBean retContestBean : contestBeanList) {
+						List<QuestionBean> questionList = contestDao.getQuestion(retContestBean);
+						if(questionList != null && !questionList.isEmpty()){
+							for (QuestionBean questionBean : questionList) {
+								List<AnswerOptionBean> answers = contestDao.getAnswersForQuestion(questionBean);
+								questionBean.setAnswerOptionList(answers);
+							}
 						}
+						retContestBean.setQuestionList(questionList);
 					}
-					retContestBean.setQuestionList(questionList);
 				}
 				retContestBeanList.setContestBeanList(contestBeanList);
 			}
