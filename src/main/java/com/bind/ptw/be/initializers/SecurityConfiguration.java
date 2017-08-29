@@ -132,7 +132,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers("/userauth/register").permitAll()
         .antMatchers("/userauth/resetPassword").permitAll()
         .antMatchers("/userauth/cities").permitAll()
-        
+        .antMatchers("/userauth/updatePassword").permitAll()
+        .antMatchers("/userauth/confirmUser").permitAll()
         .antMatchers("/userauth/**").authenticated()
         .and()
         .apply(securityConfigurerAdapter());

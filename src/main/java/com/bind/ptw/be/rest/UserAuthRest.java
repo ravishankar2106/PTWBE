@@ -16,16 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bind.ptw.be.dto.AnswerPulseBeanList;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBeanList;
 import com.bind.ptw.be.dto.ContestBean;
 import com.bind.ptw.be.dto.ContestBeanList;
 import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
+import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
+import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
 import com.bind.ptw.be.dto.TournamentBeanList;
+import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
@@ -58,15 +62,15 @@ public class UserAuthRest {
 	TokenProvider tokenProvider;
 	
 	@PostMapping("/register")
-	public UserBean registerUser(@RequestBody UserBean inputUser, HttpServletResponse httpResponse){
+	public UserBean registerUser(@RequestBody UserBean inputUser){
 		UserBean returnUserBean = userService.createUser(inputUser);
-		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(inputUser.getUserLoginId(), inputUser.getPassword());
+		/*UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(inputUser.getUserLoginId(), inputUser.getPassword());
 		Authentication authentication = this.authenticationManager.authenticate(authToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = tokenProvider.createToken(authentication, false);
 		returnUserBean.setToken(jwt);
 		returnUserBean.setRefreshToken(tokenProvider.createToken(authentication, true));
-		httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
+		httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);*/
 		return returnUserBean;
 	}
 	
@@ -133,6 +137,16 @@ public class UserAuthRest {
 		return contestService.submitUserAnswer(userContestAsnwer);
 	}
 	
+	@PostMapping("/getSubmittedAnswer")
+	public UserContestAnswer getUserAnswer(@RequestBody UserContestAnswer userContestBean){
+		return contestService.getUserAnswer(userContestBean);
+	}
+
+	@PostMapping("/getTournamentMatches")
+	public MatchBeanList getTournamentMatches(@RequestBody MatchBean matchBean){
+		return contestService.getMatches(matchBean);
+	}
+	
 	@PostMapping("/getMatchContest")
 	public ContestBeanList getMatchContest(@RequestBody MatchBean matchBean){
 		return contestService.getMatchContest(matchBean);
@@ -146,6 +160,16 @@ public class UserAuthRest {
 	@PostMapping("/getLeaderBoard")
 	public LeaderBoardBeanList getLeaderBoard(@RequestBody LeaderBoardBeanList leaderBoardRequest){
 		return contestService.getLeaderBoard(leaderBoardRequest);
+	}
+	
+	@PostMapping("/getContestTerms")
+	public TournamentTAndCBean getContestTerms(@RequestBody ContestBean contestBean){
+		return contestService.getContestTAndC(contestBean);
+	}
+	
+	@PostMapping("/getAnswerPulse")
+	public AnswerPulseBeanList getAnswerPulse(@RequestBody QuestionBean questionBean){
+		return contestService.getAnswerPulse(questionBean);
 	}
 	
 }

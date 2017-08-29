@@ -1,11 +1,8 @@
 package com.bind.ptw.be.rest;
 
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,11 +35,11 @@ import com.bind.ptw.be.dto.UserGroupInvitationBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
-import com.bind.ptw.be.security.TokenProvider;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.UserService;
 
+@EnableAutoConfiguration
 @RestController
 @RequestMapping("/user")
 public class UserRest {
@@ -57,24 +54,18 @@ public class UserRest {
 	@Autowired
 	TournamentService tournamentService;
 	
-	@Autowired
-	AuthenticationManager authenticationManager;
-	
-	@Autowired
-	TokenProvider tokenProvider;
-	
-	@PostMapping(value = "/login")
-	public UserBean authenticate(@RequestBody @Valid UserBean request, HttpServletResponse httpResponse) {
-		UserBean response = userService.authenticateUser(request, false);
-		return response;
-	}
-	
 	
 	@PostMapping("/register")
 	public UserBean registerUser(@RequestBody UserBean inputUser){
 		UserBean returnUserBean = userService.createUser(inputUser);
 		return returnUserBean;
 	}
+	
+	@PostMapping("/login")
+    public UserBean authenticate(@RequestBody UserBean request) {
+		UserBean response = userService.authenticateUser(request, false);
+        return response;
+    }
 	
 	@PostMapping("/confirmUser")
 	public UserConfirmationBean confirmUser(@RequestBody UserConfirmationBean userConfirmationBean){
@@ -100,11 +91,11 @@ public class UserRest {
 		return response;
 	}
 	
-	/*@PostMapping("/getOngoingTournament")
+	@PostMapping("/getOngoingTournament")
 	public TournamentBeanList getOngoingTournament (@RequestBody TournamentBean tournamentBean){
 		return tournamentService.getOngoingTournament(tournamentBean);
 	}
-	*/
+	
 	@PostMapping("/registerToTournament")
 	public BaseBean registerUserToTournament (@RequestBody UserTournmentRegisterBean userTournament){
 		return userService.registerUserToTournament(userTournament);
@@ -116,7 +107,7 @@ public class UserRest {
 	}
 	
 	
-	/*@PostMapping("/getOngoingContest")
+	@PostMapping("/getOngoingContest")
 	public ContestBeanList getOngoingContest(@RequestBody ContestBean contestBean){
 		return contestService.getOngoingContests(contestBean);
 	}
@@ -124,7 +115,7 @@ public class UserRest {
 	@PostMapping("/submitAnswer")
 	public BaseBean submitUserAnswer(@RequestBody UserContestAnswer userContestAsnwer){
 		return contestService.submitUserAnswer(userContestAsnwer);
-	}*/
+	}
 	
 	@PostMapping("/getSubmittedAnswer")
 	public UserContestAnswer getUserAnswer(@RequestBody UserContestAnswer userContestBean){
@@ -136,7 +127,7 @@ public class UserRest {
 		return contestService.getMatches(matchBean);
 	}
 	
-	/*@PostMapping("/getMatchContest")
+	@PostMapping("/getMatchContest")
 	public ContestBeanList getMatchContest(@RequestBody MatchBean matchBean){
 		return contestService.getMatchContest(matchBean);
 	}
@@ -149,7 +140,7 @@ public class UserRest {
 	@PostMapping("/getLeaderBoard")
 	public LeaderBoardBeanList getLeaderBoard(@RequestBody LeaderBoardBeanList leaderBoardRequest){
 		return contestService.getLeaderBoard(leaderBoardRequest);
-	}*/
+	}
 	
 	@PostMapping("/createUserLeague")
 	public UserGroupBean createUserGroup(@RequestBody UserGroupBean userGroupBean){
