@@ -1,6 +1,7 @@
 package com.bind.ptw.be.rest;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bind.ptw.be.dto.AnswerPulseBeanList;
@@ -39,6 +41,7 @@ import com.bind.ptw.be.security.TokenProvider;
 import com.bind.ptw.be.services.ContestService;
 import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.UserService;
+import com.bind.ptw.be.util.PTWConstants;
 
 @EnableAutoConfiguration
 @RestController
@@ -88,10 +91,31 @@ public class UserAuthRest {
 			httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
 		} catch(AuthenticationException ex) {
 			ex.printStackTrace();
-			response = null;
+			response.setResultCode(PTWConstants.ERROR_CODE_DB_EXCEPTION);
+			response.setResultDescription(PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
         return response;
     }
+	
+	@GetMapping("refreshToken")
+	public BaseBean refreshToken(HttpServletRequest req) {
+		System.out.println("Refresh token called");
+		UserBean response = new UserBean();
+		String bearer = req.getHeader("Authorization");
+		if (null == bearer) {
+			response.setResultDescription("Pass the old token in authorization bearer !");
+			return response;
+		}
+		try {
+			String jwt = tokenProvider.createRefreshToken(tokenProvider.getAuthentication(bearer.replace("Bearer ", "")));
+			response.setResultDescription("New token issued !");
+			response.setToken(jwt);
+		} catch (AuthenticationException exception) {
+			response.setResultCode(PTWConstants.ERROR_CODE_DB_EXCEPTION);
+			response.setResultDescription(PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return response;
+	}
 	
 	@PostMapping("/confirmUser")
 	public UserConfirmationBean confirmUser(@RequestBody UserConfirmationBean userConfirmationBean){
@@ -125,6 +149,11 @@ public class UserAuthRest {
 	@GetMapping("/getOngoingContest")
 	public ContestBeanList getOngoingContest(){
 		return contestService.getOngoingContests(new ContestBean());
+	}
+	
+	@PostMapping("/getContestQuestion")
+	public ContestBean getContestQuestion(@RequestParam Integer contestId){
+		return contestService.getContestQAndA(contestId);
 	}
 	
 	@PostMapping("/getOngoingTournament")

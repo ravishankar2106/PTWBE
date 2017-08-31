@@ -129,6 +129,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
        // .antMatchers("/user/register").permitAll()
         
         .antMatchers("/userauth/login").permitAll()
+        .antMatchers("/userauth/refreshToken").permitAll()
         .antMatchers("/userauth/register").permitAll()
         .antMatchers("/userauth/resetPassword").permitAll()
         .antMatchers("/userauth/cities").permitAll()

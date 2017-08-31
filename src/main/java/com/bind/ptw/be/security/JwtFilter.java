@@ -55,6 +55,11 @@ public class JwtFilter extends GenericFilterBean {
       log.info("Security exception for user {} - {}", eje.getClaims().getSubject(),
           eje.getMessage());
       ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      ((HttpServletResponse) servletResponse).getWriter().write("{\"resultCode\": 401,\"resultDescription\": \"Token Expired\"}");
+			((HttpServletResponse) servletResponse).getWriter().flush();
+			((HttpServletResponse) servletResponse).getWriter().close();
+			((HttpServletResponse) servletResponse).setContentType("application/json");
+		
     }
   }
 

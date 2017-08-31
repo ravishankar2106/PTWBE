@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,12 +43,10 @@ public class TokenProvider {
 	private static final String SCOPES = "scopes";
 
 	/** The token validity in milliseconds. */
-	@Value("${security.authentication.jwt.tokenValidity: 86400000}")
-	private Long tokenValidityInMilliseconds;
+	private long tokenValidityInMilliseconds;
 
 	/** The token validity in milliseconds for remember me. */
-	@Value("${security.authentication.jwt.tokenValidityRememberMe: 86400000}")
-	private Long tokenValidityInMillisecondsForRememberMe;
+	private long tokenValidityInMillisecondsForRememberMe;
 
 	@Value("${security.authentication.jwt.secret: fe717189668e381314aa57f997286f8f51dbfe9c}")
 	private String secretKey;
@@ -61,6 +61,8 @@ public class TokenProvider {
 	 */
 	public TokenProvider() {
 		log.info("Token provider created: {}", this);
+		this.tokenValidityInMilliseconds = 1000 * 86400;
+		this.tokenValidityInMillisecondsForRememberMe = 1000 * 86400;
 	}
 
 	/**
@@ -76,13 +78,14 @@ public class TokenProvider {
 		Date currentTime = new Date();
 		claims.put(SCOPES, authentication.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(currentTime);
+		long now = currentTime.getTime();
+		Date validity;
 		if (rememberMe) {
-			cal.add(Calendar.MILLISECOND, tokenValidityInMillisecondsForRememberMe.intValue());
+			validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
 		} else {
-			cal.add(Calendar.MILLISECOND, tokenValidityInMilliseconds.intValue());
+			validity = new Date(now + this.tokenValidityInMilliseconds);
 		}
+
 		JwtBuilder tokenBuilder = Jwts.builder()
 				.setClaims(claims)
 				.setIssuer(tokenIssuer);
@@ -90,9 +93,22 @@ public class TokenProvider {
 			tokenBuilder.setId(UUID.randomUUID().toString());
 		}
 		tokenBuilder.setIssuedAt(currentTime)
-				.setExpiration(cal.getTime())
+				.setExpiration(validity)
 				.signWith(SignatureAlgorithm.HS512, secretKey);
 		return tokenBuilder.compact();
+	}
+	
+	public String createRefreshToken(Authentication authentication) {
+		String authorities = authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+
+		long now = (new Date()).getTime();
+
+		Date validity;
+		validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+
+		return Jwts.builder().setSubject(authentication.getName()).claim(SCOPES, authorities)
+				.signWith(SignatureAlgorithm.HS512, secretKey).setExpiration(validity).compact();
 	}
 
 	/**

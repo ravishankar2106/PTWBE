@@ -233,6 +233,34 @@ public class ContestServiceImpl implements ContestService{
 	}
 
 	@Override
+	public ContestBean getContestQAndA(Integer contestId){
+		ContestBean retContestBean = null;
+		try{
+			ContestBeanValidator.validateContestId(contestId);
+			ContestBean contestBean = new ContestBean();
+			contestBean.setContestId(contestId);
+			
+			List<ContestBean> contestBeanList = contestDao.getMatches(contestBean, true, true);
+			if(contestBeanList != null && !contestBeanList.isEmpty()){
+				retContestBean = contestBeanList.get(0);
+				List<QuestionBean> questionList = contestDao.getQuestion(retContestBean);
+				if(questionList != null && !questionList.isEmpty()){
+					for (QuestionBean questionBean : questionList) {
+						List<AnswerOptionBean> answers = contestDao.getAnswersForQuestion(questionBean);
+						questionBean.setAnswerOptionList(answers);
+					}
+				}
+				retContestBean.setQuestionList(questionList);
+			}
+		}catch(PTWException exception){
+			retContestBean = new ContestBean();
+			retContestBean.setResultCode(exception.getCode());
+			retContestBean.setResultDescription(exception.getDescription());
+		}
+		return retContestBean;
+	}
+	
+	@Override
 	public BaseBean updateContest(ContestBean contestBean) {
 		BaseBean retBean = new BaseBean();
 		try{

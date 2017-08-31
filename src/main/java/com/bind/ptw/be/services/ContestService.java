@@ -34,6 +34,7 @@ public interface ContestService {
 	BaseBean deleteContest(ContestBean contestBean);
 	ContestBeanList getOngoingContests(ContestBean contestBean);
 	BaseBean processContests(ContestBean contestBean);
+	ContestBean getContestQAndA(Integer contestId);
 	ContestBeanList getProcessingContests();
 	
 	QuestionBean createQuestion(QuestionBean questionBean);
@@ -67,5 +68,6 @@ public interface ContestService {
 	AnswerPulseBeanList getAnswerPulse(QuestionBean questionBean);
 	void sendReminders();
 	ContestBeanList getActiveContests();
+	
 	
 }
