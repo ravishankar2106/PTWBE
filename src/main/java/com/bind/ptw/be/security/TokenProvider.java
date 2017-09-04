@@ -1,6 +1,7 @@
 
 package com.bind.ptw.be.security;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -119,9 +120,13 @@ public class TokenProvider {
 	 */
 	public Authentication getAuthentication(String token) {
 		Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-		List<String> scopes = (List<String>) claims.get(SCOPES);
+		//List<String> scopes = (List<String>) claims.get(SCOPES);
+		//Collection<? extends GrantedAuthority> authorities =
+			//	scopes.stream()
+				//.map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+
 		Collection<? extends GrantedAuthority> authorities =
-				scopes.stream()
+				Arrays.stream(claims.get(SCOPES).toString().split(","))
 				.map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
 		User principal = new User(claims.getSubject(), "", authorities);

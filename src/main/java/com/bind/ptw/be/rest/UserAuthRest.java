@@ -87,7 +87,7 @@ public class UserAuthRest {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			String jwt = tokenProvider.createToken(authentication, false);
 			response.setToken(jwt);
-			response.setRefreshToken(tokenProvider.createToken(authentication, true));
+			//response.setRefreshToken(tokenProvider.createToken(authentication, true));
 			httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
 		} catch(AuthenticationException ex) {
 			ex.printStackTrace();
@@ -99,7 +99,7 @@ public class UserAuthRest {
 	
 	@GetMapping("refreshToken")
 	public BaseBean refreshToken(HttpServletRequest req) {
-		System.out.println("Refresh token called");
+		
 		UserBean response = new UserBean();
 		String bearer = req.getHeader("Authorization");
 		if (null == bearer) {
