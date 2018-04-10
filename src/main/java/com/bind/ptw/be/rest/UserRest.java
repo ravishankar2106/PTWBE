@@ -211,4 +211,9 @@ public class UserRest {
 	public AnswerPulseBeanList getAnswerPulse(@RequestBody QuestionBean questionBean){
 		return contestService.getAnswerPulse(questionBean);
 	}
+	
+	@GetMapping("/testAPI")
+	public BaseBean testAPI() {
+		return new BaseBean();
+	}
 }
