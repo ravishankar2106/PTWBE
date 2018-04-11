@@ -43,13 +43,13 @@ import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.UserService;
 import com.bind.ptw.be.util.PTWConstants;
 
-@EnableAutoConfiguration
-@RestController
-@RequestMapping("/userauth")
+//@EnableAutoConfiguration
+//@RestController
+//@RequestMapping("/userauth")
 public class UserAuthRest {
 	
 	
-	@Autowired
+	/*@Autowired
 	UserService userService;
 	
 	@Autowired
@@ -67,13 +67,13 @@ public class UserAuthRest {
 	@PostMapping("/register")
 	public UserBean registerUser(@RequestBody UserBean inputUser){
 		UserBean returnUserBean = userService.createUser(inputUser);
-		/*UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(inputUser.getUserLoginId(), inputUser.getPassword());
+		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(inputUser.getUserLoginId(), inputUser.getPassword());
 		Authentication authentication = this.authenticationManager.authenticate(authToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = tokenProvider.createToken(authentication, false);
 		returnUserBean.setToken(jwt);
 		returnUserBean.setRefreshToken(tokenProvider.createToken(authentication, true));
-		httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);*/
+		httpResponse.addHeader(JwtConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
 		return returnUserBean;
 	}
 	
@@ -135,13 +135,13 @@ public class UserAuthRest {
 		return response;
 	}
 	
-	/*@GetMapping("/cities")
+	@GetMapping("/cities")
 	public CityBeanList getCities(){
 		CityBeanList response = userService.getCities();
 		return response;
 	}
 	
-	*/@PostMapping("/registerToPush")
+	@PostMapping("/registerToPush")
 	public BaseBean registerUserToPush(@RequestBody OneSignalUserRegistrationBean registrationBean){
 		return userService.registerUserToPush(registrationBean);
 	}
@@ -199,6 +199,6 @@ public class UserAuthRest {
 	@PostMapping("/getAnswerPulse")
 	public AnswerPulseBeanList getAnswerPulse(@RequestBody QuestionBean questionBean){
 		return contestService.getAnswerPulse(questionBean);
-	}
+	}*/
 	
 }
