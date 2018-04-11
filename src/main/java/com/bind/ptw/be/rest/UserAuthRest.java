@@ -135,13 +135,13 @@ public class UserAuthRest {
 		return response;
 	}
 	
-	@GetMapping("/cities")
+	/*@GetMapping("/cities")
 	public CityBeanList getCities(){
 		CityBeanList response = userService.getCities();
 		return response;
 	}
 	
-	@PostMapping("/registerToPush")
+	*/@PostMapping("/registerToPush")
 	public BaseBean registerUserToPush(@RequestBody OneSignalUserRegistrationBean registrationBean){
 		return userService.registerUserToPush(registrationBean);
 	}
