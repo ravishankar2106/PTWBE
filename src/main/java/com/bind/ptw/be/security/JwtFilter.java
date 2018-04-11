@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+/*import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;*/
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -25,9 +25,9 @@ import io.jsonwebtoken.ExpiredJwtException;
  * Filters incoming requests and installs a Spring Security principal if a header corresponding to a
  * valid user is found.
  */
-public class JwtFilter extends GenericFilterBean {
+public class JwtFilter {//extends GenericFilterBean {
 
-  private final Logger log = LoggerFactory.getLogger(JwtFilter.class);
+ /* private final Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
   private TokenProvider tokenProvider;
 
@@ -74,5 +74,5 @@ public class JwtFilter extends GenericFilterBean {
       return jwt;
     }
     return null;
-  }
+  }*/
 }

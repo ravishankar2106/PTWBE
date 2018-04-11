@@ -15,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+/*import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.User;*/
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -73,7 +73,7 @@ public class TokenProvider {
 	 * @param rememberMe the remember me
 	 * @return the string
 	 */
-	public String createToken(Authentication authentication, Boolean rememberMe) {
+	/*public String createToken(Authentication authentication, Boolean rememberMe) {
 
 		Claims claims = Jwts.claims().setSubject(authentication.getName());
 		Date currentTime = new Date();
@@ -110,7 +110,7 @@ public class TokenProvider {
 
 		return Jwts.builder().setSubject(authentication.getName()).claim(SCOPES, authorities)
 				.signWith(SignatureAlgorithm.HS512, secretKey).setExpiration(validity).compact();
-	}
+	}*/
 
 	/**
 	 * Gets the authentication.
@@ -118,7 +118,7 @@ public class TokenProvider {
 	 * @param token the token
 	 * @return the authentication
 	 */
-	public Authentication getAuthentication(String token) {
+	/*public Authentication getAuthentication(String token) {
 		Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 		//List<String> scopes = (List<String>) claims.get(SCOPES);
 		//Collection<? extends GrantedAuthority> authorities =
@@ -132,7 +132,7 @@ public class TokenProvider {
 		User principal = new User(claims.getSubject(), "", authorities);
 
 		return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-	}
+	}*/
 
 	/**
 	 * Validate token.
