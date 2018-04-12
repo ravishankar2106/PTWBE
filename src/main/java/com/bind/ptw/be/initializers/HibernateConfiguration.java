@@ -58,6 +58,11 @@ public class HibernateConfiguration {
   public DataSource getDataSource() {
     BasicDataSource dataSource = new BasicDataSource();
     dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+    System.out.println("DB UR: " + env.getProperty("db.dbURL"));
+    System.out.println("DB Port: " + env.getProperty("db.port"));
+    System.out.println("DB Name: " + env.getProperty("db.dbname"));
+    System.out.println("User Name: " + env.getProperty("db.port"));
+    System.out.println("Password: " + env.getProperty("db.password"));
     dataSource.setUrl("jdbc:mysql://"+ env.getProperty("db.dbURL") + ":"+ env.getProperty("db.port")+"/"+env.getProperty("db.dbname"));;
     dataSource.setUsername(env.getProperty("db.username"));
     dataSource.setPassword(env.getProperty("db.password"));

@@ -22,19 +22,19 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;*/
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
+/*import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.SignatureException;*/
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class TokenProvider.
  */
-@Component
-@PropertySource(value = {"classpath:application.properties"})
-@SuppressWarnings("unchecked")
+//@Component
+//@PropertySource(value = {"classpath:application.properties"})
+//@SuppressWarnings("unchecked")
 public class TokenProvider {
 
 	/** The log. */
@@ -140,7 +140,7 @@ public class TokenProvider {
 	 * @param authToken the auth token
 	 * @return true, if successful
 	 */
-	public boolean validateToken(String authToken) {
+	/*public boolean validateToken(String authToken) {
 		try {
 			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
 			return true;
@@ -148,7 +148,7 @@ public class TokenProvider {
 			log.info("Invalid JWT signature: " + e.getMessage());
 			return false;
 		}
-	}
+	}*/
 
 	@Override
 	public String toString() {

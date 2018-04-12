@@ -1,0 +1,15 @@
+dbURL: 52.33.24.191
+port: 3306
+dbname: PTWDEV
+dbusername: ravidba
+dbpassword: admin1234
+  
+email.sender.address: ravishankar@innovationculture.in
+
+smtp.user.name: AKIAJR2UWLOOHN7GOMZQ
+smtp.password: AmPaOy865V9NXp9AvKfz/RRrh1Qrbk9hFNx/HtSVtAzb
+smtp.host: email-smtp.us-west-2.amazonaws.com
+smtp.port: 587
+
+onesignal.auth: YjZhNWYzMjMtYmIxNy00MzdjLTgyMjktNjJmYjFkNjkxNTAz
+onesignal.appid: 9a1af85b-5d82-4807-b3a4-2be4a8ae6a5c

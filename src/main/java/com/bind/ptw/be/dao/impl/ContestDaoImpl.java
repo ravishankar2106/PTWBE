@@ -391,15 +391,16 @@ public class ContestDaoImpl implements ContestDao{
 					ContestBean retContestBean = new ContestBean();
 					retContestBean.setContestId(contest.getContestId());
 					retContestBean.setContestName(contest.getContestName());
+					
 					if(fullData){
 						retContestBean.setPublishStartDate(contest.getPublishStartDateTime());
 						retContestBean.setPublishStartDateStr(StringUtil.convertDateTImeToString(contest.getPublishStartDateTime()));
 						retContestBean.setPublishEndDate(contest.getPublishEndDateTime());
 						retContestBean.setPublishEndDateStr(StringUtil.convertDateTImeToString(contest.getPublishEndDateTime()));
 						retContestBean.setCutoffDate(contest.getCutoffDateTime());
+						retContestBean.setBonusPoints(contest.getBonusPoints());
 						retContestBean.setCutoffDateStr(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
 						retContestBean.setContestStatusId(contest.getContestStatusId());
-						retContestBean.setBonusPoints(contest.getBonusPoints());
 						retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
 						if(contest.getPushNotified() != null && contest.getPushNotified()){
 							retContestBean.setPushNotified(true);

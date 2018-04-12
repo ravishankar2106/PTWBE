@@ -43,13 +43,13 @@ import com.bind.ptw.be.services.TournamentService;
 import com.bind.ptw.be.services.UserService;
 import com.bind.ptw.be.util.PTWConstants;
 
-//@EnableAutoConfiguration
-//@RestController
-//@RequestMapping("/userauth")
+@EnableAutoConfiguration
+@RestController
+@RequestMapping("/usercontest")
 public class UserAuthRest {
 	
 	
-	/*@Autowired
+	@Autowired
 	UserService userService;
 	
 	@Autowired
@@ -58,13 +58,13 @@ public class UserAuthRest {
 	@Autowired
 	ContestService contestService;
 	
-	@Autowired
-	AuthenticationManager authenticationManager;
+	//@Autowired
+	//AuthenticationManager authenticationManager;
 	
-	@Autowired
-	TokenProvider tokenProvider;
+	//@Autowired
+	//TokenProvider tokenProvider;
 	
-	@PostMapping("/register")
+	/*@PostMapping("/register")
 	public UserBean registerUser(@RequestBody UserBean inputUser){
 		UserBean returnUserBean = userService.createUser(inputUser);
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(inputUser.getUserLoginId(), inputUser.getPassword());
@@ -145,6 +145,7 @@ public class UserAuthRest {
 	public BaseBean registerUserToPush(@RequestBody OneSignalUserRegistrationBean registrationBean){
 		return userService.registerUserToPush(registrationBean);
 	}
+	*/
 	
 	@GetMapping("/getOngoingContest")
 	public ContestBeanList getOngoingContest(){
@@ -199,6 +200,6 @@ public class UserAuthRest {
 	@PostMapping("/getAnswerPulse")
 	public AnswerPulseBeanList getAnswerPulse(@RequestBody QuestionBean questionBean){
 		return contestService.getAnswerPulse(questionBean);
-	}*/
+	}
 	
 }

@@ -27,15 +27,13 @@ import com.bind.ptw.be.security.utils.PTWPasswordEncoder;
 
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class SecurityConfiguration.
- */
 //@Configuration
 //@EnableWebSecurity
 //@EnableGlobalMethodSecurity(
   //  prePostEnabled = true,
     //securedEnabled = true)
+
+
 public class SecurityConfiguration {//extends WebSecurityConfigurerAdapter {
 
   /*@Autowired

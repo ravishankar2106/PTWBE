@@ -46,9 +46,9 @@ public class SwaggerConfig {
 				.build().apiInfo(apiInfo()).alternateTypeRules(
                         new AlternateTypeRule(
                                 jsonNodeType,
-                                stringType))
-				.securitySchemes(newArrayList(jwtTokenKey()))
-				.securityContexts(newArrayList(securityContext()));   
+                                stringType));
+				//.securitySchemes(newArrayList(jwtTokenKey()))
+				//.securityContexts(newArrayList(securityContext()));   
 	}
 
 	public ApiInfo apiInfo() {
