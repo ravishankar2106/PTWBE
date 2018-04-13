@@ -46,7 +46,7 @@ import com.bind.ptw.be.util.PTWConstants;
 @EnableAutoConfiguration
 @RestController
 @RequestMapping("/usercontest")
-public class UserAuthRest {
+public class UserContest {
 	
 	
 	@Autowired
