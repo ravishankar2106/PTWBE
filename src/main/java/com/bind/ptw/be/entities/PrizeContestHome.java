@@ -52,7 +52,7 @@ public class PrizeContestHome {
 		}
 	}
 	
-	public List<PrizeContest> findPrizeContestByFilter(PrizeContestBean prizeContestBean, boolean exludeArchived){
+	public List<PrizeContest> findPrizeContestByFilter(PrizeContestBean prizeContestBean, boolean exludeArchived, boolean publicGroupsOnly){
 		Query query = null;
 		
 		try{
@@ -71,6 +71,9 @@ public class PrizeContestHome {
 				if(exludeArchived){
 					queryToExecute.append("AND pc.archievedFlag = false ");
 					queryToExecute.append("AND pc.processedFlag = false ");
+				}
+				if(publicGroupsOnly) {
+					queryToExecute.append("AND pc.groupId IS NULL ");
 				}
 			}
 			query = session.createQuery(queryToExecute.toString());

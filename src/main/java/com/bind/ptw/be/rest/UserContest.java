@@ -27,6 +27,7 @@ import com.bind.ptw.be.dto.LeaderBoardBeanList;
 import com.bind.ptw.be.dto.MatchBean;
 import com.bind.ptw.be.dto.MatchBeanList;
 import com.bind.ptw.be.dto.OneSignalUserRegistrationBean;
+import com.bind.ptw.be.dto.PrizeContestBeanList;
 import com.bind.ptw.be.dto.QuestionBean;
 import com.bind.ptw.be.dto.QuestionBeanList;
 import com.bind.ptw.be.dto.TournamentBean;
@@ -202,4 +203,13 @@ public class UserContest {
 		return contestService.getAnswerPulse(questionBean);
 	}
 	
+	@PostMapping("/ongoingPrizeContest")
+	public PrizeContestBeanList getOngoingPrizeContest(@RequestParam Integer userId) {
+		return contestService.getOngoingPrizeContest(userId);
+	}
+	
+	@PostMapping("/prizeContestToppers")
+	public LeaderBoardBeanList getPrizeContestToppers(@RequestParam Integer prizeContestId) {
+		return contestService.getPrizeContestToppers(prizeContestId);
+	}
 }

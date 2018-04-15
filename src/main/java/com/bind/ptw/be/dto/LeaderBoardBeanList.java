@@ -28,6 +28,7 @@ public class LeaderBoardBeanList extends BaseBean{
 	public List<LeaderBoardBean> getLeaders() {
 		return leaders;
 	}
+	
 	public void setLeaders(List<LeaderBoardBean> leaders) {
 		this.leaders = leaders;
 	}

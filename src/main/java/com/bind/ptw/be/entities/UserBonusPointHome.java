@@ -46,6 +46,18 @@ public class UserBonusPointHome {
 		return query.list();
 	}
 	
+	public List<UserBonusPoint> findByFilter(Integer userId, Integer[] contestId){
+		Query query = null;
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append(QueryConstants.RETRIEVE_USER_BONUS_POINTS);
+		queryToExecute.append("AND ubp.userId =:userId ");
+		queryToExecute.append("AND ubp.contestId IN :contestId ");
+		query = session.createQuery(queryToExecute.toString());
+		query.setParameter("userId", userId);
+		query.setParameterList("contestId", contestId);
+		return query.list();
+	}
+	
 	
 	
 }

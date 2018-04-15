@@ -68,6 +68,8 @@ public interface ContestService {
 	AnswerPulseBeanList getAnswerPulse(QuestionBean questionBean);
 	void sendReminders();
 	ContestBeanList getActiveContests();
+	PrizeContestBeanList getOngoingPrizeContest(Integer userId);
+	LeaderBoardBeanList getPrizeContestToppers(Integer prizeContestId);
 	
 	
 }

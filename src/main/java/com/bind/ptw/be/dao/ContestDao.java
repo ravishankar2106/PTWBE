@@ -80,6 +80,10 @@ public interface ContestDao {
 	void removePrizeWinners(PrizeContestBean prizeContestBean) throws PTWException;
 	void markPushNotified(Integer contestId) throws PTWException;
 	List<ContestBean> getActiveContests() throws PTWException;
+	List<PrizeContestBean> getUserPrizeContests(Integer userId);
+	Integer[] getContestsForDates(Date startDate, Date endDate, Integer tournamentId) throws PTWException;
+	Integer getUserBonusForContest(Integer userId, Integer[] contestIds) throws PTWException;
+	Integer[] getUsersForQuestions(Integer[] questionIds) throws PTWException;
 	
 	
 }

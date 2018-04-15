@@ -936,6 +936,19 @@ public class ContestDaoImpl implements ContestDao{
 	}
 
 	@Override
+	public Integer getUserBonusForContest(Integer userId, Integer[] contestIds)throws PTWException{
+		UserBonusPointHome userBonusPointHome = new UserBonusPointHome(this.getSession());
+		int totalPoints = 0;
+		List<UserBonusPoint> userBonusPoints = userBonusPointHome.findByFilter(userId, contestIds);
+		if(userBonusPoints != null && !userBonusPoints.isEmpty()) {
+			for (UserBonusPoint userBonusPoint : userBonusPoints) {
+				totalPoints+=userBonusPoint.getPoints();
+			}
+		}
+		return totalPoints;
+	}
+	
+	@Override
 	public List<UserSelectedAnswerBean> getUserAnswers(UserSelectedAnswerBean userSelectedAnswerBean) throws PTWException{
 		List<UserSelectedAnswerBean> retUserAnswerBeanList = null;
 		UserAnswerHome userAnswerHome = new UserAnswerHome(this.getSession());
@@ -1161,7 +1174,7 @@ public class ContestDaoImpl implements ContestDao{
 		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
 		List<PrizeContestBean> contests = null;
 		try{
-			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean, false);
+			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean, false, false);
 			if(dbContests != null && !dbContests.isEmpty()){
 				contests = new ArrayList<PrizeContestBean>();
 				for (PrizeContest prizeContest : dbContests) {
@@ -1375,11 +1388,56 @@ public class ContestDaoImpl implements ContestDao{
 	}
 	
 	@Override
+	public Integer[] getContestsForDates(Date startDate, Date endDate, Integer tournamentId)throws PTWException{
+		ContestHome contestHome = new ContestHome(this.getSession());
+		Integer[] contestIdList = null;
+		try{
+			List<Contest> contestList = contestHome.getContestBetweenDates(startDate, endDate, tournamentId);
+			
+			if(contestList != null && !contestList.isEmpty()){
+				contestIdList = new Integer[contestList.size()];
+				int index = 0;
+				for (Contest contest : contestList) {
+					contestIdList[index++] = contest.getContestId();
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return contestIdList;
+		
+	}
+	
+	@Override
+	public Integer[] getUsersForQuestions(Integer[] questionIds)throws PTWException{
+		UserAnswerHome userAnswerHome = new UserAnswerHome(this.getSession());
+		Integer[] foundUserIds= null;
+		List<Integer> userIds = null;
+		try{
+			userIds = userAnswerHome.getUserAnswer(questionIds);
+			if(userIds != null && !userIds.isEmpty()) {
+				foundUserIds = new Integer[userIds.size()];
+				int index =0;
+				for (Integer userId : userIds) {
+					foundUserIds[index++] = userId;
+				}
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return foundUserIds;
+		
+	}
+	
+	@Override
 	public List<PrizeContestBean> getUnprocessedPrizeContest(PrizeContestBean prizeContestBean) throws PTWException{
 		PrizeContestHome prizeContestHome = new PrizeContestHome(this.getSession());
 		List<PrizeContestBean> contests = null;
 		try{
-			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean, true);
+			List<PrizeContest> dbContests = prizeContestHome.findPrizeContestByFilter(prizeContestBean, true, false);
 			if(dbContests != null && !dbContests.isEmpty()){
 				contests = new ArrayList<PrizeContestBean>();
 				for (PrizeContest prizeContest : dbContests) {
@@ -1433,7 +1491,7 @@ public class ContestDaoImpl implements ContestDao{
 		PrizeContestWinnersHome prizeContestWinnerHome = new PrizeContestWinnersHome(this.getSession());
 		List<PrizeContestWinnerBean> winners = null;
 		try{
-			List<PrizeContest> prizeContestList = prizeContestHome.findPrizeContestByFilter(prizeContestBean, true);
+			List<PrizeContest> prizeContestList = prizeContestHome.findPrizeContestByFilter(prizeContestBean, true, false);
 			if(prizeContestList != null && prizeContestList.size() == 1){
 				PrizeContest dbPrizeContest = prizeContestList.get(0);
 				prizeContestBean.setPrizeContestId(dbPrizeContest.getPrizeContestId());
@@ -1502,5 +1560,47 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		return retContestBeanList;
 	
+	}
+
+	@Override
+	public List<PrizeContestBean> getUserPrizeContests(Integer userId) {
+		PrizeContestHome contestHome = new PrizeContestHome(this.getSession());
+		List<PrizeContestBean> contestBeanList = new ArrayList<PrizeContestBean>();
+		List<PrizeContest> prizeContestList = contestHome.findPrizeContestByFilter(new PrizeContestBean(), true, true);
+		if(prizeContestList != null && !prizeContestList.isEmpty()) {
+			for (PrizeContest prizeContest : prizeContestList) {
+				PrizeContestBean contestBean = new PrizeContestBean();
+				contestBean.setPrizeContestId(prizeContest.getPrizeContestId());
+				contestBean.setPrizeContestName(prizeContest.getPrizeContestName());
+				contestBean.setStartDateStr(StringUtil.convertDateToString(prizeContest.getStartDate()));
+				contestBean.setEndDateStr(StringUtil.convertDateToString(prizeContest.getEndDate()));
+				contestBeanList.add(contestBean);
+			}
+		}
+		
+		UserGroupMappingHome userGroupMappingHome = new UserGroupMappingHome(this.getSession());
+		UserGroupBean queryGroupBean = new UserGroupBean();
+		queryGroupBean.setUserId(userId);
+		List<UserGroupMapping> userGroupMappingList = userGroupMappingHome.findUserGroup(userId, null, null, true);
+		if(userGroupMappingList != null && !userGroupMappingList.isEmpty()) {
+			for (UserGroupMapping userGroupMapping : userGroupMappingList) {
+				UserGroup userGroup = userGroupMapping.getUserGroupMappingKey().getUserGroup();
+				PrizeContestBean queryPrizeContestBean = new PrizeContestBean();
+				queryPrizeContestBean.setGroupId(userGroup.getUserGroupId());
+				List<PrizeContest> userPrizeContestList = contestHome.findPrizeContestByFilter(queryPrizeContestBean, true, false);
+				if(userPrizeContestList != null && !userPrizeContestList.isEmpty()) {
+					for (PrizeContest prizeContest : userPrizeContestList) {
+						PrizeContestBean contestBean = new PrizeContestBean();
+						contestBean.setPrizeContestId(prizeContest.getPrizeContestId());
+						contestBean.setPrizeContestName(prizeContest.getPrizeContestName());
+						contestBean.setStartDateStr(StringUtil.convertDateToString(prizeContest.getStartDate()));
+						contestBean.setEndDateStr(StringUtil.convertDateToString(prizeContest.getEndDate()));
+						contestBeanList.add(contestBean);
+					}
+					
+				}
+			}
+		}
+		return contestBeanList;
 	}
 }

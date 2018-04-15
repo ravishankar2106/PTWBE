@@ -1,5 +1,7 @@
 package com.bind.ptw.be.rest;
 
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -177,6 +179,7 @@ public class ContestRest {
 	public BaseBean processPrizeContest(){
 		return contestService.processPrizeContest();
 	}
+	
 }
 
 

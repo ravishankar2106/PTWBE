@@ -46,6 +46,16 @@ public class UserAnswerHome {
 		return query.list();
 	}
 	
+	public List<Integer> getUserAnswer(Integer[] questionId){
+		Query query = null;
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("SELECT DISTINCT uo.userId from UserAnswer uo where ");
+		queryToExecute.append("AND ua.questionId IN :questionIds");
+		query = session.createQuery(queryToExecute.toString());
+		query.setParameterList("questionIds", questionId);
+		return query.list();
+	}
+	
 	public List<UserAnswer> findByAnswerOption(Integer answerOptionId){
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();

@@ -918,6 +918,7 @@ public class ContestServiceImpl implements ContestService{
 						leaderBoardBean.setRank(prizeContestWinnerBean.getRank());
 						leadersList.add(leaderBoardBean);
 					}
+					reRankGroupUsers(leadersList);
 					retLeaderBoard.setLeaders(leadersList);
 				}
 			}
@@ -1151,12 +1152,19 @@ public class ContestServiceImpl implements ContestService{
 					Date startDate = StringUtil.floorDate(prizeContestBean.getStartDate());
 					Date endDate = StringUtil.cielDate(prizeContestBean.getEndDate());
 					Integer[] questionIds = contestDao.getQuestionsForDates(startDate, endDate, prizeContestBean.getTournamentId());
+					Integer[] contestIds = contestDao.getContestsForDates(startDate, endDate, prizeContestBean.getTournamentId());
 					if(questionIds != null){
-						UserGroupBean queryGroup = new UserGroupBean();
-						queryGroup.setGroupId(prizeContestBean.getGroupId());
-						Integer[] groupUsers = userDao.getGroupUsers(queryGroup);
+						Integer[] answeredUsers;
+						if(prizeContestBean.getGroupId() != null) {
+							UserGroupBean queryGroup = new UserGroupBean();
+							queryGroup.setGroupId(prizeContestBean.getGroupId());
+							answeredUsers = userDao.getGroupUsers(queryGroup);
+							
+						}else {
+							answeredUsers = contestDao.getUsersForQuestions(questionIds);
+						}
 						
-						List<UserScoreBoardBean> userScores = userDao.getUserPointsForQuestions(groupUsers, questionIds);
+						List<UserScoreBoardBean> userScores = userDao.getUserPointsForQuestions(answeredUsers, questionIds);
 						List<PrizeContestWinnerBean> winners = null;
 						if(userScores!= null && !userScores.isEmpty()){
 							winners = new ArrayList<PrizeContestWinnerBean>();
@@ -1164,7 +1172,8 @@ public class ContestServiceImpl implements ContestService{
 								PrizeContestWinnerBean prizeWinner = new PrizeContestWinnerBean();
 								prizeWinner.setPrizeContestId(prizeContestBean.getPrizeContestId());
 								prizeWinner.setUserId(userScoreBoardBean.getUserId());
-								prizeWinner.setPointsScored(userScoreBoardBean.getPointsScored());
+								int bonusPoints = contestDao.getUserBonusForContest(userScoreBoardBean.getUserId(), contestIds);
+								prizeWinner.setPointsScored(userScoreBoardBean.getPointsScored()+bonusPoints);
 								winners.add(prizeWinner);
 							}
 							resetRanking(winners);
@@ -1235,6 +1244,50 @@ public class ContestServiceImpl implements ContestService{
 			retContestBeanList.setResultDescription(exception.getDescription());
 		}
 		return retContestBeanList;
+	}
+
+	@Override
+	public PrizeContestBeanList getOngoingPrizeContest(Integer userId) {
+		PrizeContestBeanList contestBeanList = new PrizeContestBeanList();
+		try {
+			UserBeanValidator.validateUserId(userId);
+			List<PrizeContestBean> prizeContestBeanList = contestDao.getUserPrizeContests(userId);
+			contestBeanList.setPrizeContestBeanList(prizeContestBeanList);
+		}catch(PTWException exception){
+			contestBeanList.setResultCode(exception.getCode());
+			contestBeanList.setResultDescription(exception.getDescription());
+		}
+		
+		return contestBeanList;
+	}
+
+	@Override
+	public LeaderBoardBeanList getPrizeContestToppers(Integer prizeContestId) {
+		LeaderBoardBeanList boardBeanList = new LeaderBoardBeanList();
+		
+		try {
+			ContestBeanValidator.validatePrizeContestId(prizeContestId);
+			PrizeContestBean queryContestBean = new PrizeContestBean();
+			queryContestBean.setPrizeContestId(prizeContestId);
+			List<PrizeContestWinnerBean> winners = contestDao.getPrizeWinners(queryContestBean);
+			if(winners != null && !winners.isEmpty()){
+				List<LeaderBoardBean> leadersList = new ArrayList<LeaderBoardBean>();
+				for (PrizeContestWinnerBean prizeContestWinnerBean : winners) {
+					LeaderBoardBean leaderBoardBean = new LeaderBoardBean();
+					leaderBoardBean.setUserId(prizeContestWinnerBean.getUserId());
+					leaderBoardBean.setUserName(prizeContestWinnerBean.getUserName());
+					leaderBoardBean.setTeamName(prizeContestWinnerBean.getTeamName());
+					leaderBoardBean.setTotalPoints(prizeContestWinnerBean.getPointsScored());
+					leaderBoardBean.setRank(prizeContestWinnerBean.getRank());
+					leadersList.add(leaderBoardBean);
+				}
+				boardBeanList.setLeaders(leadersList);
+			}
+		}catch(PTWException exception){
+			boardBeanList.setResultCode(exception.getCode());
+			boardBeanList.setResultDescription(exception.getDescription());
+		}
+		return null;
 	}
 	
 	
