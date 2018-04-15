@@ -49,7 +49,7 @@ public class UserAnswerHome {
 	public List<Integer> getUserAnswer(Integer[] questionId){
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();
-		queryToExecute.append("SELECT DISTINCT uo.userId from UserAnswer uo where ");
+		queryToExecute.append("SELECT DISTINCT ua.userId from UserAnswer ua where ");
 		queryToExecute.append("ua.questionId IN :questionIds");
 		query = session.createQuery(queryToExecute.toString());
 		query.setParameterList("questionIds", questionId);
