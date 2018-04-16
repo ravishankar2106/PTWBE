@@ -1287,7 +1287,7 @@ public class ContestServiceImpl implements ContestService{
 			boardBeanList.setResultCode(exception.getCode());
 			boardBeanList.setResultDescription(exception.getDescription());
 		}
-		return null;
+		return boardBeanList;
 	}
 	
 	
