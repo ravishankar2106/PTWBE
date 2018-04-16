@@ -416,6 +416,7 @@ public class ContestDaoImpl implements ContestDao{
 						matchDisplayNameBuilder.append(match.getTeamA().getTeam().getTeamShortName());
 						matchDisplayNameBuilder.append("-");
 						matchDisplayNameBuilder.append(match.getTeamB().getTeam().getTeamShortName());
+						retContestBean.setTeamNames(matchDisplayNameBuilder.toString());
 						matchDisplayNameBuilder.append("-Venue: ");
 						matchDisplayNameBuilder.append(match.getVenue());
 						matchDisplayNameBuilder.append(" At ");
@@ -424,12 +425,15 @@ public class ContestDaoImpl implements ContestDao{
 						matchDisplayNameBuilder.append(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
 						retContestBean.setMatchDisplayName(matchDisplayNameBuilder.toString());
 						retContestBean.setContestTypeName(contest.getContestType().getContestTypeName());
+						retContestBean.setMatchDateStr(StringUtil.convertDateTImeToString(match.getMatchDateTime()));
 					}else{
+						retContestBean.setTeamNames("Bonus Contest");
 						StringBuilder matchDisplayNameBuilder = new StringBuilder();
 						matchDisplayNameBuilder.append("Contest Cuoff Time is: ");
 						matchDisplayNameBuilder.append(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
 						retContestBean.setMatchDisplayName(matchDisplayNameBuilder.toString());
 					}
+					retContestBean.setCutoffDateStr(StringUtil.convertDateTImeToString(contest.getCutoffDateTime()));
 					retContestBeanList.add(retContestBean);
 				}
 			}
