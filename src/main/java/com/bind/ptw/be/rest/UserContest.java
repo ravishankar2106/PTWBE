@@ -194,12 +194,16 @@ public class UserContest {
 	}
 	
 	@PostMapping("/getContestTerms")
-	public TournamentTAndCBean getContestTerms(@RequestBody ContestBean contestBean){
+	public TournamentTAndCBean getContestTerms(@RequestParam Integer contestId){
+		ContestBean contestBean = new ContestBean();
+		contestBean.setContestId(contestId);
 		return contestService.getContestTAndC(contestBean);
 	}
 	
 	@PostMapping("/getAnswerPulse")
-	public AnswerPulseBeanList getAnswerPulse(@RequestBody QuestionBean questionBean){
+	public AnswerPulseBeanList getAnswerPulse(@RequestParam Integer questionId){
+		QuestionBean questionBean = new QuestionBean();
+		questionBean.setQuestionId(questionId);
 		return contestService.getAnswerPulse(questionBean);
 	}
 	
