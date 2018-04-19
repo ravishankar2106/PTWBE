@@ -335,7 +335,7 @@ public class UserServiceImpl implements UserService{
 		try{
 			TournamentBeanValidator.validateRequest(userGroupBean);
 			UserBeanValidator.validateUserId(userGroupBean.getOwnerId());
-			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			//TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
 			List<UserGroupBean> userGroups = userDao.getUserCreatedGroups(userGroupBean);
 			retGroupBeanList.setUserGroups(userGroups);
 		}catch(PTWException exception){
@@ -374,7 +374,17 @@ public class UserServiceImpl implements UserService{
 			UserBean inviteeUser = null;
 			if(!StringUtil.isEmptyNull(userGroupInvitationBean.getPhone())){
 				UserBean phoneUserQuery = new UserBean();
-				phoneUserQuery.setPhone(userGroupInvitationBean.getPhone());
+				String phone = userGroupInvitationBean.getPhone();
+				try {
+					int phoneNo = Integer.parseInt(phone);
+					phone = String.valueOf(phoneNo);
+					if(phone.length()>10) {
+						phone = phone.substring(2, phone.length());
+					}
+				}catch(Exception e) {
+					
+				}
+				phoneUserQuery.setPhone(phone);
 				phoneUsers = userDao.getUsers(phoneUserQuery, false);
 			}
 			if(phoneUsers == null || phoneUsers.size()!=1){
@@ -523,7 +533,7 @@ public class UserServiceImpl implements UserService{
 		UserGroupBeanList userGroupList = new UserGroupBeanList();
 		try{
 			TournamentBeanValidator.validateRequest(userGroupBean);
-			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			//TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
 			UserBeanValidator.validateUserId(userGroupBean.getUserId());
 			
 			List<UserGroupBean> userGroups = userDao.getUserMappedGroup(userGroupBean);

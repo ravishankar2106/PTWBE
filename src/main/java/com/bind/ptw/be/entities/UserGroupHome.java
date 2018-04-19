@@ -73,6 +73,7 @@ public class UserGroupHome {
 		if(!StringUtil.isEmptyNull(userGroupBean.getTournamentId())){
 			queryToExecute.append("AND ug.tournament.tournamentId =:tournamentId ");
 		}
+		
 		query = session.createQuery(queryToExecute.toString());
 		if(!StringUtil.isEmptyNull(userGroupBean.getGroupId())){
 			query.setParameter("userGroupId", userGroupBean.getGroupId());

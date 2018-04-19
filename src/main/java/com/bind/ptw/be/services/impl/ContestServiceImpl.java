@@ -883,7 +883,7 @@ public class ContestServiceImpl implements ContestService{
 		try{
 			TournamentBeanValidator.validateRequest(userGroupBean);
 			UserBeanValidator.validateGroupId(userGroupBean.getGroupId());
-			TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			//TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
 			
 			boolean isPrizeGroup = false;
 			UserGroupBean queryBean = new UserGroupBean();

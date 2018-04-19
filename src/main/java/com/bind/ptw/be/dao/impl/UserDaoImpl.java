@@ -376,9 +376,11 @@ public class UserDaoImpl implements UserDao{
 			Users user = new Users();
 			user.setUserId(userGroupBean.getOwnerId());
 			userGroup.setOwnerUser(user);
-			Tournament tournament = new Tournament();
-			tournament.setTournamentId(userGroupBean.getTournamentId());
-			userGroup.setTournament(tournament);
+			if(userGroupBean.getTournamentId() != null && userGroupBean.getTournamentId() != 0) { 
+				Tournament tournament = new Tournament();
+				tournament.setTournamentId(userGroupBean.getTournamentId());
+				userGroup.setTournament(tournament);
+			}
 			userGroup.setUserGroupCode(userGroupBean.getGroupCode());
 			userGroup.setPrizeIncludedFlag(userGroupBean.getPrizeGroupFlag());
 			userGroup.setUserGroupName(userGroupBean.getGroupName());
@@ -466,7 +468,7 @@ public class UserDaoImpl implements UserDao{
 		try{
 			UserGroupBean queryBean = new UserGroupBean();
 			queryBean.setOwnerId(userGroupBean.getOwnerId());
-			queryBean.setTournamentId(userGroupBean.getTournamentId());
+			//queryBean.setTournamentId(userGroupBean.getTournamentId());
 			List<UserGroup> userGroupLst = userGroupHome.findByFilter(queryBean);
 			if(userGroupLst != null && !userGroupLst.isEmpty()){
 				userGroupBeanList = new ArrayList<UserGroupBean>();
@@ -631,6 +633,7 @@ public class UserDaoImpl implements UserDao{
 					dbUserGroupBean.setGroupId(userGroup.getUserGroupId());
 					dbUserGroupBean.setGroupName(userGroup.getUserGroupName());
 					dbUserGroupBean.setGroupCode(userGroup.getUserGroupCode());
+					dbUserGroupBean.setOwnerId(userGroup.getOwnerUserId());
 					userGroups.add(dbUserGroupBean);
 				}
 			}

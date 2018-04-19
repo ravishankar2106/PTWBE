@@ -36,6 +36,10 @@ import com.bind.ptw.be.dto.TournamentTAndCBean;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
 import com.bind.ptw.be.dto.UserContestAnswer;
+import com.bind.ptw.be.dto.UserGroupBean;
+import com.bind.ptw.be.dto.UserGroupBeanList;
+import com.bind.ptw.be.dto.UserGroupInvitationBean;
+import com.bind.ptw.be.dto.UserGroupInvitationBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
 import com.bind.ptw.be.security.JwtConfigurer;
 import com.bind.ptw.be.security.TokenProvider;
@@ -215,5 +219,45 @@ public class UserContest {
 	@PostMapping("/prizeContestToppers")
 	public LeaderBoardBeanList getPrizeContestToppers(@RequestParam Integer prizeContestId) {
 		return contestService.getPrizeContestToppers(prizeContestId);
+	}
+	
+	@PostMapping("/createUserLeague")
+	public UserGroupBean createUserGroup(@RequestBody UserGroupBean userGroupBean){
+		return userService.createUserGroup(userGroupBean);
+	}
+	
+	@PostMapping("/updateUserLeague")
+	public BaseBean updateUserGroup(@RequestBody UserGroupBean userGroupBean){
+		return userService.updateUserGroup(userGroupBean);
+	}
+	
+	@PostMapping("/getUserOwnedLeague")
+	public UserGroupBeanList getUserOwnedLeague(@RequestBody UserGroupBean userGroupBean){
+		return userService.getUserOwnedGroup(userGroupBean);
+	}
+
+	@PostMapping("/inviteUserToLeague")
+	public BaseBean inviteUserToLeague(@RequestBody UserGroupInvitationBean userGroupInvitationBean){
+		return userService.inviteUserToGroup(userGroupInvitationBean);
+	}
+	
+	@PostMapping("/getPendingInvitation")
+	public UserGroupInvitationBeanList getPendingGrounInvitation(@RequestBody UserBean userBean){
+		return userService.getPendingGrounInvitation(userBean);
+	}
+	
+	@PostMapping("/joinLeague")
+	public BaseBean addUserToGroup(@RequestBody UserGroupInvitationBean userGroupInvitationBean){
+		return userService.addUserToGroup(userGroupInvitationBean);	
+	}
+	
+	@PostMapping("/getUserLeagues")
+	public UserGroupBeanList getUserGroups(@RequestBody UserGroupBean userGroupBean){
+		return userService.getUserGroups(userGroupBean);
+	}
+	
+	@PostMapping("/getLeagueStandings")
+	public LeaderBoardBeanList getGroupLeaderBoard(@RequestBody UserGroupBean userGroupBean){
+		return contestService.getGroupLeaderBoard(userGroupBean);
 	}
 }

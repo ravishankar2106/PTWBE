@@ -233,7 +233,7 @@ public class UserBeanValidator {
 	
 	public static void validateCreateUserGroup(UserGroupBean userGroupBean) throws PTWException {
 		validateUserId(userGroupBean.getOwnerId());
-		TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+		//TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
 		validateGroupName(userGroupBean);
 	}
 
