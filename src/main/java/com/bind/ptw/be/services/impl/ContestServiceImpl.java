@@ -1183,7 +1183,7 @@ public class ContestServiceImpl implements ContestService{
 									}
 									prizeWinner.setPointsScored(userScoreBoardBean.getPointsScored()+bonusPoints);
 									winners.add(prizeWinner);
-									newPointRanking.add(prizeWinner.getPointsScored()+bonusPoints);
+									newPointRanking.add(prizeWinner.getPointsScored());
 								}
 								
 								resetRanking(winners, newPointRanking);
@@ -1205,14 +1205,19 @@ public class ContestServiceImpl implements ContestService{
 		int rank = 1;
 		int nextRankingIncrement = 0;
 		for (Integer reorderedPoints : newPointRanking) {
+			System.out.println("Points scored " + reorderedPoints);
 			int currentRankings =0;
 			for (PrizeContestWinnerBean winner : winners) {
-				if(winner.getPointsScored().intValue() == reorderedPoints.intValue()) {
-					if(currentRankings == 0) {
-						rank = rank + nextRankingIncrement;
+				if(winner.getRank() != null && winner.getRank().intValue() != 0) {
+					System.out.println("Points scored " + winner.getPointsScored());
+					if(winner.getPointsScored().intValue() == reorderedPoints.intValue()) {
+						if(currentRankings == 0) {
+							rank = rank + nextRankingIncrement;
+						}
+						winner.setRank(rank);
+						System.out.println("Setting rank " + rank  + " score " + winner.getPointsScored());
+						currentRankings++;
 					}
-					winner.setRank(rank);
-					currentRankings++;
 				}
 			}
 			nextRankingIncrement = nextRankingIncrement + currentRankings;
