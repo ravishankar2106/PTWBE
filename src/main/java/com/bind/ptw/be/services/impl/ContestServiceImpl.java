@@ -1153,7 +1153,8 @@ public class ContestServiceImpl implements ContestService{
 					Date endDate = StringUtil.cielDate(prizeContestBean.getEndDate());
 					Integer[] questionIds = contestDao.getQuestionsForDates(startDate, endDate, prizeContestBean.getTournamentId());
 					Integer[] contestIds = contestDao.getContestsForDates(startDate, endDate, prizeContestBean.getTournamentId());
-					if(questionIds != null){
+					System.out.println("Fount contest IDs " + contestIds);
+					/*if(questionIds != null){
 						Integer[] answeredUsers;
 						if(prizeContestBean.getGroupId() != null) {
 							UserGroupBean queryGroup = new UserGroupBean();
@@ -1180,7 +1181,7 @@ public class ContestServiceImpl implements ContestService{
 							contestDao.removePrizeWinners(prizeContestBean);
 							contestDao.addPrizeWinners(winners);
 						}
-					}
+					}*/
 				}
 			}
 		}catch(PTWException exception){
