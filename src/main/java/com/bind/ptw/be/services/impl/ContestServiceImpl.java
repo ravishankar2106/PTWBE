@@ -1185,7 +1185,11 @@ public class ContestServiceImpl implements ContestService{
 									winners.add(prizeWinner);
 									newPointRanking.add(prizeWinner.getPointsScored()+bonusPoints);
 								}
-								
+								int rank =1;
+								for (Integer ranking : newPointRanking) {
+									System.out.println("Rank 1 " + rank + " Points: " + ranking);
+									rank++;
+								}
 								resetRanking(winners, newPointRanking);
 								contestDao.removePrizeWinners(prizeContestBean);
 								contestDao.addPrizeWinners(winners);
