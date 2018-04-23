@@ -1202,20 +1202,16 @@ public class ContestServiceImpl implements ContestService{
 	}
 
 	private void resetRanking(List<PrizeContestWinnerBean> winners, Set<Integer> newPointRanking) {
-		int rank = 1;
-		int nextRankingIncrement = 0;
+		int nextRankingIncrement = 1;
 		for (Integer reorderedPoints : newPointRanking) {
-			System.out.println("Points scored " + reorderedPoints);
+			System.out.println("Points Ranking " + reorderedPoints);
 			int currentRankings =0;
 			for (PrizeContestWinnerBean winner : winners) {
 				if(winner.getRank() == null || winner.getRank().intValue() == 0) {
 					System.out.println("Points scored " + winner.getPointsScored());
 					if(winner.getPointsScored().intValue() == reorderedPoints.intValue()) {
-						if(currentRankings == 0) {
-							rank = rank + nextRankingIncrement;
-						}
-						winner.setRank(rank);
-						System.out.println("Setting rank " + rank  + " score " + winner.getPointsScored());
+						winner.setRank(nextRankingIncrement);
+						System.out.println("Setting rank " + nextRankingIncrement  + " score " + winner.getPointsScored());
 						currentRankings++;
 					}
 				}
