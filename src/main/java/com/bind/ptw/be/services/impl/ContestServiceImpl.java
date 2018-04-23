@@ -1208,7 +1208,7 @@ public class ContestServiceImpl implements ContestService{
 			System.out.println("Points scored " + reorderedPoints);
 			int currentRankings =0;
 			for (PrizeContestWinnerBean winner : winners) {
-				if(winner.getRank() != null && winner.getRank().intValue() != 0) {
+				if(winner.getRank() == null || winner.getRank().intValue() == 0) {
 					System.out.println("Points scored " + winner.getPointsScored());
 					if(winner.getPointsScored().intValue() == reorderedPoints.intValue()) {
 						if(currentRankings == 0) {
