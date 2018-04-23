@@ -1151,42 +1151,48 @@ public class ContestServiceImpl implements ContestService{
 				for (PrizeContestBean prizeContestBean : prizeContestBeanList) {
 					Date startDate = StringUtil.floorDate(prizeContestBean.getStartDate());
 					Date endDate = StringUtil.cielDate(prizeContestBean.getEndDate());
-					Integer[] questionIds = contestDao.getQuestionsForDates(startDate, endDate, prizeContestBean.getTournamentId());
+					
 					Integer[] contestIds = contestDao.getContestsForDates(startDate, endDate, prizeContestBean.getTournamentId());
-					if(contestIds != null) {
-						for (Integer contestId : contestIds) {
-							System.out.println("Fount contest IDs " + contestId);
+					Integer[] questionIds = null;
+					if(contestIds != null && contestIds.length > 0) {
+						questionIds = contestDao.getQuestion(contestIds);
+						for (Integer questionId : questionIds) {
+							System.out.println("Found quesion IDs " + questionId);
 						}
-						
-					}
-					/*if(questionIds != null){
-						Integer[] answeredUsers;
-						if(prizeContestBean.getGroupId() != null) {
-							UserGroupBean queryGroup = new UserGroupBean();
-							queryGroup.setGroupId(prizeContestBean.getGroupId());
-							answeredUsers = userDao.getGroupUsers(queryGroup);
-							
-						}else {
-							answeredUsers = contestDao.getUsersForQuestions(questionIds);
-						}
-						
-						List<UserScoreBoardBean> userScores = userDao.getUserPointsForQuestions(answeredUsers, questionIds);
-						List<PrizeContestWinnerBean> winners = null;
-						if(userScores!= null && !userScores.isEmpty()){
-							winners = new ArrayList<PrizeContestWinnerBean>();
-							for (UserScoreBoardBean userScoreBoardBean : userScores) {
-								PrizeContestWinnerBean prizeWinner = new PrizeContestWinnerBean();
-								prizeWinner.setPrizeContestId(prizeContestBean.getPrizeContestId());
-								prizeWinner.setUserId(userScoreBoardBean.getUserId());
-								int bonusPoints = contestDao.getUserBonusForContest(userScoreBoardBean.getUserId(), contestIds);
-								prizeWinner.setPointsScored(userScoreBoardBean.getPointsScored()+bonusPoints);
-								winners.add(prizeWinner);
+					
+						if(questionIds != null){
+							Integer[] answeredUsers;
+							if(prizeContestBean.getGroupId() != null) {
+								UserGroupBean queryGroup = new UserGroupBean();
+								queryGroup.setGroupId(prizeContestBean.getGroupId());
+								answeredUsers = userDao.getGroupUsers(queryGroup);
+								
+							}else {
+								answeredUsers = contestDao.getUsersForQuestions(questionIds);
 							}
-							resetRanking(winners);
-							contestDao.removePrizeWinners(prizeContestBean);
-							contestDao.addPrizeWinners(winners);
+							
+							List<UserScoreBoardBean> userScores = userDao.getUserPointsForQuestions(answeredUsers, questionIds);
+							Map<Integer, Integer> userBonus = contestDao.getUserBonusForContest(answeredUsers, contestIds);
+							List<PrizeContestWinnerBean> winners = null;
+							if(userScores!= null && !userScores.isEmpty()){
+								winners = new ArrayList<PrizeContestWinnerBean>();
+								for (UserScoreBoardBean userScoreBoardBean : userScores) {
+									PrizeContestWinnerBean prizeWinner = new PrizeContestWinnerBean();
+									prizeWinner.setPrizeContestId(prizeContestBean.getPrizeContestId());
+									prizeWinner.setUserId(userScoreBoardBean.getUserId());
+									int bonusPoints = 0;
+									if(userBonus.containsKey(userScoreBoardBean.getUserId())) {
+										bonusPoints = userBonus.get(userScoreBoardBean.getUserId());
+									}
+									prizeWinner.setPointsScored(userScoreBoardBean.getPointsScored()+bonusPoints);
+									winners.add(prizeWinner);
+								}
+								resetRanking(winners);
+								contestDao.removePrizeWinners(prizeContestBean);
+								contestDao.addPrizeWinners(winners);
+							}
 						}
-					}*/
+					}
 				}
 			}
 		}catch(PTWException exception){

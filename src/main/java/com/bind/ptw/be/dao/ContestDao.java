@@ -2,6 +2,7 @@ package com.bind.ptw.be.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.bind.ptw.be.dto.AnswerBean;
@@ -84,6 +85,8 @@ public interface ContestDao {
 	Integer[] getContestsForDates(Date startDate, Date endDate, Integer tournamentId) throws PTWException;
 	Integer getUserBonusForContest(Integer userId, Integer[] contestIds) throws PTWException;
 	Integer[] getUsersForQuestions(Integer[] questionIds) throws PTWException;
+	Integer[] getQuestion(Integer[] contests) throws PTWException;
+	Map<Integer, Integer> getUserBonusForContest(Integer[] userIdList, Integer[] contestIds) throws PTWException;
 	
 	
 }

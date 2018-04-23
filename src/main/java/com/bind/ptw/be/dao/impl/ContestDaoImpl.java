@@ -1,8 +1,11 @@
 package com.bind.ptw.be.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Session;
@@ -678,6 +681,27 @@ public class ContestDaoImpl implements ContestDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 	}
+	
+	@Override
+	public Integer[] getQuestion(Integer[] contests) throws PTWException {
+		Integer[] retQuestionBeanList = null;
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		try{
+			List<Question> dbQuestionList = questionHome.findQuestionForContest(contests);
+			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
+				retQuestionBeanList = new Integer[dbQuestionList.size()];
+				int index = 0;
+				for (Question question : dbQuestionList) {
+					retQuestionBeanList[index++] = question.getQuestionId();
+				}
+			}
+			
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		return retQuestionBeanList;
+	}
 
 	@Override
 	public void createAnswerOptions(QuestionBean questionBean) throws PTWException {
@@ -949,7 +973,32 @@ public class ContestDaoImpl implements ContestDao{
 				totalPoints+=userBonusPoint.getPoints();
 			}
 		}
+		
+		
+		
 		return totalPoints;
+	}
+	
+	@Override
+	public Map<Integer, Integer> getUserBonusForContest(Integer[] userIdList, Integer[] contestIds)throws PTWException{
+		UserBonusPointHome answerHome = new UserBonusPointHome(this.getSession());
+		Map<Integer, Integer> returnMap = new HashMap<Integer, Integer>();
+		List<Object> objMap = answerHome.getUserScoreForQuestions(userIdList, contestIds);
+		if(objMap != null && !objMap.isEmpty()){
+			for (Object object : objMap) {
+				@SuppressWarnings("rawtypes")
+				Map userScoreMap = (Map)object;
+				BigDecimal pointsDec = (BigDecimal)userScoreMap.get("POINTS");
+				int points = 0;
+				if(pointsDec != null){
+					points = pointsDec.intValue();
+				}
+				Integer userId = (Integer)userScoreMap.get("USER_ID");
+				returnMap.put(userId, points);
+			}
+		}
+		
+		return returnMap;
 	}
 	
 	@Override
