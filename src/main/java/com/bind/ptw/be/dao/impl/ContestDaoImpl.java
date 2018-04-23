@@ -1619,7 +1619,7 @@ public class ContestDaoImpl implements ContestDao{
 	public List<PrizeContestBean> getUserPrizeContests(Integer userId) {
 		PrizeContestHome contestHome = new PrizeContestHome(this.getSession());
 		List<PrizeContestBean> contestBeanList = new ArrayList<PrizeContestBean>();
-		List<PrizeContest> prizeContestList = contestHome.findPrizeContestByFilter(new PrizeContestBean(), true, true);
+		List<PrizeContest> prizeContestList = contestHome.findPrizeContestByFilter(new PrizeContestBean(), false, true);
 		if(prizeContestList != null && !prizeContestList.isEmpty()) {
 			for (PrizeContest prizeContest : prizeContestList) {
 				PrizeContestBean contestBean = new PrizeContestBean();
