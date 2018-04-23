@@ -1216,7 +1216,7 @@ public class ContestServiceImpl implements ContestService{
 		nextRankingIncrement++;
 		for (PrizeContestWinnerBean winner : winners) {
 			if(winner.getRank() == null || winner.getRank() == 0) {
-				winner.setPointsScored(nextRankingIncrement);
+				winner.setRank(nextRankingIncrement);
 			}
 		}
 	}
