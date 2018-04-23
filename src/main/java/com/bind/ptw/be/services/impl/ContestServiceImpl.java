@@ -1148,6 +1148,7 @@ public class ContestServiceImpl implements ContestService{
 		try{
 			List<PrizeContestBean> prizeContestBeanList = contestDao.getUnprocessedPrizeContest(new PrizeContestBean());
 			if(prizeContestBeanList != null && !prizeContestBeanList.isEmpty()){
+				Set<Integer> newPointRanking = new TreeSet<Integer>().descendingSet();
 				for (PrizeContestBean prizeContestBean : prizeContestBeanList) {
 					Date startDate = StringUtil.floorDate(prizeContestBean.getStartDate());
 					Date endDate = StringUtil.cielDate(prizeContestBean.getEndDate());
@@ -1156,10 +1157,6 @@ public class ContestServiceImpl implements ContestService{
 					Integer[] questionIds = null;
 					if(contestIds != null && contestIds.length > 0) {
 						questionIds = contestDao.getQuestion(contestIds);
-						for (Integer questionId : questionIds) {
-							System.out.println("Found quesion IDs " + questionId);
-						}
-					
 						if(questionIds != null){
 							Integer[] answeredUsers;
 							if(prizeContestBean.getGroupId() != null) {
@@ -1186,8 +1183,10 @@ public class ContestServiceImpl implements ContestService{
 									}
 									prizeWinner.setPointsScored(userScoreBoardBean.getPointsScored()+bonusPoints);
 									winners.add(prizeWinner);
+									newPointRanking.add(prizeWinner.getPointsScored()+bonusPoints);
 								}
-								resetRanking(winners);
+								
+								resetRanking(winners, newPointRanking);
 								contestDao.removePrizeWinners(prizeContestBean);
 								contestDao.addPrizeWinners(winners);
 							}
@@ -1202,17 +1201,18 @@ public class ContestServiceImpl implements ContestService{
 		return baseBean;
 	}
 
-	private void resetRanking(List<PrizeContestWinnerBean> winners) {
+	private void resetRanking(List<PrizeContestWinnerBean> winners, Set<Integer> newPointRanking) {
 		int rank = 1;
-		int newPoints = winners.get(0).getPointsScored();
-		for (PrizeContestWinnerBean prizeContestWinnerBean : winners) {
-			if(prizeContestWinnerBean.getPointsScored() != newPoints){
-				newPoints = prizeContestWinnerBean.getPointsScored();
-				rank++;
+		int nextRankingIncrement = 0;
+		for (Integer reorderedPoints : newPointRanking) {
+			rank = rank +nextRankingIncrement;
+			for (PrizeContestWinnerBean winner : winners) {
+				if(winner.getPointsScored() == reorderedPoints) {
+					winner.setRank(rank);
+					nextRankingIncrement++;
+				}
 			}
-			prizeContestWinnerBean.setRank(rank);
 		}
-		
 	}
 
 	@Override
