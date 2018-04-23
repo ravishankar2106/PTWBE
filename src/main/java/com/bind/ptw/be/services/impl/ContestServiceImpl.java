@@ -1153,7 +1153,12 @@ public class ContestServiceImpl implements ContestService{
 					Date endDate = StringUtil.cielDate(prizeContestBean.getEndDate());
 					Integer[] questionIds = contestDao.getQuestionsForDates(startDate, endDate, prizeContestBean.getTournamentId());
 					Integer[] contestIds = contestDao.getContestsForDates(startDate, endDate, prizeContestBean.getTournamentId());
-					System.out.println("Fount contest IDs " + contestIds);
+					if(contestIds != null) {
+						for (Integer contestId : contestIds) {
+							System.out.println("Fount contest IDs " + contestId);
+						}
+						
+					}
 					/*if(questionIds != null){
 						Integer[] answeredUsers;
 						if(prizeContestBean.getGroupId() != null) {
