@@ -1205,13 +1205,17 @@ public class ContestServiceImpl implements ContestService{
 		int rank = 1;
 		int nextRankingIncrement = 0;
 		for (Integer reorderedPoints : newPointRanking) {
-			rank = rank +nextRankingIncrement;
+			int currentRankings =0;
 			for (PrizeContestWinnerBean winner : winners) {
 				if(winner.getPointsScored().intValue() == reorderedPoints.intValue()) {
+					if(currentRankings == 0) {
+						rank = rank + nextRankingIncrement;
+					}
 					winner.setRank(rank);
-					nextRankingIncrement++;
+					currentRankings++;
 				}
 			}
+			nextRankingIncrement = nextRankingIncrement + currentRankings;
 		}
 		nextRankingIncrement++;
 		for (PrizeContestWinnerBean winner : winners) {
