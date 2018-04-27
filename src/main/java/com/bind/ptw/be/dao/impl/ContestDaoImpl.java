@@ -1549,7 +1549,9 @@ public class ContestDaoImpl implements ContestDao{
 				PrizeContest dbPrizeContest = prizeContestList.get(0);
 				prizeContestBean.setPrizeContestId(dbPrizeContest.getPrizeContestId());
 				List<PrizeContestWinners> dbWinners = prizeContestWinnerHome.findPrizeContestByFilter(prizeContestBean);
+				
 				if(dbWinners != null && !dbWinners.isEmpty()){
+					List<PrizeContestWinnerBean> lastPositions = new ArrayList<PrizeContestWinnerBean>();
 					winners = new ArrayList<PrizeContestWinnerBean>();
 					for (PrizeContestWinners prizeContestWinners : dbWinners) {
 						PrizeContestWinnerBean winnerBean = new PrizeContestWinnerBean();
@@ -1559,7 +1561,14 @@ public class ContestDaoImpl implements ContestDao{
 						winnerBean.setTeamName(prizeContestWinners.getUser().getTeamName());
 						winnerBean.setPointsScored(prizeContestWinners.getPointsScored());
 						winnerBean.setRank(prizeContestWinners.getRank());
-						winners.add(winnerBean);
+						if(prizeContestWinners.getPointsScored() > 0) {
+							winners.add(winnerBean);
+						}else {
+							lastPositions.add(winnerBean);
+						}
+					}
+					if(!lastPositions.isEmpty()) {
+						winners.addAll(lastPositions);
 					}
 				}
 			}

@@ -64,6 +64,7 @@ public class PrizeContestWinnersHome {
 					queryToExecute.append("AND pcw.prizeContest.prizeContestId =:prizeContestId ");
 				}
 			}
+			queryToExecute.append("order by rank");
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(prizeContestBean != null){
