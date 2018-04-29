@@ -1141,11 +1141,14 @@ public class ContestDaoImpl implements ContestDao{
 	public List<LeaderBoardBean> getLeaderBoard(LeaderBoardBeanList leaderBoardBeanList) throws PTWException {
 		UserScoreBoardHome userScoreBoardHome = new UserScoreBoardHome(getSession());
 		List<LeaderBoardBean> leaderBoardList = null; //new ArrayList<LeaderBoardBean>();
-		Integer tournamentId = leaderBoardBeanList.getTournamentId();
 		Integer[] users = null;
 		Integer rankSize = null;
+		Integer tournamentId = null;
 		try{
+			UserGroupHome userGroupHome = new UserGroupHome(getSession());
 			if(!StringUtil.isEmptyNull(leaderBoardBeanList.getGroupId())){
+				UserGroup userGroup = userGroupHome.findById(leaderBoardBeanList.getGroupId());
+				tournamentId = userGroup.getTournamentId();
 				UserGroupMappingHome userGroupHomeMapping = new UserGroupMappingHome(getSession());
 				List<UserGroupMapping> userGroups = userGroupHomeMapping.findUserGroup(null, leaderBoardBeanList.getGroupId(), null, false);
 				if(userGroups != null && !userGroups.isEmpty()){
