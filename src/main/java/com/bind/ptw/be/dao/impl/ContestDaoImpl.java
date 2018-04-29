@@ -1155,9 +1155,9 @@ public class ContestDaoImpl implements ContestDao{
 						users[index++] = userGroupMapping.getUserGroupMappingKey().getUserId();
 					}
 				}
-			}else{
+			}/*else{
 				rankSize = 100;
-			}
+			}*/
 			List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(tournamentId, users, rankSize, true);
 			if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
 				leaderBoardList = new ArrayList<LeaderBoardBean>();
@@ -1544,7 +1544,7 @@ public class ContestDaoImpl implements ContestDao{
 		PrizeContestWinnersHome prizeContestWinnerHome = new PrizeContestWinnersHome(this.getSession());
 		List<PrizeContestWinnerBean> winners = null;
 		try{
-			List<PrizeContest> prizeContestList = prizeContestHome.findPrizeContestByFilter(prizeContestBean, true, false);
+			List<PrizeContest> prizeContestList = prizeContestHome.findPrizeContestByFilter(prizeContestBean, false, false);
 			if(prizeContestList != null && prizeContestList.size() == 1){
 				PrizeContest dbPrizeContest = prizeContestList.get(0);
 				prizeContestBean.setPrizeContestId(dbPrizeContest.getPrizeContestId());

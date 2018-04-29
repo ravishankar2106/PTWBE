@@ -884,44 +884,13 @@ public class ContestServiceImpl implements ContestService{
 			TournamentBeanValidator.validateRequest(userGroupBean);
 			UserBeanValidator.validateGroupId(userGroupBean.getGroupId());
 			//TournamentBeanValidator.validateTournamentId(userGroupBean.getTournamentId());
+			LeaderBoardBeanList queryLeaderBoardBean = new LeaderBoardBeanList();
+			queryLeaderBoardBean.setGroupId(userGroupBean.getGroupId());
+			queryLeaderBoardBean.setTournamentId(userGroupBean.getTournamentId());
+			List<LeaderBoardBean> leadersList = contestDao.getLeaderBoard(queryLeaderBoardBean);
+			reRankGroupUsers(leadersList);
+			retLeaderBoard.setLeaders(leadersList);
 			
-			boolean isPrizeGroup = false;
-			UserGroupBean queryBean = new UserGroupBean();
-			queryBean.setGroupId(userGroupBean.getGroupId());
-			List<UserGroupBean> userGroup = userDao.getUserGroup(queryBean);
-			if(userGroup != null && !userGroup.isEmpty()){
-				Boolean prizeGroupFlag = userGroup.get(0).getPrizeGroupFlag();
-				if(prizeGroupFlag != null && prizeGroupFlag){
-					isPrizeGroup = true;
-				}
-			}
-			
-			if(!isPrizeGroup){
-				LeaderBoardBeanList queryLeaderBoardBean = new LeaderBoardBeanList();
-				queryLeaderBoardBean.setGroupId(userGroupBean.getGroupId());
-				queryLeaderBoardBean.setTournamentId(userGroupBean.getTournamentId());
-				List<LeaderBoardBean> leadersList = contestDao.getLeaderBoard(queryLeaderBoardBean);
-				reRankGroupUsers(leadersList);
-				retLeaderBoard.setLeaders(leadersList);
-			}else{
-				PrizeContestBean prizeContestBean = new PrizeContestBean();
-				prizeContestBean.setGroupId(userGroupBean.getGroupId());
-				List<PrizeContestWinnerBean> winners = contestDao.getPrizeWinners(prizeContestBean);
-				if(winners != null && !winners.isEmpty()){
-					List<LeaderBoardBean> leadersList = new ArrayList<LeaderBoardBean>();
-					for (PrizeContestWinnerBean prizeContestWinnerBean : winners) {
-						LeaderBoardBean leaderBoardBean = new LeaderBoardBean();
-						leaderBoardBean.setUserId(prizeContestWinnerBean.getUserId());
-						leaderBoardBean.setUserName(prizeContestWinnerBean.getUserName());
-						leaderBoardBean.setTeamName(prizeContestWinnerBean.getTeamName());
-						leaderBoardBean.setTotalPoints(prizeContestWinnerBean.getPointsScored());
-						leaderBoardBean.setRank(prizeContestWinnerBean.getRank());
-						leadersList.add(leaderBoardBean);
-					}
-					reRankGroupUsers(leadersList);
-					retLeaderBoard.setLeaders(leadersList);
-				}
-			}
 		}catch(PTWException exception){
 			retLeaderBoard.setResultCode(exception.getCode());
 			retLeaderBoard.setResultDescription(exception.getDescription());
