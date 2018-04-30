@@ -1158,9 +1158,10 @@ public class ContestDaoImpl implements ContestDao{
 						users[index++] = userGroupMapping.getUserGroupMappingKey().getUserId();
 					}
 				}
-			}/*else{
-				rankSize = 100;
-			}*/
+			}else{
+				tournamentId =    leaderBoardBeanList.getTournamentId();   
+				//rankSize = 100;
+			}
 			List<UserScoreBoard> userScoreBoardList = userScoreBoardHome.findByFilter(tournamentId, users, rankSize, true);
 			if(userScoreBoardList != null && !userScoreBoardList.isEmpty()){
 				leaderBoardList = new ArrayList<LeaderBoardBean>();
