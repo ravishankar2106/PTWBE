@@ -76,6 +76,7 @@ public class PrizeContestHome {
 					queryToExecute.append("AND pc.groupId IS NULL ");
 				}
 			}
+			queryToExecute.append("order by prizeContestId DESC ");
 			query = session.createQuery(queryToExecute.toString());
 			
 			if(prizeContestBean != null){

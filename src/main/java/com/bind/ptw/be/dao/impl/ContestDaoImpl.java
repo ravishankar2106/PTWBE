@@ -1653,7 +1653,7 @@ public class ContestDaoImpl implements ContestDao{
 				UserGroup userGroup = userGroupMapping.getUserGroupMappingKey().getUserGroup();
 				PrizeContestBean queryPrizeContestBean = new PrizeContestBean();
 				queryPrizeContestBean.setGroupId(userGroup.getUserGroupId());
-				List<PrizeContest> userPrizeContestList = contestHome.findPrizeContestByFilter(queryPrizeContestBean, true, false);
+				List<PrizeContest> userPrizeContestList = contestHome.findPrizeContestByFilter(queryPrizeContestBean, false, false);
 				if(userPrizeContestList != null && !userPrizeContestList.isEmpty()) {
 					for (PrizeContest prizeContest : userPrizeContestList) {
 						PrizeContestBean contestBean = new PrizeContestBean();
