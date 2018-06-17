@@ -516,6 +516,15 @@ public class ContestServiceImpl implements ContestService{
 				List<ContestBean> contestList = contestDao.getMatches(contestBean, false, true);
 				if(contestList != null && !contestList.isEmpty()){
 					ContestBean dbContestBean = contestList.get(0);
+					Integer tournamentId = dbContestBean.getTournamentId();
+					TournamentBean tournamentBean = new TournamentBean();
+					tournamentBean.setTournamentId(tournamentId);
+					List<TournamentBean> resultBean = tournamentDao.getTournament(tournamentBean, true);
+					TournamentBean currentTournament = resultBean.get(0);
+					boolean drawRequired = false;
+					if(currentTournament.getSportTypeId() == 2) {
+						drawRequired = true;
+					}
 					Integer matchId = dbContestBean.getMatchId();
 					MatchBean matchBean = new MatchBean();
 					matchBean.setMatchId(matchId);
@@ -526,6 +535,10 @@ public class ContestServiceImpl implements ContestService{
 							AnswerOptionBean answerOptionBean = new AnswerOptionBean();
 							answerOptionBean.setAnswerOptionStr(tournamentTeam.getTeamName());
 							answerOptionBeanList.add(answerOptionBean);
+						}
+						if(drawRequired) {
+							AnswerOptionBean answerOptionBean = new AnswerOptionBean();
+							answerOptionBean.setAnswerOptionStr("Draw");
 						}
 						QuestionBean answerQuestionBean = new QuestionBean();
 						answerQuestionBean.setQuestionId(retBean.getQuestionId());
