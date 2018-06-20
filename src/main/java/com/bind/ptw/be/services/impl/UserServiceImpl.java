@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService{
 			UserBeanValidator.validateRegisterUser(registerUser, userDao);
 			userResponse = userDao.save(registerUser);
 			registerUser.setUserId(userResponse.getUserId());
-			createUserToken(registerUser);
+			//createUserToken(registerUser);
 			createConfirmationRecord(registerUser);
 			logger.debug("Exiting register User");
 		}catch(PTWException exception){
