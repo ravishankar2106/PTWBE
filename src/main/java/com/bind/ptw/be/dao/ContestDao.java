@@ -87,6 +87,9 @@ public interface ContestDao {
 	Integer[] getUsersForQuestions(Integer[] questionIds) throws PTWException;
 	Integer[] getQuestion(Integer[] contests) throws PTWException;
 	Map<Integer, Integer> getUserBonusForContest(Integer[] userIdList, Integer[] contestIds) throws PTWException;
+	List<ContestBean> getUpcomingContestForPush(Integer tournamentId) throws PTWException;
+	List<Integer> getTournamentUsers(Integer tournamentId) throws PTWException;
+	List<Integer> getContestAnsweredUsers(Integer contestId) throws PTWException;
 	
 	
 }

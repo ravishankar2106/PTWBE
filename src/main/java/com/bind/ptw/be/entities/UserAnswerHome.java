@@ -124,4 +124,25 @@ public class UserAnswerHome {
 		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
 		return query.list();
 	}
+	
+	public List<Integer> getUserForTournament(Integer tournamentId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select DISTINCT(USER_ID) from USER_ANSWERS where ");
+		queryToExecute.append("CONTEST_QUESTION_ID in (select CONTEST_QUESTION_ID from CONTEST_QUESTION where CONTEST_ID in ");
+		queryToExecute.append("(select CONTEST_ID from CONTEST_MASTER where TOURNAMENT_ID = ");
+		queryToExecute.append(tournamentId);
+		queryToExecute.append("))");
+		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
+		return query.list();
+	}
+	
+	public List<Integer> getUserForContest(Integer contestId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select DISTINCT(USER_ID) from USER_ANSWERS where ");
+		queryToExecute.append("CONTEST_QUESTION_ID in (select CONTEST_QUESTION_ID from CONTEST_QUESTION where CONTEST_ID = ");
+		queryToExecute.append(contestId);
+		queryToExecute.append(")");
+		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
+		return query.list();
+	}
 }

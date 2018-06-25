@@ -2,6 +2,7 @@ package com.bind.ptw.be.dao.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -380,6 +381,42 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		retContestBean.setContestStatusId(contest.getContestStatusId());
 		return retContestBean;
+	}
+	
+	@Override
+	public List<ContestBean> getUpcomingContestForPush(Integer tournamentId)throws PTWException{
+		List<ContestBean> retContestBeanList = null;
+		ContestHome contestHome = new ContestHome(this.getSession());
+		Date startDate = new Date();
+		Calendar currentDate = Calendar.getInstance();
+		currentDate.add(Calendar.MINUTE, 60);
+		Date endDate = currentDate.getTime();
+		List<Contest> contestList = contestHome.getContestBetweenDates(startDate, endDate, tournamentId);
+		if(contestList != null) {
+			retContestBeanList = new ArrayList<ContestBean>();
+			for (Contest contest : contestList) {
+				if(contest.getPushNotified() == null || !contest.getPushNotified()) {
+					ContestBean contestBean = new ContestBean();
+					contestBean.setContestId(contest.getContestId());
+					contestBean.setContestName(contest.getContestName());
+					retContestBeanList.add(contestBean);
+				}
+				
+			}
+		}
+		return retContestBeanList;
+	}
+	
+	@Override
+	public List<Integer> getTournamentUsers(Integer tournamentId)throws PTWException{
+		UserAnswerHome userAnswerHome = new UserAnswerHome(this.getSession());
+		return userAnswerHome.getUserForTournament(tournamentId);
+	}
+	
+	@Override
+	public List<Integer> getContestAnsweredUsers(Integer contestId)throws PTWException{
+		UserAnswerHome userAnswerHome = new UserAnswerHome(this.getSession());
+		return userAnswerHome.getUserForContest(contestId);
 	}
 	
 	@Override
@@ -957,6 +994,14 @@ public class ContestDaoImpl implements ContestDao{
 		return retContestAnswer;
 	}
 
+	public List<Integer> getUsersForTournament(Integer tournamentId){
+		UserAnswerHome userAnswerHome = new UserAnswerHome(this.getSession());
+		List<Integer> answeredUsers = new ArrayList<Integer>();
+		
+		
+		return answeredUsers;
+	}
+	
 	@Override
 	public void removeUserAnswer(ContestBean contestBean) throws PTWException {
 		// TODO Auto-generated method stub

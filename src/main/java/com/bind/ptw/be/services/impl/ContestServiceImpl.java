@@ -1027,56 +1027,51 @@ public class ContestServiceImpl implements ContestService{
 	}
 	
 	@Override
-	@Scheduled(fixedDelay=1800000)
+	//@Scheduled(fixedDelay=1800000)
+	@Scheduled(cron = "0 30 0 * * *")
 	public void sendReminders(){
+		System.out.println("Scheduler started at " + new Date());
 		TournamentBean tournamentBean = new TournamentBean();
 		List<TournamentBean> tournaments = tournamentDao.getTournament(tournamentBean, true);
 		try{
-			Date now = new Date();
-			long nowDateInMillis = now.getTime();
 			Set<Integer> unAnsweredUsers = new HashSet<Integer>();
 			if(tournaments!=null && !tournaments.isEmpty()){
 				for (TournamentBean dbTournamentBean : tournaments) {
-					ContestBean queryContestBean = new ContestBean();
-					queryContestBean.setTournamentId(dbTournamentBean.getTournamentId());
-					List<ContestBean> contestBeanList = contestDao.getMatches(queryContestBean, true, true);
-					if(contestBeanList!= null && !contestBeanList.isEmpty()){
-						List<Integer> registeredUsers = userDao.getTournamentUsers(dbTournamentBean.getTournamentId());
-						for (ContestBean contestBean : contestBeanList) {
-							if(!contestBean.isPushNotified()){
-								Date cutoffTime = contestBean.getCutoffDate();
-								if(cutoffTime.after(now)){
-									long reminderTimeInMillis = 3600000;
-									if((cutoffTime.getTime() - nowDateInMillis) < reminderTimeInMillis){
-										List<QuestionBean> questionBean = contestDao.getQuestion(contestBean);
-										if(questionBean != null && !questionBean.isEmpty()){
-											QuestionBean question = questionBean.get(0);
-											List<Integer> usersAnswered = userDao.getUsersAnsweredForQuestion(question.getQuestionId());
-											Map<Integer, Integer> userAnsweredMap = convertToMap(usersAnswered);
-											for (Integer registeredUser : registeredUsers) {
-												if(!userAnsweredMap.containsKey(registeredUser)){
-													unAnsweredUsers.add(registeredUser);
-												}
+					List<Integer> currentTournamentUsers = contestDao.getTournamentUsers(dbTournamentBean.getTournamentId());
+					if(currentTournamentUsers != null && !currentTournamentUsers.isEmpty()) {
+						List<ContestBean> contestBeanList = contestDao.getUpcomingContestForPush(dbTournamentBean.getTournamentId());
+						if(contestBeanList!= null && !contestBeanList.isEmpty()){
+							for (ContestBean contestBean : contestBeanList) {
+								if(!contestBean.isPushNotified()){
+									List<Integer> answeredUsers = contestDao.getContestAnsweredUsers(contestBean.getContestId());
+									if(answeredUsers != null && !answeredUsers.isEmpty()){
+										Map<Integer, Integer> userAnsweredMap = convertToMap(answeredUsers);
+										for (Integer registeredUser : currentTournamentUsers) {
+											if(!userAnsweredMap.containsKey(registeredUser)){
+												unAnsweredUsers.add(registeredUser);
 											}
 										}
-										contestDao.markPushNotified(contestBean.getContestId());
 									}
-									
+									if(!unAnsweredUsers.isEmpty()){
+										Integer[] unAnsweredUserArr  = new Integer[unAnsweredUsers.size()];
+										int index=0;
+										for (Integer unansweredUserId : unAnsweredUsers) {
+											unAnsweredUserArr[index++] = unansweredUserId;
+										}
+										sendNotification(unAnsweredUserArr, "Hurry!! Last few mins to answer for the contest " + contestBean.getContestName());
+									}
+									contestDao.markPushNotified(contestBean.getContestId());
+										
 								}
 							}
+						}else {
+							System.out.println("No user registered");
 						}
 						
 					}
 				}
 			}
-			if(!unAnsweredUsers.isEmpty()){
-				Integer[] unAnsweredUserArr  = new Integer[unAnsweredUsers.size()];
-				int index=0;
-				for (Integer unansweredUserId : unAnsweredUsers) {
-					unAnsweredUserArr[index++] = unansweredUserId;
-				}
-				sendNotification(unAnsweredUserArr, "Hurry!! Last few minutes before the cutoff time to answer today's contest.");
-			}
+			
 		}catch(PTWException exception){
 			exception.printStackTrace();
 		}

@@ -147,7 +147,7 @@ public class ContestHome {
 
 		return query.list();
 	}
-
+	
 	public List<Contest> getContestBetweenDates(Date startDate, Date endDate, Integer tournamentId) {
 		Criteria criteria = session.createCriteria(Contest.class);
 		criteria.add(Restrictions.between("cutoffDateTime", startDate, endDate));
@@ -166,4 +166,6 @@ public class ContestHome {
 		query.executeUpdate();
 
 	}
+	
+	
 }
