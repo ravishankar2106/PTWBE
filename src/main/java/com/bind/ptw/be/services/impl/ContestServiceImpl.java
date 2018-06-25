@@ -1028,7 +1028,7 @@ public class ContestServiceImpl implements ContestService{
 	
 	@Override
 	//@Scheduled(fixedDelay=1800000)
-	@Scheduled(cron = "0 30 0 * * *")
+	@Scheduled(cron = "0 0/30 * * * *")
 	public void sendReminders(){
 		System.out.println("Scheduler started at " + new Date());
 		TournamentBean tournamentBean = new TournamentBean();
