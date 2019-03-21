@@ -104,6 +104,7 @@ public class TournamentDaoImpl implements TournamentDao{
 				resultTournamentBean.setTeamTypeId(tournament.getTeamTypeId());
 				resultTournamentBean.setTournamentVenue(tournament.getTournamentVenue());
 				resultTournamentBean.setTocId(tournament.getTocGroupId());
+				resultTournamentBean.setIconName(tournament.getTournamentIconName());
 				resultTournamentBeanList.add(resultTournamentBean);
 			}
 		}
@@ -316,6 +317,7 @@ public class TournamentDaoImpl implements TournamentDao{
 					retTeamBean.setSportTypeName(team.getSportType().getSportTypeName());
 					retTeamBean.setTeamTypeId(team.getTeamType().getTeamTypeId());
 					retTeamBean.setTeamTypeName(team.getTeamType().getTeamTypeName());
+					retTeamBean.setTeamIconName(team.getTeamIconName());
 					retTeamBeanList.add(retTeamBean);
 				}
 			}
@@ -648,6 +650,7 @@ public class TournamentDaoImpl implements TournamentDao{
 				tournamentTeamBean.setTeamId(team.getTeamId());
 				tournamentTeamBean.setTeamName(team.getTeamName());
 				tournamentTeamBean.setTeamShortName(team.getTeamShortName());
+				tournamentTeamBean.setTeamIconName(team.getTeamIconName());
 				teamBeanList.add(tournamentTeamBean);
 			}
 		}

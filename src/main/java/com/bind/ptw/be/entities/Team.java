@@ -23,7 +23,7 @@ public class Team {
 	private Integer teamTypeId;
 	private SportType sportType;
 	private Integer sportTypeId;
-	
+	private String teamIconName;
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -99,6 +99,13 @@ public class Team {
 	public void setSportTypeId(Integer sportTypeId) {
 		this.sportTypeId = sportTypeId;
 	}
-	
+
+	@Column(name = "TEAM_ICON_NAME")
+	public String getTeamIconName() {
+		return teamIconName;
+	}
+	public void setTeamIconName(String teamIconName) {
+		this.teamIconName = teamIconName;
+	}
 	
 }

@@ -32,6 +32,8 @@ public class Tournament {
 	private Integer teamTypeId;
 	private SportType sportType;
 	private Integer sportTypeId;
+	private String tournamentIconName;
+	
 	private Set<Match> tournamentMatches = new LinkedHashSet<Match>(
 			0);
 	private Integer tocGroupId;
@@ -138,6 +140,16 @@ public class Tournament {
 	public void setSportTypeId(Integer sportTypeId) {
 		this.sportTypeId = sportTypeId;
 	}
+	
+	
+	@Column(name = "TOURNAMENT_ICON_NAME")
+	public String getTournamentIconName() {
+		return tournamentIconName;
+	}
+	public void setTournamentIconName(String tournamentIconName) {
+		this.tournamentIconName = tournamentIconName;
+	}
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament")
 	public Set<Match> getTournamentMatches() {
 		return this.tournamentMatches;

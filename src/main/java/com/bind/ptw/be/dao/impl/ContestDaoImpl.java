@@ -186,6 +186,7 @@ public class ContestDaoImpl implements ContestDao{
 		tournamentTeamBean.setTeamId(tournamentTeam.getTeam().getTeamId());
 		tournamentTeamBean.setTeamName(tournamentTeam.getTeam().getTeamName());
 		tournamentTeamBean.setTeamShortName(tournamentTeam.getTeam().getTeamShortName());
+		tournamentTeamBean.setTeamIconName(tournamentTeam.getTeam().getTeamIconName());
 		return tournamentTeamBean;
 	}
 

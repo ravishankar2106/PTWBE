@@ -320,6 +320,7 @@ public class UserDaoImpl implements UserDao{
 					tournamentBean.setTournamentDesc(tournament.getTournamentDescription());
 					tournamentBean.setStartDateStr(StringUtil.convertDateTImeToString(tournament.getStartDate()));
 					tournamentBean.setEndDateStr(StringUtil.convertDateTImeToString(tournament.getEndDate()));
+					tournamentBean.setIconName(tournament.getTournamentIconName());
 					userTournamentBean.setTournamentBean(tournamentBean);
 					
 					Integer user[] = new Integer[1];
