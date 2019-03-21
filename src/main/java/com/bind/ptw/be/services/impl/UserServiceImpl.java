@@ -1,5 +1,12 @@
 package com.bind.ptw.be.services.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -46,6 +53,12 @@ import com.bind.ptw.be.util.StringUtil;
 public class UserServiceImpl implements UserService{
 
 	private static final Logger logger = Logger.getLogger(UserServiceImpl.class);
+
+	private static final String URL = "http://api.msg91.com/api/sendhttp.php?";
+
+	private static final String AUTH_KEY = "178036A8jwE4uj59d6479f";
+
+	private static final String SENDER = "P2WAPP";
 	
 	@Autowired
 	private Environment env;
@@ -98,7 +111,8 @@ public class UserServiceImpl implements UserService{
 		emailContent.setToAddress(userResponse.getEmail());
 	    StringBuilder bodyBuilder = new StringBuilder();
 	    bodyBuilder.append("Thanks for registering for Predict 2 Win. Your confirmation Code is ");
-	    bodyBuilder.append(String.valueOf(randomNum));
+	    String randomNo = String.valueOf(randomNum);
+	    bodyBuilder.append(randomNo);
 	    bodyBuilder.append("\r\n");
 	    bodyBuilder.append("Complete registration by providing this confirmation code & start Predicting...");
 	    bodyBuilder.append(" ");
@@ -116,9 +130,53 @@ public class UserServiceImpl implements UserService{
 			ex.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_EMAIL_DEL_FAILURE,PTWConstants.ERROR_DESC_CONF_CODE_EMAIL_DEL_FAILURE);
 		}
+	    
+	    StringBuilder smsMessage = new StringBuilder();
+	    smsMessage.append("OTP for registering to PtW is ");
+	    smsMessage.append(randomNo);
+	    smsMessage.append(".");
+	    try {
+	    		sendSms(userResponse.getPhone(), smsMessage.toString());
+	    }catch(Exception e) {
+	    	
+	    }
 	}
 	
-	
+	public boolean sendSms(String phNo, String message) {
+		try {
+			String[] recieverNos = new String[1];
+			recieverNos[0] = phNo;
+			StringBuilder stringBuilder = new StringBuilder();
+			int size = recieverNos.length;
+			int increment = 0;
+			for (String recieverNo : recieverNos) {
+				recieverNo = recieverNo.contains("+") ? recieverNo : ("+91" + recieverNo);
+				stringBuilder.append(recieverNo);
+				increment++;
+				if (increment < size) {
+					stringBuilder.append(",");
+				}
+			}
+			
+			URL myURL = new URL(buildData(true, stringBuilder.toString(), message));
+			URLConnection myURLConnection = myURL.openConnection();
+			myURLConnection.connect();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
+			String response;
+			logger.debug("Response from SMS Gateway: ");
+			while ((response = reader.readLine()) != null) {
+				logger.debug(response);
+			}
+			reader.close();
+			return true;
+		} catch (IOException e) {
+			logger.error("Error while sending SMS", e);
+			return false;
+		} catch (Exception e) {
+			logger.error("Error while sending SMS", e);
+			return false;
+		}
+	}
 	
 	public UserBean authenticateUser(UserBean authUser, Boolean adminFlag){
 		UserBean userResponse;
@@ -612,6 +670,18 @@ public class UserServiceImpl implements UserService{
 			userClub.setResultDescription(ex.getDescription());
 		}
 		return userClub;
+	}
+	
+	private String buildData(boolean isTransactional, String receiverNo, String message)
+			throws UnsupportedEncodingException {
+		StringBuilder sbPostData = new StringBuilder(URL);
+		sbPostData.append("authkey=" + AUTH_KEY);
+		sbPostData.append("&country=91");
+		sbPostData.append("&mobiles=" + receiverNo);
+		sbPostData.append("&message=" + URLEncoder.encode(message, "UTF-8"));
+		sbPostData.append("&route=0");
+		sbPostData.append("&sender=" + SENDER);
+		return sbPostData.toString();
 	}
 
 	@Override
