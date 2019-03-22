@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
 	private static final String AUTH_KEY = "178036A8jwE4uj59d6479f";
 
-	private static final String SENDER = "P2WAPP";
+	private static final String SENDER = "BINDLV";
 
 	@Autowired
 	private Environment env;
