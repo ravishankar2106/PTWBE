@@ -584,9 +584,11 @@ public class UserDaoImpl implements UserDao{
 					retGroupInvitationBean.setGroupName(userGroupInvitation.getUserGroup().getUserGroupName());
 					retGroupInvitationBean.setGroupOwnerId(userGroupInvitation.getUserGroup().getOwnerUser().getUserId());
 					retGroupInvitationBean.setGroupOwnerName(userGroupInvitation.getUserGroup().getOwnerUser().getUserName());
-					retGroupInvitationBean.setTournamentId(userGroupInvitation.getUserGroup().getTournament().getTournamentId());
-					retGroupInvitationBean.setTournamentName(userGroupInvitation.getUserGroup().getTournament().getTournamentName());
-					retGroupInvitationBean.setTournamentShortName(userGroupInvitation.getUserGroup().getTournament().getTournamentDescription());
+					if(userGroupInvitation.getUserGroup().getTournament() != null) {
+						retGroupInvitationBean.setTournamentId(userGroupInvitation.getUserGroup().getTournament().getTournamentId());
+						retGroupInvitationBean.setTournamentName(userGroupInvitation.getUserGroup().getTournament().getTournamentName());
+						retGroupInvitationBean.setTournamentShortName(userGroupInvitation.getUserGroup().getTournament().getTournamentDescription());
+					}
 					retGroupInvitationBean.setInvitationStatusId(userGroupInvitation.getUserInvitationStatus().getInvitationStatusId());
 					retGroupInvitationBean.setInvitationStatusName(userGroupInvitation.getUserInvitationStatus().getInvitationStatusName());
 					retList.add(retGroupInvitationBean);
