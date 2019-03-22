@@ -455,8 +455,10 @@ public class UserServiceImpl implements UserService {
 				try {
 					int phoneNo = Integer.parseInt(phone);
 					phone = String.valueOf(phoneNo);
-					if (phone.length() > 10) {
+					if (phone.length() == 10) {
 						phone = phone.substring(2, phone.length());
+					}else if(phone.length() == 13) {
+						phone = phone.substring(3, phone.length());
 					}
 				} catch (Exception e) {
 
@@ -497,12 +499,13 @@ public class UserServiceImpl implements UserService {
 				} else {
 					senderEmail = userGroupInvitationBean.getEmailId();
 				}
-				if (StringUtil.isEmptyNull(senderEmail)) {
-					throw new PTWException(PTWConstants.ERROR_CODE_INVITEE_USER_NOT_FOUND,
-							PTWConstants.ERROR_DESC_INVITEE_USER_NOT_FOUND);
+				if (!StringUtil.isEmptyNull(senderEmail)) {
+					//throw new PTWException(PTWConstants.ERROR_CODE_INVITEE_USER_NOT_FOUND,
+					//		PTWConstants.ERROR_DESC_INVITEE_USER_NOT_FOUND);
+					sendGroupWelcomeMail(senderEmail, owner, group);
 				}
 
-				sendGroupWelcomeMail(senderEmail, owner, group);
+				
 			}
 
 		} catch (PTWException exception) {
