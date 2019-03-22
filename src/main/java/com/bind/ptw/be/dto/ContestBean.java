@@ -28,6 +28,8 @@ public class ContestBean extends BaseBean implements Serializable {
 	private String cutoffDateStr;
 	private List<QuestionBean> questionList;
 	private boolean pushNotified;
+	private TournamentTeamBean teamABean;
+	private TournamentTeamBean teamBBean;
 
 	public Integer getTocId() {
 		return tocId;
@@ -191,6 +193,22 @@ public class ContestBean extends BaseBean implements Serializable {
 
 	public void setPushNotified(boolean pushNotified) {
 		this.pushNotified = pushNotified;
+	}
+
+	public TournamentTeamBean getTeamABean() {
+		return teamABean;
+	}
+
+	public void setTeamABean(TournamentTeamBean teamABean) {
+		this.teamABean = teamABean;
+	}
+
+	public TournamentTeamBean getTeamBBean() {
+		return teamBBean;
+	}
+
+	public void setTeamBBean(TournamentTeamBean teamBBean) {
+		this.teamBBean = teamBBean;
 	}
 
 }

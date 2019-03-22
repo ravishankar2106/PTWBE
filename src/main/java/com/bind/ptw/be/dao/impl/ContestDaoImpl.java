@@ -454,6 +454,21 @@ public class ContestDaoImpl implements ContestDao{
 						Match match = contest.getMatch();
 						retContestBean.setMatchId(match.getMatchId());
 						StringBuilder matchDisplayNameBuilder = new StringBuilder();
+						TournamentTeamBean teamABean = new TournamentTeamBean();
+						TournamentTeamBean teamBBean = new TournamentTeamBean();
+						TournamentTeam teamA = match.getTeamA();
+						TournamentTeam teamB = match.getTeamB();
+						
+						teamABean.setTeamShortName(teamA.getTeam().getTeamShortName());
+						teamABean.setTeamIconName(teamA.getTeam().getTeamIconName());
+						retContestBean.setTeamABean(teamABean);
+						
+						teamBBean.setTeamShortName(teamB.getTeam().getTeamShortName());
+						teamBBean.setTeamIconName(teamB.getTeam().getTeamIconName());
+						retContestBean.setTeamBBean(teamBBean);
+						
+						retContestBean.setMatchDateStr(StringUtil.convertDateTImeToString(match.getMatchDateTime()));
+						
 						matchDisplayNameBuilder.append(match.getTeamA().getTeam().getTeamShortName());
 						matchDisplayNameBuilder.append("-");
 						matchDisplayNameBuilder.append(match.getTeamB().getTeam().getTeamShortName());
