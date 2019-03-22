@@ -460,6 +460,7 @@ public class UserServiceImpl implements UserService {
 					}else if(phone.length() == 13) {
 						phone = phone.substring(3, phone.length());
 					}
+					userGroupInvitationBean.setPhone(phone);
 				} catch (Exception e) {
 
 				}
