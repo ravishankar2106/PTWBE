@@ -1,5 +1,6 @@
 package com.bind.ptw.be.services.impl;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -348,6 +349,8 @@ public class ContestServiceImpl implements ContestService{
 		Map<Integer,Integer> userPointMap = new HashMap<Integer, Integer>();
 		Map<Integer,Integer> selectedAnswerPointMap = new HashMap<Integer, Integer>();
 		
+		int totalCorrectAnswer = 0;
+		
 		List<QuestionBean> contestQuestionsList = contestDao.getQuestion(dbContestBean);
 		if(contestQuestionsList != null && !contestQuestionsList.isEmpty()){
 			for (QuestionBean questionBean : contestQuestionsList) {
@@ -368,6 +371,7 @@ public class ContestServiceImpl implements ContestService{
 					reqSelectedAnswer.setSelectedAnswerOptionId(correctAnswerOptionId);
 					List<UserSelectedAnswerBean> userSelectedAnswerList = contestDao.getUserAnswers(reqSelectedAnswer);
 					if(userSelectedAnswerList != null && !userSelectedAnswerList.isEmpty()){
+						totalCorrectAnswer += userSelectedAnswerList.size();
 						for (UserSelectedAnswerBean userSelectedAnswerBean : userSelectedAnswerList) {
 							Integer userId = userSelectedAnswerBean.getUserId();
 							Integer newPoints = pointsScored;
@@ -396,11 +400,21 @@ public class ContestServiceImpl implements ContestService{
 					}
 				}
 			}
+			double cashPerAnswer;
+			if(totalCorrectAnswer > 0) {
+				cashPerAnswer = 100/totalCorrectAnswer;
+				DecimalFormat twoDForm = new DecimalFormat("#.##");
+				String formattedStr = twoDForm.format(cashPerAnswer);
+				cashPerAnswer = Double.parseDouble(formattedStr);
+			}else {
+				cashPerAnswer = 0d;
+			}
 			
-			updateUserAnswers(selectedAnswerPointMap);
+			updateUserAnswers(selectedAnswerPointMap, cashPerAnswer);
 			if(!StringUtil.isEmptyNull(contestBonusPoint )){
 				updateBonusPoints(contestId, contestBonusPoint, bonusWinners);
 			}
+			
 			updateScoreBoard(tournamentId, userPointMap);
 			processRanking(tournamentId);
 			processFanGroupRanking(tournamentId);
@@ -487,7 +501,7 @@ public class ContestServiceImpl implements ContestService{
 		contestDao.updateContest(newContestStatus);
 	}
 
-	private void updateUserAnswers(Map<Integer, Integer> selectedAnswerPointMap) throws PTWException{
+	private void updateUserAnswers(Map<Integer, Integer> selectedAnswerPointMap, double cashPrize) throws PTWException{
 		if(selectedAnswerPointMap!= null && !selectedAnswerPointMap.isEmpty()){
 			List<AnswerBean> answerBeanList = new ArrayList<AnswerBean>();
 			for (Map.Entry<Integer, Integer> answerOptionPointMap : selectedAnswerPointMap.entrySet()) {
@@ -496,7 +510,7 @@ public class ContestServiceImpl implements ContestService{
 				answerBean.setPointsScored(answerOptionPointMap.getValue());
 				answerBeanList.add(answerBean);
 			}
-			contestDao.updatePointsForUserAnswer(answerBeanList);
+			contestDao.updatePointsForUserAnswer(answerBeanList, cashPrize);
 		}
 		
 	}

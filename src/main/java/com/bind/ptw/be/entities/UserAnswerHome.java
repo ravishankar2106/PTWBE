@@ -79,14 +79,16 @@ public class UserAnswerHome {
 		query.executeUpdate();
 	}
 	
-	public void saveUserPoints(Integer answerOptionId, Integer pointsScored) {
+	public void saveUserPoints(Integer answerOptionId, Integer pointsScored, double cashWon) {
 		Query query = null;
 		StringBuilder queryToExecute = new StringBuilder();
 		queryToExecute.append("Update UserAnswer ua set ua.pointsScored =:pointsScored ");
+		queryToExecute.append(", cashWon =:cashWon ");
 		queryToExecute.append("Where ua.answerOption.answerOptionId =:answerOptionId");
 		query = session.createQuery(queryToExecute.toString());
 		query.setParameter("answerOptionId", answerOptionId);
 		query.setParameter("pointsScored", pointsScored);
+		query.setParameter("cashWon", cashWon);
 		query.executeUpdate();
 		
 	}

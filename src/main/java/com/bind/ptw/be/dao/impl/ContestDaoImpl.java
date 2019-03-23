@@ -1087,11 +1087,11 @@ public class ContestDaoImpl implements ContestDao{
 	}
 
 	@Override
-	public void updatePointsForUserAnswer(List<AnswerBean> answerBeanList) throws PTWException {
+	public void updatePointsForUserAnswer(List<AnswerBean> answerBeanList, double cashWon) throws PTWException {
 		UserAnswerHome userAnswerHome = new UserAnswerHome(this.getSession());
 		try{
 			for (AnswerBean answerBean : answerBeanList) {
-				userAnswerHome.saveUserPoints(answerBean.getAnswerOptionId(), answerBean.getPointsScored());
+				userAnswerHome.saveUserPoints(answerBean.getAnswerOptionId(), answerBean.getPointsScored(), cashWon);
 			}
 			
 		}catch(Exception exception){

@@ -24,6 +24,7 @@ public class UserAnswer {
 	private Integer answerOptionId;
 	private Date answeredDateTime;
 	private Integer pointsScored;
+	private Double cashWon;
 		
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -84,5 +85,14 @@ public class UserAnswer {
 	}
 	public void setPointsScored(Integer pointsScored) {
 		this.pointsScored = pointsScored;
+	}
+	
+	@Column(name = "CASH_WON", nullable = true)
+	public Double getCashWon() {
+		return cashWon;
+	}
+	
+	public void setCashWon(Double cashWon) {
+		this.cashWon = cashWon;
 	}
 }
