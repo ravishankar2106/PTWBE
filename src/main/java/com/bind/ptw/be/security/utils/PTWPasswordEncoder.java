@@ -19,6 +19,8 @@ public class PTWPasswordEncoder {//implements PasswordEncoder {
 	}*/
 	
 	/*public static void main(String args[]) {
-		System.out.println(org.apache.commons.codec.digest.DigestUtils.sha256Hex("password123"));
+		double cashPerAnswer = 100 * 1.0/40;
+		System.out.println(cashPerAnswer);
+		
 	}*/
 }

@@ -793,6 +793,35 @@ public class UserDaoImpl implements UserDao{
 	}
 	
 	@Override 
+	public List<UserScoreBoardBean> getUserCashWonForContest(Integer contestId){
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		List<UserScoreBoardBean> userScoreBoardBeanList = null;
+		List<Object> objMap = answerHome.getCashEarnedReport(contestId);
+		if(objMap != null && !objMap.isEmpty()){
+			userScoreBoardBeanList = new ArrayList<UserScoreBoardBean>();
+			for (Object object : objMap) {
+				UserScoreBoardBean userScore = new UserScoreBoardBean();
+				@SuppressWarnings("rawtypes")
+				Map userScoreMap = (Map)object;
+				BigDecimal cashDecimal = (BigDecimal)userScoreMap.get("CASH_WON");
+				
+				Integer userId = (Integer)userScoreMap.get("USER_ID");
+				double cash;
+				if(cashDecimal == null) {
+					cash = 0;
+				}else {
+					cash = cashDecimal.doubleValue();
+				}
+				userScore.setCashWon(cash);
+				userScore.setUserId(userId);
+				userScoreBoardBeanList.add(userScore);
+			}
+		}
+		
+		return userScoreBoardBeanList;
+	}
+	
+	@Override 
 	public List<AnswerPulseBean> getAnswerStats(QuestionBean questionBean){
 		AnswerOptionHome answerOptionHome = new AnswerOptionHome(this.getSession());
 		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());

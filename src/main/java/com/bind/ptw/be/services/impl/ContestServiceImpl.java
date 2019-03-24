@@ -402,7 +402,7 @@ public class ContestServiceImpl implements ContestService{
 			}
 			double cashPerAnswer;
 			if(totalCorrectAnswer > 0) {
-				cashPerAnswer = 100/totalCorrectAnswer;
+				cashPerAnswer = 100 * 1.0/totalCorrectAnswer;
 				DecimalFormat twoDForm = new DecimalFormat("#.##");
 				String formattedStr = twoDForm.format(cashPerAnswer);
 				cashPerAnswer = Double.parseDouble(formattedStr);
@@ -420,6 +420,28 @@ public class ContestServiceImpl implements ContestService{
 			processFanGroupRanking(tournamentId);
 			markContestAsCompleted(contestId);
 			
+			try {
+				List<UserScoreBoardBean> userAnswerList = userDao.getUserCashWonForContest(contestId);
+				if(userAnswerList != null && !userAnswerList.isEmpty()) {
+					for (UserScoreBoardBean userScoreBoardBean : userAnswerList) {
+						Integer[] user = new Integer[1];
+						user[0] = userScoreBoardBean.getUserId();
+						double cash = userScoreBoardBean.getCashWon();
+						StringBuilder message = new StringBuilder();
+						if(cash > 0) {
+							message.append("Congrats!! You have won PayTm cash of Rs.");
+							DecimalFormat format = new DecimalFormat("#.##");
+							String cashStr = format.format(cash);
+							message.append(cashStr);
+							message.append(" for predicting right answers for ");
+							message.append(dbContestBean.getContestName());
+							sendNotification(user, message.toString());
+						}
+					}
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		

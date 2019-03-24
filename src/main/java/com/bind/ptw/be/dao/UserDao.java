@@ -56,4 +56,5 @@ public interface UserDao {
 	List<AnswerPulseBean> getAnswerStats(QuestionBean questionBean);
 	List<Integer> getTournamentUsers(Integer tournamentId) throws PTWException;
 	List<Integer> getUsersAnsweredForQuestion(Integer questionId) throws PTWException;
+	List<UserScoreBoardBean> getUserCashWonForContest(Integer contestId);
 }

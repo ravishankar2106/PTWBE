@@ -107,6 +107,20 @@ public class UserAnswerHome {
 		return query.list();
 	}
 	
+	public List<Object> getCashEarnedReport(Integer contestId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select SUM(CASH_WON) AS CASH, ");
+		queryToExecute.append("USER_ID AS USER_ID ");
+		queryToExecute.append("from USER_ANSWERS where CONTEST_QUESTION_ID IN (");
+		queryToExecute.append("select CONTEST_QUESTION_ID from CONTEST_QUESTION WHERE ");
+		queryToExecute.append("CONTEST_ID  = ");
+		queryToExecute.append(contestId);
+		queryToExecute.append(") GROUP BY USER_ID;");
+		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		return query.list();
+	}
+	
 	public List<Object> getAnswerSelectionStats(Integer questionId){
 		StringBuilder queryToExecute = new StringBuilder();
 		queryToExecute.append("select COUNT(*) AS STATS_COUNT, ");
