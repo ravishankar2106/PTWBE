@@ -797,13 +797,14 @@ public class UserDaoImpl implements UserDao{
 		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
 		List<UserScoreBoardBean> userScoreBoardBeanList = null;
 		List<Object> objMap = answerHome.getCashEarnedReport(contestId);
+		System.out.println("Getting cash award report " + contestId);
 		if(objMap != null && !objMap.isEmpty()){
 			userScoreBoardBeanList = new ArrayList<UserScoreBoardBean>();
 			for (Object object : objMap) {
 				UserScoreBoardBean userScore = new UserScoreBoardBean();
 				@SuppressWarnings("rawtypes")
 				Map userScoreMap = (Map)object;
-				BigDecimal cashDecimal = (BigDecimal)userScoreMap.get("CASH_WON");
+				BigDecimal cashDecimal = (BigDecimal)userScoreMap.get("CASH");
 				
 				Integer userId = (Integer)userScoreMap.get("USER_ID");
 				double cash;
