@@ -804,14 +804,14 @@ public class UserDaoImpl implements UserDao{
 				UserScoreBoardBean userScore = new UserScoreBoardBean();
 				@SuppressWarnings("rawtypes")
 				Map userScoreMap = (Map)object;
-				BigDecimal cashDecimal = (BigDecimal)userScoreMap.get("CASH");
+				Double cashDecimal = (Double)userScoreMap.get("CASH");
 				
 				Integer userId = (Integer)userScoreMap.get("USER_ID");
 				double cash;
 				if(cashDecimal == null) {
 					cash = 0;
 				}else {
-					cash = cashDecimal.doubleValue();
+					cash = cashDecimal;
 				}
 				userScore.setCashWon(cash);
 				userScore.setUserId(userId);
