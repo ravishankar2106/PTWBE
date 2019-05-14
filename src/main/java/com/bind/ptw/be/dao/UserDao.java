@@ -60,5 +60,6 @@ public interface UserDao {
 	UserScoreBoardBean getUserCoins(Integer userId) throws PTWException;
 	void addUserCoins(Integer userId, Integer coins) throws PTWException;
 	Double getUserCashWon(Integer userId);
+	void updateUserCoins(List<UserScoreBoardBean> userScoreBoardBeanList) throws PTWException;
 	
 }

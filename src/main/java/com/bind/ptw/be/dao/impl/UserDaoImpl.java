@@ -957,4 +957,29 @@ public class UserDaoImpl implements UserDao{
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
 	}
+
+	@Override
+	public void updateUserCoins(List<UserScoreBoardBean> userScoreBoardBeanList) throws PTWException{
+		UserCoinHome userCoinHome = new UserCoinHome(this.getSession());
+		try{
+			for(UserScoreBoardBean userScore : userScoreBoardBeanList) {
+				UserCoin userCoin = userCoinHome.getUserCoins(userScore.getUserId());
+				if(userCoin == null) {
+					userCoin = new UserCoin();
+					userCoin.setUserId(userScore.getUserId());
+					userCoin.setCoinAvailable(userScore.getCoinsWon());
+					userCoinHome.merge(userCoin);
+				}else {
+					int currentCoin = userCoin.getCoinAvailable() == null? 0: userCoin.getCoinAvailable();
+					userCoin.setCoinAvailable(currentCoin + userScore.getCoinsWon());
+					userCoinHome.merge(userCoin);
+				}
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+			
+		
+	}
 }

@@ -347,6 +347,7 @@ public class ContestServiceImpl implements ContestService{
 		int contestBonusPoint = dbContestBean.getBonusPoints();
 		int totalMaxPoints = 0;
 		Map<Integer,Integer> userPointMap = new HashMap<Integer, Integer>();
+		Map<Integer,Integer> userCoinCount = new HashMap<Integer, Integer>();
 		Map<Integer,Integer> selectedAnswerPointMap = new HashMap<Integer, Integer>();
 		
 		int totalCorrectAnswer = 0;
@@ -375,9 +376,11 @@ public class ContestServiceImpl implements ContestService{
 						for (UserSelectedAnswerBean userSelectedAnswerBean : userSelectedAnswerList) {
 							Integer userId = userSelectedAnswerBean.getUserId();
 							Integer newPoints = pointsScored;
+							Integer newCoins = 100;
 							if(userPointMap.containsKey(userId)){
 								Integer currentPoints = userPointMap.get(userId);
 								newPoints = newPoints + currentPoints;
+								newCoins += 100;
 							}
 							userPointMap.put(userId, newPoints);
 						}
@@ -419,7 +422,7 @@ public class ContestServiceImpl implements ContestService{
 			processRanking(tournamentId);
 			processFanGroupRanking(tournamentId);
 			markContestAsCompleted(contestId);
-			
+			updateUserCoins(userPointMap);
 			try {
 				List<UserScoreBoardBean> userAnswerList = userDao.getUserCashWonForContest(contestId);
 				if(userAnswerList != null && !userAnswerList.isEmpty()) {
@@ -506,6 +509,19 @@ public class ContestServiceImpl implements ContestService{
 			userScoreBoardBeanList.add(userScoreBoardBean);
 		}
 		contestDao.updateUserScoreBoard(userScoreBoardBeanList);
+	}
+	
+	private void updateUserCoins( Map<Integer, Integer> userPointMap) throws PTWException{
+		List<UserScoreBoardBean> userScoreBoardBeanList = new ArrayList<UserScoreBoardBean>();
+		for (Map.Entry<Integer, Integer> userPointScored : userPointMap.entrySet()){
+			Integer userId = userPointScored.getKey();
+			Integer coinsScored = userPointScored.getValue();
+			UserScoreBoardBean userScoreBoardBean = new UserScoreBoardBean();
+			userScoreBoardBean.setUserId(userId);
+			userScoreBoardBean.setCoinsWon(coinsScored);
+			userScoreBoardBeanList.add(userScoreBoardBean);
+		}
+		userDao.updateUserCoins(userScoreBoardBeanList);
 	}
 
 	private void updateBonusPoints(int contestId, int contestBonusPoint, List<Integer> bonusWinners)
