@@ -34,6 +34,7 @@ import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserGroupInvitationBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserTournamentBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
@@ -716,6 +717,52 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserBean getUser(String login) {
 		return userDao.getUser(login);
+	}
+
+	@Override
+	public UserBean getUserContestLockStatus(Integer userId) {
+		UserBean userBean = new UserBean();
+		try {
+			UserScoreBoardBean userScore = userDao.getUserCoins(userId);
+			int coins = userScore.getCoinsWon() == null? 0: userScore.getCoinsWon();
+			boolean contestLockStatus;
+			if(coins >= 300) {
+				contestLockStatus = true;
+			}else {
+				contestLockStatus = false;
+			}
+			userBean.setContestLockStatus(contestLockStatus);
+		} catch (PTWException ex) {
+			userBean.setResultCode(ex.getCode());
+			userBean.setResultDescription(ex.getDescription());
+		}
+		return userBean;
+	}
+
+	@Override
+	public BaseBean unlockUserContestStatus(Integer userId) {
+		BaseBean baseBean = new BaseBean();
+		try {
+			userDao.addUserCoins(userId, 300);
+		} catch (PTWException ex) {
+			baseBean.setResultCode(ex.getCode());
+			baseBean.setResultDescription(ex.getDescription());
+		}
+		return baseBean;
+	}
+
+	@Override
+	public UserScoreBoardBean getPrizeSummary(Integer userId) {
+		UserScoreBoardBean userScoreBoardBean = new UserScoreBoardBean();
+		try {
+			UserScoreBoardBean coins = userDao.getUserCoins(userId);
+			userScoreBoardBean.setCoinsWon(coins.getCoinsWon());
+			double cash = userDao.getUserCashWon(userId);
+		} catch (PTWException ex) {
+			userScoreBoardBean.setResultCode(ex.getCode());
+			userScoreBoardBean.setResultDescription(ex.getDescription());
+		}
+		return userScoreBoardBean;
 	}
 
 }

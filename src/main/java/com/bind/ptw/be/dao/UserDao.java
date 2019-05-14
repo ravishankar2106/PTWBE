@@ -57,4 +57,8 @@ public interface UserDao {
 	List<Integer> getTournamentUsers(Integer tournamentId) throws PTWException;
 	List<Integer> getUsersAnsweredForQuestion(Integer questionId) throws PTWException;
 	List<UserScoreBoardBean> getUserCashWonForContest(Integer contestId);
+	UserScoreBoardBean getUserCoins(Integer userId) throws PTWException;
+	void addUserCoins(Integer userId, Integer coins) throws PTWException;
+	Double getUserCashWon(Integer userId);
+	
 }

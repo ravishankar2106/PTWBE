@@ -13,6 +13,7 @@ import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserGroupInvitationBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.dto.UserTournamentBeanList;
 import com.bind.ptw.be.dto.UserTournmentRegisterBean;
 
@@ -38,4 +39,7 @@ public interface UserService {
 	TournamentFanClubList getTournamentFanGroups(TournamentBean tournament);
 	BaseBean addUserToFanGroup(UserGroupBean userGroupBean);
 	TournamentFanClubBean getUserTournamentFanGroups(UserGroupBean userGroupBean);
+	UserBean getUserContestLockStatus(Integer userId);
+	BaseBean unlockUserContestStatus(Integer userId);
+	UserScoreBoardBean getPrizeSummary(Integer userId);
 }

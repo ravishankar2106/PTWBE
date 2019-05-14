@@ -81,7 +81,7 @@ public class PrizeContestHome {
 			
 			if(prizeContestBean != null){
 				if(!StringUtils.isEmpty(prizeContestBean.getPrizeContestId())){
-					query.setParameter("prizeContestId", prizeContestBean.getPrizeContestId());;
+					query.setParameter("prizeContestId", prizeContestBean.getPrizeContestId());
 				}
 				if(!StringUtil.isEmptyNull(prizeContestBean.getTournamentId())){
 					query.setParameter("tournamentId", prizeContestBean.getTournamentId());

@@ -37,6 +37,8 @@ import com.bind.ptw.be.entities.Tournament;
 import com.bind.ptw.be.entities.UserAnswerHome;
 import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
+import com.bind.ptw.be.entities.UserCoin;
+import com.bind.ptw.be.entities.UserCoinHome;
 import com.bind.ptw.be.entities.UserConfirmation;
 import com.bind.ptw.be.entities.UserConfirmationHome;
 import com.bind.ptw.be.entities.UserGroup;
@@ -797,7 +799,6 @@ public class UserDaoImpl implements UserDao{
 		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
 		List<UserScoreBoardBean> userScoreBoardBeanList = null;
 		List<Object> objMap = answerHome.getCashEarnedReport(contestId);
-		System.out.println("Getting cash award report " + contestId);
 		if(objMap != null && !objMap.isEmpty()){
 			userScoreBoardBeanList = new ArrayList<UserScoreBoardBean>();
 			for (Object object : objMap) {
@@ -820,6 +821,28 @@ public class UserDaoImpl implements UserDao{
 		}
 		
 		return userScoreBoardBeanList;
+	}
+	
+	@Override 
+	public Double getUserCashWon(Integer userId){
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		List<UserScoreBoardBean> userScoreBoardBeanList = null;
+		List<Object> objMap = answerHome.getCashEarnedByUser(userId);
+		double cash = 0d;
+		if(objMap != null && !objMap.isEmpty()){
+			for (Object object : objMap) {
+				UserScoreBoardBean userScore = new UserScoreBoardBean();
+				@SuppressWarnings("rawtypes")
+				Map userScoreMap = (Map)object;
+				Double cashDecimal = (Double)userScoreMap.get("CASH");
+				if(cashDecimal == null) {
+					cash = 0;
+				}else {
+					cash = cashDecimal;
+				}
+			}
+		}
+		return cash;
 	}
 	
 	@Override 
@@ -891,5 +914,47 @@ public class UserDaoImpl implements UserDao{
 			bean.setAdmin(users.get(0).isAdminFlag());
 		} else return null;
 		return bean;
+	}
+
+	@Override
+	public UserScoreBoardBean getUserCoins(Integer userId) throws PTWException{
+		UserCoinHome userCoinHome = new UserCoinHome(this.getSession());
+		try{
+			UserCoin userCoin = userCoinHome.getUserCoins(userId);
+			if(userCoin == null) {
+				userCoin = new UserCoin();
+				userCoin.setUserId(userId);
+				userCoin.setCoinAvailable(0);
+				userCoinHome.merge(userCoin);
+			}
+			UserScoreBoardBean scoreBoard = new UserScoreBoardBean();
+			scoreBoard.setUserId(userId);
+			scoreBoard.setCoinsWon(userCoin.getCoinAvailable());
+			return scoreBoard;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+	}
+	
+	@Override
+	public void addUserCoins(Integer userId, Integer coins) throws PTWException{
+		UserCoinHome userCoinHome = new UserCoinHome(this.getSession());
+		try{
+			UserCoin userCoin = userCoinHome.getUserCoins(userId);
+			if(userCoin == null) {
+				userCoin = new UserCoin();
+				userCoin.setUserId(userId);
+				userCoin.setCoinAvailable(coins);
+				userCoinHome.merge(userCoin);
+			}else {
+				int currentCoin = userCoin.getCoinAvailable() == null? 0: userCoin.getCoinAvailable();
+				userCoin.setCoinAvailable(currentCoin + coins);
+				userCoinHome.merge(userCoin);
+			}
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
 	}
 }

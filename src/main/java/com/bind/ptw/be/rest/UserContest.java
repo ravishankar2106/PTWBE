@@ -41,6 +41,7 @@ import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserGroupInvitationBean;
 import com.bind.ptw.be.dto.UserGroupInvitationBeanList;
 import com.bind.ptw.be.dto.UserPasswordBean;
+import com.bind.ptw.be.dto.UserScoreBoardBean;
 import com.bind.ptw.be.security.JwtConfigurer;
 import com.bind.ptw.be.security.TokenProvider;
 import com.bind.ptw.be.services.ContestService;
@@ -259,5 +260,22 @@ public class UserContest {
 	@PostMapping("/getLeagueStandings")
 	public LeaderBoardBeanList getGroupLeaderBoard(@RequestBody UserGroupBean userGroupBean){
 		return contestService.getGroupLeaderBoard(userGroupBean);
+	}
+	
+	@PostMapping("/getContestLockStatus")
+	public UserBean getUserContestLockStatus(@RequestParam Integer userId) {
+		return userService.getUserContestLockStatus(userId);
+	}
+	
+	@PostMapping("/unlockContest")
+	public BaseBean unlockUserContest(@RequestParam Integer userId) {
+		BaseBean baseBean = userService.unlockUserContestStatus(userId);
+		return baseBean;
+	}
+	
+	@PostMapping("/prizeSummary")
+	public UserScoreBoardBean getPrizeSummary(@RequestParam Integer userId) {
+		UserScoreBoardBean scoreBoardBean = userService.getPrizeSummary(userId);
+		return scoreBoardBean;
 	}
 }

@@ -2,7 +2,7 @@ package com.bind.ptw.be.dto;
 
 import java.io.Serializable;
 
-public class UserScoreBoardBean implements Serializable {
+public class UserScoreBoardBean extends BaseBean implements Serializable {
 
 	/**
 	 * 
@@ -12,6 +12,7 @@ public class UserScoreBoardBean implements Serializable {
 	private Integer tournamentId;
 	private Integer pointsScored = 0;
 	private Double cashWon;
+	private Integer coinsWon;
 
 	public Integer getUserId() {
 		return userId;
@@ -43,6 +44,14 @@ public class UserScoreBoardBean implements Serializable {
 
 	public void setCashWon(Double cashWon) {
 		this.cashWon = cashWon;
+	}
+
+	public Integer getCoinsWon() {
+		return coinsWon;
+	}
+
+	public void setCoinsWon(Integer coinsWon) {
+		this.coinsWon = coinsWon;
 	}
 
 }

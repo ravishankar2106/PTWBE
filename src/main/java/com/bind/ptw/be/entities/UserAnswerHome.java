@@ -122,6 +122,19 @@ public class UserAnswerHome {
 		return query.list();
 	}
 	
+	public List<Object> getCashEarnedByUser(Integer userId){
+		StringBuilder queryToExecute = new StringBuilder();
+		queryToExecute.append("select SUM(CASH_WON) AS CASH, ");
+		queryToExecute.append("USER_ID AS USER_ID ");
+		queryToExecute.append("from USER_ANSWERS where USER_ID = ");
+		queryToExecute.append(userId);
+		queryToExecute.append(" GROUP BY USER_ID;");
+		SQLQuery query = session.createSQLQuery(queryToExecute.toString());
+		System.out.println(queryToExecute.toString());
+		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		return query.list();
+	}
+	
 	public List<Object> getAnswerSelectionStats(Integer questionId){
 		StringBuilder queryToExecute = new StringBuilder();
 		queryToExecute.append("select COUNT(*) AS STATS_COUNT, ");

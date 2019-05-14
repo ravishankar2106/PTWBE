@@ -956,6 +956,7 @@ public class ContestDaoImpl implements ContestDao{
 		retContestAnswer.setContestId(contestId);
 		retContestAnswer.setUserId(userId);
 		int totalPointsWon = 0;
+		double totalPrizeWon = 0d;
 		try{
 			ContestBean contestBean = new ContestBean();
 			contestBean.setContestId(contestId);
@@ -982,6 +983,9 @@ public class ContestDaoImpl implements ContestDao{
 							if(!StringUtil.isEmptyNull(userAnswer.getPointsScored())){
 								matchPoints += userAnswer.getPointsScored();
 							}
+							double dbPrizeWon = userAnswer.getCashWon() == null? 0 : userAnswer.getCashWon();
+							answerBean.setAmountWon(dbPrizeWon);
+							totalPrizeWon += dbPrizeWon;
 							answerBeanList.add(answerBean);
 						}
 						userAnswerBean.setSelectedAnswerList(answerBeanList);
@@ -1001,7 +1005,9 @@ public class ContestDaoImpl implements ContestDao{
 					totalPointsWon += userBonusPoint.getPoints();
 				}
 				retContestAnswer.setTotalPointsWon(totalPointsWon);
+				retContestAnswer.setCashWon(totalPrizeWon);
 				retContestAnswer.setUserAnswerList(userAnswers);
+				
 			}
 		}catch(Exception exception){
 			exception.printStackTrace();
