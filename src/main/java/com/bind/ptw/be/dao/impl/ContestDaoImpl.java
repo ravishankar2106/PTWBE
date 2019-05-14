@@ -66,6 +66,8 @@ import com.bind.ptw.be.entities.UserAnswerStats;
 import com.bind.ptw.be.entities.UserAnswerStatsHome;
 import com.bind.ptw.be.entities.UserBonusPoint;
 import com.bind.ptw.be.entities.UserBonusPointHome;
+import com.bind.ptw.be.entities.UserCoin;
+import com.bind.ptw.be.entities.UserCoinHome;
 import com.bind.ptw.be.entities.UserGroup;
 import com.bind.ptw.be.entities.UserGroupHome;
 import com.bind.ptw.be.entities.UserGroupMapping;
@@ -861,12 +863,18 @@ public class ContestDaoImpl implements ContestDao{
 	@Override
 	public void addUserAnswer(UserContestAnswer userContestAnswer) throws PTWException {
 		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		UserCoinHome coinHome = new UserCoinHome(this.getSession());
 		try{
 			int userId = userContestAnswer.getUserId();
+			UserCoin userCurrentCoins = coinHome.getUserCoins(userId);
+			int coins = userCurrentCoins.getCoinAvailable() == null?0:userCurrentCoins.getCoinAvailable();
+			if(coins < 300) {
+				throw new PTWException(PTWConstants.ERROR_CODE_NOT_ENOUGH_COINS, PTWConstants.ERROR_DESC_NOT_ENOUGH_COINS);
+			}
 			List<UserAnswerBean> userAnswerBeanList = userContestAnswer.getUserAnswerList();
 			Date currentDate = new Date();
 			Integer[] questionIdList = getQuestionId(userAnswerBeanList);
-			checkAndRemoveDuplicateAnswer(answerHome, userId, questionIdList);
+			boolean alreadyAnswered = checkAndRemoveDuplicateAnswer(answerHome, userId, questionIdList);
 			for (UserAnswerBean userAnswerBean : userAnswerBeanList) {
 				Integer questionId = userAnswerBean.getQuestionId();
 				List<AnswerBean> answerBeanList = userAnswerBean.getSelectedAnswerList();
@@ -883,11 +891,20 @@ public class ContestDaoImpl implements ContestDao{
 				}
 				
 			}
+			if(!alreadyAnswered) {
+				userCurrentCoins.setCoinAvailable(coins - 300);
+				coinHome.merge(userCurrentCoins);
+			}
 			insertAnswerStats(userContestAnswer.getContestId(), userId);
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
+		
+	}
+
+	private void deductCoins(int userId) {
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -929,12 +946,15 @@ public class ContestDaoImpl implements ContestDao{
 		
 	}
 
-	private void checkAndRemoveDuplicateAnswer(UserAnswerHome answerHome, int userId, Integer[] questionIdList) {
+	private boolean checkAndRemoveDuplicateAnswer(UserAnswerHome answerHome, int userId, Integer[] questionIdList) {
 		List<UserAnswer> existingAnswers = answerHome.getUserAnswer(userId, questionIdList[0]);
+		boolean alreadyAnswered = false;
 		if(existingAnswers!=null && !existingAnswers.isEmpty()){
+			alreadyAnswered = true;
 			answerHome.deleteUserAnswer(userId, questionIdList);
 			this.getSession().flush();
 		}
+		return alreadyAnswered;
 	}
 
 	private Integer[] getQuestionId(List<UserAnswerBean> userAnswerBeanList) {

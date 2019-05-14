@@ -234,5 +234,8 @@ public class PTWConstants {
 	public final static String ERROR_CODE_FAN_CLUB_JOINED = "272";
 	public final static String ERROR_DESC_FAN_CLUB_JOINED = "You have already joined a Fan club!";
 	
+	public final static String ERROR_CODE_NOT_ENOUGH_COINS = "273";
+	public final static String ERROR_DESC_NOT_ENOUGH_COINS = "You dont have enough coins to answer. Unlock the contest by watching the video!";
+	
 	public final static String ERROR_CODE_TOC_EMPTY = "290";
 }
