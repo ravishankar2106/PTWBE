@@ -758,6 +758,7 @@ public class UserServiceImpl implements UserService {
 			UserScoreBoardBean coins = userDao.getUserCoins(userId);
 			userScoreBoardBean.setCoinsWon(coins.getCoinsWon());
 			double cash = userDao.getUserCashWon(userId);
+			userScoreBoardBean.setCashWon(cash);
 		} catch (PTWException ex) {
 			userScoreBoardBean.setResultCode(ex.getCode());
 			userScoreBoardBean.setResultDescription(ex.getDescription());
