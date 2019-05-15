@@ -29,7 +29,7 @@ public class UserCoin {
 		this.userCoinId = userCoinId;
 	}
 	
-	@Column(name = "USER_ID", insertable = false, updatable = false)
+	@Column(name = "USER_ID")
 	public Integer getUserId() {
 		return userId;
 	}
