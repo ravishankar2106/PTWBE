@@ -727,9 +727,9 @@ public class UserServiceImpl implements UserService {
 			int coins = userScore.getCoinsWon() == null? 0: userScore.getCoinsWon();
 			boolean contestLockStatus;
 			if(coins >= 300) {
-				contestLockStatus = true;
-			}else {
 				contestLockStatus = false;
+			}else {
+				contestLockStatus = true;
 			}
 			userBean.setContestLockStatus(contestLockStatus);
 		} catch (PTWException ex) {

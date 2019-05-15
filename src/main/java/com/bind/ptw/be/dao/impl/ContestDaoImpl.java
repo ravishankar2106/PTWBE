@@ -902,6 +902,8 @@ public class ContestDaoImpl implements ContestDao{
 				coinHome.merge(userCurrentCoins);
 			}
 			insertAnswerStats(userContestAnswer.getContestId(), userId);
+		}catch(PTWException exception){
+			throw exception;
 		}catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);

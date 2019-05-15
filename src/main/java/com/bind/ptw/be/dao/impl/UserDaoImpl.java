@@ -924,7 +924,7 @@ public class UserDaoImpl implements UserDao{
 			if(userCoin == null) {
 				userCoin = new UserCoin();
 				userCoin.setUserId(userId);
-				userCoin.setCoinAvailable(0);
+				userCoin.setCoinAvailable(300);
 				userCoinHome.merge(userCoin);
 			}
 			UserScoreBoardBean scoreBoard = new UserScoreBoardBean();
