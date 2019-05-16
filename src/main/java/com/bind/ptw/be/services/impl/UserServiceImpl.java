@@ -741,6 +741,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public BaseBean unlockUserContestStatus(Integer userId) {
+		System.out.println("Unlocking user " + userId);
 		BaseBean baseBean = new BaseBean();
 		try {
 			userDao.addUserCoins(userId, 300);

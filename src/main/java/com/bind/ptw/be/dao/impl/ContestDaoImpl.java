@@ -867,15 +867,12 @@ public class ContestDaoImpl implements ContestDao{
 		try{
 			int userId = userContestAnswer.getUserId();
 			UserCoin userCurrentCoins = coinHome.getUserCoins(userId);
-			if(userCurrentCoins == null) {
-				userCurrentCoins = new UserCoin();
-				userCurrentCoins.setUserId(userId);
-				userCurrentCoins.setCoinAvailable(300);
-				coinHome.merge(userCurrentCoins);
-			}
-			int coins = userCurrentCoins.getCoinAvailable() == null?0:userCurrentCoins.getCoinAvailable();
-			if(coins < 300) {
-				throw new PTWException(PTWConstants.ERROR_CODE_NOT_ENOUGH_COINS, PTWConstants.ERROR_DESC_NOT_ENOUGH_COINS);
+			int coins = 0;
+			if(userCurrentCoins != null) {
+				coins = userCurrentCoins.getCoinAvailable() == null?0:userCurrentCoins.getCoinAvailable();
+				if(coins < 300) {
+					throw new PTWException(PTWConstants.ERROR_CODE_NOT_ENOUGH_COINS, PTWConstants.ERROR_DESC_NOT_ENOUGH_COINS);
+				}
 			}
 			List<UserAnswerBean> userAnswerBeanList = userContestAnswer.getUserAnswerList();
 			Date currentDate = new Date();
@@ -898,7 +895,13 @@ public class ContestDaoImpl implements ContestDao{
 				
 			}
 			if(!alreadyAnswered) {
-				userCurrentCoins.setCoinAvailable(coins - 300);
+				if(userCurrentCoins == null) {
+					userCurrentCoins = new UserCoin();
+					userCurrentCoins.setUserId(userId);
+					userCurrentCoins.setCoinAvailable(0);
+				}else {
+					userCurrentCoins.setCoinAvailable(coins - 300);
+				}
 				coinHome.merge(userCurrentCoins);
 			}
 			insertAnswerStats(userContestAnswer.getContestId(), userId);
