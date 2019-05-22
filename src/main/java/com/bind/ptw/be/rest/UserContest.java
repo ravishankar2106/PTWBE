@@ -263,13 +263,13 @@ public class UserContest {
 	}
 	
 	@PostMapping("/getContestLockStatus")
-	public UserBean getUserContestLockStatus(@RequestParam Integer userId) {
+	public UserBean getContestLockStatus(@RequestParam Integer userId) {
 		return userService.getUserContestLockStatus(userId);
 	}
 	
 	
 	@PostMapping("/getUserContestLockStatus")
-	public UserBean getUserContestLockStatus(@RequestParam UserContestAnswer userContest) {
+	public UserBean getUserContestLockStatus(@RequestBody UserContestAnswer userContest) {
 		return userService.getUserContestLockStatus(userContest);
 	}
 	
