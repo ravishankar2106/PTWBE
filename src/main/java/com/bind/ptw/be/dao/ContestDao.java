@@ -90,6 +90,7 @@ public interface ContestDao {
 	List<ContestBean> getUpcomingContestForPush(Integer tournamentId) throws PTWException;
 	List<Integer> getTournamentUsers(Integer tournamentId) throws PTWException;
 	List<Integer> getContestAnsweredUsers(Integer contestId) throws PTWException;
+	Boolean checkForUserAnswer(UserContestAnswer userContestAnswer) throws PTWException;
 	
 	
 }

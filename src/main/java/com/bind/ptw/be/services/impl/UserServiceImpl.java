@@ -19,6 +19,7 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bind.ptw.be.dao.ContestDao;
 import com.bind.ptw.be.dao.UserDao;
 import com.bind.ptw.be.dto.BaseBean;
 import com.bind.ptw.be.dto.CityBean;
@@ -29,6 +30,7 @@ import com.bind.ptw.be.dto.TournamentFanClubBean;
 import com.bind.ptw.be.dto.TournamentFanClubList;
 import com.bind.ptw.be.dto.UserBean;
 import com.bind.ptw.be.dto.UserConfirmationBean;
+import com.bind.ptw.be.dto.UserContestAnswer;
 import com.bind.ptw.be.dto.UserGroupBean;
 import com.bind.ptw.be.dto.UserGroupBeanList;
 import com.bind.ptw.be.dto.UserGroupInvitationBean;
@@ -66,6 +68,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	ContestDao contestDao;
 
 	@Autowired
 	HibernateTemplate hibernateTemplate;
@@ -730,6 +735,33 @@ public class UserServiceImpl implements UserService {
 				contestLockStatus = false;
 			}else {
 				contestLockStatus = true;
+			}
+			userBean.setContestLockStatus(contestLockStatus);
+		} catch (PTWException ex) {
+			userBean.setResultCode(ex.getCode());
+			userBean.setResultDescription(ex.getDescription());
+		}
+		return userBean;
+	}
+	
+	@Override
+	public UserBean getUserContestLockStatus(UserContestAnswer userContest) {
+		Integer userId = userContest.getUserId();
+		UserBean userBean = new UserBean();
+		try {
+			boolean alreadyAnsweredFlag = contestDao.checkForUserAnswer(userContest);
+			boolean contestLockStatus;
+			if(!alreadyAnsweredFlag) {
+				contestLockStatus = false;
+			}else {
+				UserScoreBoardBean userScore = userDao.getUserCoins(userId);
+				int coins = userScore.getCoinsWon() == null? 0: userScore.getCoinsWon();
+				
+				if(coins >= 300) {
+					contestLockStatus = false;
+				}else {
+					contestLockStatus = true;
+				}
 			}
 			userBean.setContestLockStatus(contestLockStatus);
 		} catch (PTWException ex) {

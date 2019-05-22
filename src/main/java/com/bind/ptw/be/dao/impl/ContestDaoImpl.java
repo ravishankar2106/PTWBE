@@ -913,6 +913,33 @@ public class ContestDaoImpl implements ContestDao{
 		}
 		
 	}
+	
+	@Override
+	public Boolean checkForUserAnswer(UserContestAnswer userContestAnswer) throws PTWException {
+		UserAnswerHome answerHome = new UserAnswerHome(this.getSession());
+		QuestionHome questionHome = new QuestionHome(this.getSession());
+		boolean alreadyAnswered = false;
+		try{
+			int userId = userContestAnswer.getUserId();
+			int contestId = userContestAnswer.getContestId();
+			
+			ContestBean contestBean = new ContestBean();
+			contestBean.setContestId(contestId);
+			List<Question> dbQuestionList = questionHome.findQuestionByFilter(contestBean);
+			if(dbQuestionList != null && !dbQuestionList.isEmpty()){
+				Question question = dbQuestionList.get(0);
+				List<UserAnswer> existingAnswers = answerHome.getUserAnswer(userId, question.getQuestionId());
+				if(existingAnswers!=null && !existingAnswers.isEmpty()){
+					alreadyAnswered = true;
+				}
+			}
+			return alreadyAnswered;
+		}catch(Exception exception){
+			exception.printStackTrace();
+			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
+		}
+		
+	}
 
 	private void deductCoins(int userId) {
 		// TODO Auto-generated method stub

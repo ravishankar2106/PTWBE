@@ -267,6 +267,12 @@ public class UserContest {
 		return userService.getUserContestLockStatus(userId);
 	}
 	
+	
+	@PostMapping("/getUserContestLockStatus")
+	public UserBean getUserContestLockStatus(@RequestParam UserContestAnswer userContest) {
+		return userService.getUserContestLockStatus(userContest);
+	}
+	
 	@PostMapping("/unlockContest")
 	public BaseBean unlockUserContest(@RequestParam Integer userId) {
 		BaseBean baseBean = userService.unlockUserContestStatus(userId);
