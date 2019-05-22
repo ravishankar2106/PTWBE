@@ -751,7 +751,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			boolean alreadyAnsweredFlag = contestDao.checkForUserAnswer(userContest);
 			boolean contestLockStatus;
-			if(!alreadyAnsweredFlag) {
+			if(alreadyAnsweredFlag) {
 				contestLockStatus = false;
 			}else {
 				UserScoreBoardBean userScore = userDao.getUserCoins(userId);
