@@ -920,6 +920,7 @@ public class UserDaoImpl implements UserDao{
 	public UserScoreBoardBean getUserCoins(Integer userId) throws PTWException{
 		UserCoinHome userCoinHome = new UserCoinHome(this.getSession());
 		try{
+			System.out.println("User Id " + userId);
 			UserCoin userCoin = userCoinHome.getUserCoins(userId);
 			if(userCoin == null) {
 				userCoin = new UserCoin();

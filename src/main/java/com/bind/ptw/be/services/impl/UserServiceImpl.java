@@ -747,6 +747,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserBean getUserContestLockStatus(UserContestAnswer userContest) {
 		Integer userId = userContest.getUserId();
+		System.out.println("User Id incoming " + userContest.getUserId());
 		UserBean userBean = new UserBean();
 		try {
 			boolean alreadyAnsweredFlag = contestDao.checkForUserAnswer(userContest);
