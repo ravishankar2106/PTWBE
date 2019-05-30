@@ -238,4 +238,8 @@ public class PTWConstants {
 	public final static String ERROR_DESC_NOT_ENOUGH_COINS = "You dont have enough coins to answer. Unlock the contest by watching the video!";
 	
 	public final static String ERROR_CODE_TOC_EMPTY = "290";
+	
+	public final static String ERROR_CODE_APP_UPDATE_REQUIRED = "274";
+	public final static String ERROR_MSG_APP_UPDATE_REQUIRED = "Looks like your app is old. Update the app from playstore and relogin to proceed.";
+	
 }

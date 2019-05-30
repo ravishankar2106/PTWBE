@@ -747,8 +747,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserBean getUserContestLockStatus(UserContestAnswer userContest) {
 		Integer userId = userContest.getUserId();
-		System.out.println("User Id incoming " + userContest.getUserId());
 		UserBean userBean = new UserBean();
+		if(userId == null || userId == 0) {
+			userBean.setResultCode(PTWConstants.ERROR_CODE_APP_UPDATE_REQUIRED);
+			userBean.setResultDescription(PTWConstants.ERROR_MSG_APP_UPDATE_REQUIRED);
+		}
+		
 		try {
 			boolean alreadyAnsweredFlag = contestDao.checkForUserAnswer(userContest);
 			boolean contestLockStatus;
