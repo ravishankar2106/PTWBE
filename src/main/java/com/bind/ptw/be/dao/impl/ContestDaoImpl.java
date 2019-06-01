@@ -868,12 +868,12 @@ public class ContestDaoImpl implements ContestDao{
 			int userId = userContestAnswer.getUserId();
 			UserCoin userCurrentCoins = coinHome.getUserCoins(userId);
 			int coins = 0;
-			if(userCurrentCoins != null) {
+			/*if(userCurrentCoins != null) {
 				coins = userCurrentCoins.getCoinAvailable() == null?0:userCurrentCoins.getCoinAvailable();
 				if(coins < 300) {
 					throw new PTWException(PTWConstants.ERROR_CODE_NOT_ENOUGH_COINS, PTWConstants.ERROR_DESC_NOT_ENOUGH_COINS);
 				}
-			}
+			}*/
 			List<UserAnswerBean> userAnswerBeanList = userContestAnswer.getUserAnswerList();
 			Date currentDate = new Date();
 			Integer[] questionIdList = getQuestionId(userAnswerBeanList);
@@ -900,14 +900,18 @@ public class ContestDaoImpl implements ContestDao{
 					userCurrentCoins.setUserId(userId);
 					userCurrentCoins.setCoinAvailable(0);
 				}else {
-					userCurrentCoins.setCoinAvailable(coins - 300);
+					coins = coins - 300;
+					if(coins < 0) {
+						coins =0;
+					}
+					userCurrentCoins.setCoinAvailable(coins);
 				}
 				coinHome.merge(userCurrentCoins);
 			}
 			insertAnswerStats(userContestAnswer.getContestId(), userId);
-		}catch(PTWException exception){
+		}/*catch(PTWException exception){
 			throw exception;
-		}catch(Exception exception){
+		}*/catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}
