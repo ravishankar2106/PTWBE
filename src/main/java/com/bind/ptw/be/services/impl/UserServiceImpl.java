@@ -768,7 +768,7 @@ public class UserServiceImpl implements UserService {
 					contestLockStatus = true;
 				}
 			}
-			userBean.setContestLockStatus(false);
+			userBean.setContestLockStatus(contestLockStatus);
 		} catch (PTWException ex) {
 			userBean.setResultCode(ex.getCode());
 			userBean.setResultDescription(ex.getDescription());
