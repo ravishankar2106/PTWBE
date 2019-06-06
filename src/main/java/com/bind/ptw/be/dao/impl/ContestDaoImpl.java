@@ -870,9 +870,9 @@ public class ContestDaoImpl implements ContestDao{
 			int coins = 0;
 			if(userCurrentCoins != null) {
 				coins = userCurrentCoins.getCoinAvailable() == null?0:userCurrentCoins.getCoinAvailable();
-				if(coins < 300) {
+				/*if(coins < 300) {
 					throw new PTWException(PTWConstants.ERROR_CODE_NOT_ENOUGH_COINS, PTWConstants.ERROR_DESC_NOT_ENOUGH_COINS);
-				}
+				}*/
 			}
 			List<UserAnswerBean> userAnswerBeanList = userContestAnswer.getUserAnswerList();
 			Date currentDate = new Date();
@@ -909,9 +909,9 @@ public class ContestDaoImpl implements ContestDao{
 				coinHome.merge(userCurrentCoins);
 			}
 			insertAnswerStats(userContestAnswer.getContestId(), userId);
-		}catch(PTWException exception){
+		}/*catch(PTWException exception){
 			throw exception;
-		}catch(Exception exception){
+		}*/catch(Exception exception){
 			exception.printStackTrace();
 			throw new PTWException(PTWConstants.ERROR_CODE_DB_EXCEPTION, PTWConstants.ERROR_DESC_DB_EXCEPTION);
 		}

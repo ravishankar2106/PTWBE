@@ -768,7 +768,7 @@ public class UserServiceImpl implements UserService {
 					contestLockStatus = true;
 				}
 			}
-			userBean.setContestLockStatus(contestLockStatus);
+			userBean.setContestLockStatus(false);
 		} catch (PTWException ex) {
 			userBean.setResultCode(ex.getCode());
 			userBean.setResultDescription(ex.getDescription());
@@ -778,7 +778,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public BaseBean unlockUserContestStatus(Integer userId) {
-		System.out.println("Unlocking user " + userId);
 		BaseBean baseBean = new BaseBean();
 		try {
 			userDao.addUserCoins(userId, 300);
